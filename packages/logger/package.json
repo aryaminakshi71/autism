@@ -1,0 +1,13 @@
+{
+  "name": "@autism-legacy-20260205/logger",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@autism-legacy-20260205/tsconfig": "workspace:*",
+    "@types/node": "^22.19.2",
+    "typescript": "^5.9.3"
+  }
+}

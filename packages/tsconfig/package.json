@@ -1,0 +1,9 @@
+{
+  "name": "@autism-legacy-20260205/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "license": "PROPRIETARY",
+  "files": [
+    "*.json"
+  ]
+}

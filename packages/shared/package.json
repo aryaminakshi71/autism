@@ -1,0 +1,24 @@
+{
+  "name": "@autism-legacy-20260205/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "zod": "^4.1.13"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@autism-legacy-20260205/tsconfig": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}
