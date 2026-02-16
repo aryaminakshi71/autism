@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
-import speakeasy from 'speakeasy';
+import speakeasy from "speakeasy";
+import { v4 as uuidv4 } from "uuid";
 
-const MFA_SECRET = process.env.MFA_SECRET || 'your-mfa-secret-key';
+const MFA_SECRET = process.env.MFA_SECRET || "your-mfa-secret-key";
 
 export interface MFASetup {
   secret: string;
@@ -20,12 +20,14 @@ export class MFAService {
   generateSetup(email: string): MFASetup {
     const secret = speakeasy.generateSecret({
       name: `App:${email}`,
-      issuer: 'Your App Name',
+      issuer: "Your App Name",
     });
 
     const backupCodes: string[] = [];
     for (let i = 0; i < 10; i++) {
-      backupCodes.push(uuidv4().replace(/-/g, '').substring(0, 8).toUpperCase());
+      backupCodes.push(
+        uuidv4().replace(/-/g, "").substring(0, 8).toUpperCase(),
+      );
     }
 
     return {
@@ -38,7 +40,7 @@ export class MFAService {
   verifyToken(secret: string, token: string): MFAVerifyResult {
     const valid = speakeasy.totp.verify({
       secret,
-      encoding: 'ascii',
+      encoding: "ascii",
       token,
       window: 1,
     });
@@ -60,13 +62,16 @@ export class MFAService {
   }
 
   setBackupCodes(userId: string, codes: string[]): void {
-    this.backupCodes.set(userId, codes.map(c => c.toUpperCase()));
+    this.backupCodes.set(
+      userId,
+      codes.map((c) => c.toUpperCase()),
+    );
   }
 
   generateBackupCodes(userId: string): string[] {
     const codes: string[] = [];
     for (let i = 0; i < 10; i++) {
-      codes.push(uuidv4().replace(/-/g, '').substring(0, 8).toUpperCase());
+      codes.push(uuidv4().replace(/-/g, "").substring(0, 8).toUpperCase());
     }
     this.backupCodes.set(userId, codes);
     return codes;

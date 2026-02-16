@@ -38,10 +38,10 @@ export function Skeleton({
 
 export function SkeletonCard() {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
+    <div className="space-y-4 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <div className="flex items-center space-x-4">
         <Skeleton variant="circular" width={48} height={48} />
-        <div className="space-y-2 flex-1">
+        <div className="flex-1 space-y-2">
           <Skeleton variant="heading" width="40%" />
           <Skeleton variant="text" width="60%" />
         </div>
@@ -54,13 +54,13 @@ export function SkeletonCard() {
 export function DashboardSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 space-y-4"
+            className="space-y-4 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
           >
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <Skeleton variant="circular" width={48} height={48} />
               <Skeleton variant="text" width={60} height={20} />
             </div>
@@ -69,7 +69,7 @@ export function DashboardSkeleton() {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <SkeletonCard />
         <SkeletonCard />
       </div>
@@ -79,7 +79,7 @@ export function DashboardSkeleton() {
 
 export function TableRowSkeleton({ columns = 5 }: { columns?: number }) {
   return (
-    <div className="flex items-center space-x-4 py-4 border-b border-gray-100 dark:border-gray-700">
+    <div className="flex items-center space-x-4 border-gray-100 border-b py-4 dark:border-gray-700">
       {Array.from({ length: columns }).map((_, i) => (
         <Skeleton key={i} variant="text" width={i === 0 ? 120 : "100%"} />
       ))}
@@ -89,7 +89,7 @@ export function TableRowSkeleton({ columns = 5 }: { columns?: number }) {
 
 export function FormSkeleton() {
   return (
-    <div className="space-y-6 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+    <div className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <Skeleton variant="heading" width="30%" />
       <div className="space-y-4">
         <Skeleton variant="text" width="100%" />

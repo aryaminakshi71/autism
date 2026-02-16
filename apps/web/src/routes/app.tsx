@@ -1,17 +1,17 @@
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import {
-  LayoutDashboard,
-  Users,
+  CalendarCheck,
   ClipboardList,
   Inbox,
-  CalendarCheck,
+  LayoutDashboard,
   Megaphone,
   Settings,
+  Users,
 } from "lucide-react";
 
-export const Route = createFileRoute('/app')({
+export const Route = createFileRoute("/app")({
   component: AppLayout,
-})
+});
 
 function AppLayout() {
   const navItems = [
@@ -25,9 +25,11 @@ function AppLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <aside className="w-64 bg-white border-r border-gray-200 p-4">
-        <div className="text-lg font-semibold text-blue-600 mb-6">Autism Platform</div>
+    <div className="flex min-h-screen bg-gray-50">
+      <aside className="w-64 border-gray-200 border-r bg-white p-4">
+        <div className="mb-6 font-semibold text-blue-600 text-lg">
+          Autism Platform
+        </div>
         <nav className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -35,9 +37,9 @@ function AppLayout() {
               <Link
                 key={item.to}
                 to={item.to}
-                className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                className="flex items-center gap-3 rounded-md px-3 py-2 text-gray-700 text-sm hover:bg-blue-50 hover:text-blue-700"
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="h-4 w-4" />
                 {item.label}
               </Link>
             );

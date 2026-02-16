@@ -1,16 +1,20 @@
-'use client'
+"use client";
 
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { createWebSocket, WebSocketClient, WebSocketMessage } from '../utils/websocket'
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  WebSocketClient,
+  WebSocketMessage,
+  createWebSocket,
+} from "../utils/websocket";
 
 interface UseWebSocketOptions {
-  url: string | null
-  onMessage?: (data: any) => void
-  onError?: (error: any) => void
-  onOpen?: () => void
-  onClose?: () => void
-  reconnect?: boolean
-  reconnectAttempts?: number
+  url: string | null;
+  onMessage?: (data: any) => void;
+  onError?: (error: any) => void;
+  onOpen?: () => void;
+  onClose?: () => void;
+  reconnect?: boolean;
+  reconnectAttempts?: number;
 }
 
 export function useWebSocket(options: UseWebSocketOptions) {
@@ -22,56 +26,55 @@ export function useWebSocket(options: UseWebSocketOptions) {
     onClose,
     reconnect = true,
     reconnectAttempts = 5,
-  } = options
+  } = options;
 
-  const wsRef = useRef<WebSocketClient | null>(null)
-  const [isConnected, setIsConnected] = useState(false)
-  const [lastMessage, setLastMessage] = useState<any>(null)
+  const wsRef = useRef<WebSocketClient | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [lastMessage, setLastMessage] = useState<any>(null);
 
   const send = useCallback((data: WebSocketMessage | any) => {
     if (wsRef.current && wsRef.current.isConnected) {
-      wsRef.current.send(data)
+      wsRef.current.send(data);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if (!url) return
+    if (!url) return;
 
-    const ws = createWebSocket(url)
-    wsRef.current = ws
+    const ws = createWebSocket(url);
+    wsRef.current = ws;
 
-    ws.on('open', () => {
-      setIsConnected(true)
-      if (onOpen) onOpen()
-    })
+    ws.on("open", () => {
+      setIsConnected(true);
+      if (onOpen) onOpen();
+    });
 
-    ws.on('close', () => {
-      setIsConnected(false)
-      if (onClose) onClose()
-    })
+    ws.on("close", () => {
+      setIsConnected(false);
+      if (onClose) onClose();
+    });
 
-    ws.on('error', (error) => {
-      if (onError) onError(error)
-    })
+    ws.on("error", (error) => {
+      if (onError) onError(error);
+    });
 
-    ws.on('message', (message: WebSocketMessage) => {
-      setLastMessage(message.data)
-      if (onMessage) onMessage(message.data)
-    })
+    ws.on("message", (message: WebSocketMessage) => {
+      setLastMessage(message.data);
+      if (onMessage) onMessage(message.data);
+    });
 
     ws.connect().catch((error) => {
-      if (onError) onError(error)
-    })
+      if (onError) onError(error);
+    });
 
     return () => {
-      ws.disconnect()
-    }
-  }, [url, onMessage, onError, onOpen, onClose])
+      ws.disconnect();
+    };
+  }, [url, onMessage, onError, onOpen, onClose]);
 
   return {
     send,
     isConnected,
     lastMessage,
-  }
+  };
 }
-

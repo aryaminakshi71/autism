@@ -8,11 +8,11 @@
  * - API key authentication
  */
 
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { organization, apiKey, openAPI } from "better-auth/plugins";
 import type { Database } from "@autism-legacy-20260205/storage";
 import type { KVNamespace } from "@cloudflare/workers-types";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { apiKey, openAPI, organization } from "better-auth/plugins";
 import { createKVStorage } from "./kv-storage";
 
 export interface AuthConfig {
@@ -48,7 +48,15 @@ export interface AuthConfig {
  * Create a Better Auth instance configured for Cloudflare Workers
  */
 export function createAuth(config: AuthConfig) {
-  const { db, kv, secret, baseURL, oauth, stripe, trustedOrigins = [] } = config;
+  const {
+    db,
+    kv,
+    secret,
+    baseURL,
+    oauth,
+    stripe,
+    trustedOrigins = [],
+  } = config;
 
   // Build plugins array
   const plugins: any[] = [
@@ -56,8 +64,14 @@ export function createAuth(config: AuthConfig) {
     organization({
       allowUserToCreateOrganization: true,
       organizationLimit: 3, // Free tier limit
-      sendInvitationEmail: async ({ email, organization, inviter }: { email: string; organization: any; inviter: any }) => {
-        console.log(`Invitation to ${email} for org ${organization.name} from ${inviter.user.name}`);
+      sendInvitationEmail: async ({
+        email,
+        organization,
+        inviter,
+      }: { email: string; organization: any; inviter: any }) => {
+        console.log(
+          `Invitation to ${email} for org ${organization.name} from ${inviter.user.name}`,
+        );
       },
     }),
 
@@ -79,7 +93,8 @@ export function createAuth(config: AuthConfig) {
     });
   }
 
-  const isProduction = process.env.NODE_ENV === 'production' || baseURL.startsWith('https://');
+  const isProduction =
+    process.env.NODE_ENV === "production" || baseURL.startsWith("https://");
 
   return betterAuth({
     database: drizzleAdapter(db, {

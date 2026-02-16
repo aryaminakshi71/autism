@@ -1,7 +1,7 @@
 // Types Index
-export * from './api'
-export * from './common'
-export * from './constants'
+export * from "./api";
+export * from "./common";
+export * from "./constants";
 
 // Re-export common types for convenience
 export type {
@@ -30,4 +30,4 @@ export type {
   ConsentRecord,
   DataRequest,
   AuditLogEntry,
-} from './common'
+} from "./common";

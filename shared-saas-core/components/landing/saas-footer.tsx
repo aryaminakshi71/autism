@@ -1,109 +1,118 @@
-'use client'
-
-// Standardized SaaS Footer Component - Used across all apps
-
-import * as React from 'react'
-import { Link } from '@tanstack/react-router'
-import { cn } from '../../lib/index'
+"use client";
+import { Link } from "@tanstack/react-router";
+import { cn } from "../../lib/index";
 
 interface FooterLink {
-  label: string
-  href: string
+  label: string;
+  href: string;
 }
 
 interface SaaSFooterProps {
-  appName?: string
-  themeColor?: string
-  showStripe?: boolean
-  className?: string
-  links?: FooterLink[]
-  showNewsletter?: boolean
-  newsletterTitle?: string
-  newsletterSubtitle?: string
+  appName?: string;
+  themeColor?: string;
+  showStripe?: boolean;
+  className?: string;
+  links?: FooterLink[];
+  showNewsletter?: boolean;
+  newsletterTitle?: string;
+  newsletterSubtitle?: string;
 }
 
 export function SaaSFooter({
-  appName = 'App',
-  themeColor = '#3b82f6',
+  appName = "App",
+  themeColor = "#3b82f6",
   showStripe = true,
   className,
   links = [],
   showNewsletter = false,
-  newsletterTitle = 'Stay Updated',
-  newsletterSubtitle = 'Get tips and product updates.',
+  newsletterTitle = "Stay Updated",
+  newsletterSubtitle = "Get tips and product updates.",
 }: SaaSFooterProps) {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   const renderFooterLink = (link: FooterLink) => {
-    if (link.href.startsWith('#') || link.href.startsWith('http')) {
+    if (link.href.startsWith("#") || link.href.startsWith("http")) {
       return (
         <a
           key={link.href}
           href={link.href}
-          className="text-gray-400 hover:text-white transition-colors no-underline"
+          className="text-gray-400 no-underline transition-colors hover:text-white"
         >
           {link.label}
         </a>
-      )
+      );
     }
 
     return (
       <Link
         key={link.href}
         to={link.href}
-        className="text-gray-400 hover:text-white transition-colors no-underline"
+        className="text-gray-400 no-underline transition-colors hover:text-white"
       >
         {link.label}
       </Link>
-    )
-  }
+    );
+  };
 
   return (
     <>
       {/* Newsletter Section (Optional) */}
       {showNewsletter && (
-        <section 
-          className="py-20 px-4 sm:px-6 lg:px-8"
+        <section
+          className="px-4 py-20 sm:px-6 lg:px-8"
           style={{ backgroundColor: themeColor }}
         >
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-white mb-4">{newsletterTitle}</h2>
-            <p className="text-xl text-white/80 mb-8">{newsletterSubtitle}</p>
-            <form className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="flex-1 px-5 py-3 rounded-xl text-gray-900" 
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="mb-4 font-bold text-4xl text-white">
+              {newsletterTitle}
+            </h2>
+            <p className="mb-8 text-white/80 text-xl">{newsletterSubtitle}</p>
+            <form className="mx-auto flex max-w-lg flex-col justify-center gap-4 sm:flex-row">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 rounded-xl px-5 py-3 text-gray-900"
               />
-              <button 
-                type="submit" 
-                className="px-8 py-3 bg-white rounded-xl font-semibold"
+              <button
+                type="submit"
+                className="rounded-xl bg-white px-8 py-3 font-semibold"
                 style={{ color: themeColor }}
               >
                 Subscribe
               </button>
             </form>
-            <p className="text-sm text-white/60 mt-4">No spam, unsubscribe anytime.</p>
+            <p className="mt-4 text-sm text-white/60">
+              No spam, unsubscribe anytime.
+            </p>
           </div>
         </section>
       )}
 
       {/* Footer */}
-      <footer className={cn('bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8', className)}>
-        <div className="max-w-7xl mx-auto">
+      <footer
+        className={cn(
+          "bg-gray-900 px-4 py-12 text-gray-400 sm:px-6 lg:px-8",
+          className,
+        )}
+      >
+        <div className="mx-auto max-w-7xl">
           {links.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-6 mb-8">
+            <div className="mb-8 flex flex-wrap justify-center gap-6">
               {links.map((link) => renderFooterLink(link))}
             </div>
           )}
           <div className="text-center">
-            <p className="text-sm">© {currentYear} {appName}. All rights reserved.</p>
+            <p className="text-sm">
+              © {currentYear} {appName}. All rights reserved.
+            </p>
             {showStripe && (
-              <p className="text-xs text-gray-500 mt-2">Powered by Stripe for secure payments</p>
+              <p className="mt-2 text-gray-500 text-xs">
+                Powered by Stripe for secure payments
+              </p>
             )}
           </div>
         </div>
       </footer>
     </>
-  )
+  );
 }

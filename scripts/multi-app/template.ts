@@ -201,7 +201,7 @@ export function generateEnvContent(config: AppConfig): string {
     .replace("{{VITE_API_URL}}", vars.VITE_API_URL)
     .replace(
       "{{LOG_LEVEL}}",
-      config.environment === "production" ? "warn" : "info"
+      config.environment === "production" ? "warn" : "info",
     );
 
   // Add custom variables
@@ -211,7 +211,7 @@ export function generateEnvContent(config: AppConfig): string {
           ([key]) =>
             !key.startsWith("BETTER_AUTH") &&
             !key.startsWith("GOOGLE") &&
-            !key.startsWith("GITHUB")
+            !key.startsWith("GITHUB"),
         )
         .map(([key, value]) => `${key}=${value}`)
         .join("\n")
@@ -310,7 +310,7 @@ export function createDefaultAppConfig(
   id: string,
   name: string,
   domain: string,
-  environment: Environment
+  environment: Environment,
 ): AppConfig {
   const now = new Date().toISOString();
   return {

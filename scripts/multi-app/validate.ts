@@ -44,9 +44,10 @@ function isPlaceholder(value: string): boolean {
 /**
  * Validate Google OAuth configuration
  */
-function validateGoogleOAuth(
-  config: AppConfig
-): { errors: ValidationError[]; warnings: ValidationWarning[] } {
+function validateGoogleOAuth(config: AppConfig): {
+  errors: ValidationError[];
+  warnings: ValidationWarning[];
+} {
   const errors: ValidationError[] = [];
   const warnings: ValidationWarning[] = [];
   const service = "Google OAuth";
@@ -78,8 +79,7 @@ function validateGoogleOAuth(
     warnings.push({
       service,
       field: "clientId",
-      message:
-        "Google Client ID should end with .apps.googleusercontent.com",
+      message: "Google Client ID should end with .apps.googleusercontent.com",
     });
   }
 
@@ -111,9 +111,10 @@ function validateGoogleOAuth(
 /**
  * Validate GitHub OAuth configuration
  */
-function validateGitHubOAuth(
-  config: AppConfig
-): { errors: ValidationError[]; warnings: ValidationWarning[] } {
+function validateGitHubOAuth(config: AppConfig): {
+  errors: ValidationError[];
+  warnings: ValidationWarning[];
+} {
   const errors: ValidationError[] = [];
   const warnings: ValidationWarning[] = [];
   const service = "GitHub OAuth";
@@ -171,9 +172,10 @@ function validateGitHubOAuth(
 /**
  * Validate Stripe configuration
  */
-function validateStripe(
-  config: AppConfig
-): { errors: ValidationError[]; warnings: ValidationWarning[] } {
+function validateStripe(config: AppConfig): {
+  errors: ValidationError[];
+  warnings: ValidationWarning[];
+} {
   const errors: ValidationError[] = [];
   const warnings: ValidationWarning[] = [];
   const service = "Stripe";
@@ -196,13 +198,20 @@ function validateStripe(
         field: "secretKey",
         message: "Stripe Secret Key appears to be a placeholder",
       });
-    } else if (config.environment === "production" && secretKey.startsWith("sk_test_")) {
+    } else if (
+      config.environment === "production" &&
+      secretKey.startsWith("sk_test_")
+    ) {
       errors.push({
         service,
         field: "secretKey",
-        message: "Production environment should use live Stripe keys (sk_live_)",
+        message:
+          "Production environment should use live Stripe keys (sk_live_)",
       });
-    } else if (config.environment !== "production" && secretKey.startsWith("sk_live_")) {
+    } else if (
+      config.environment !== "production" &&
+      secretKey.startsWith("sk_live_")
+    ) {
       warnings.push({
         service,
         field: "secretKey",
@@ -212,11 +221,15 @@ function validateStripe(
   }
 
   if (publishableKey) {
-    if (config.environment === "production" && publishableKey.startsWith("pk_test_")) {
+    if (
+      config.environment === "production" &&
+      publishableKey.startsWith("pk_test_")
+    ) {
       errors.push({
         service,
         field: "publishableKey",
-        message: "Production environment should use live Stripe keys (pk_live_)",
+        message:
+          "Production environment should use live Stripe keys (pk_live_)",
       });
     }
   }
@@ -235,9 +248,10 @@ function validateStripe(
 /**
  * Validate Cloudflare R2 configuration
  */
-function validateCloudflareR2(
-  config: AppConfig
-): { errors: ValidationError[]; warnings: ValidationWarning[] } {
+function validateCloudflareR2(config: AppConfig): {
+  errors: ValidationError[];
+  warnings: ValidationWarning[];
+} {
   const errors: ValidationError[] = [];
   const warnings: ValidationWarning[] = [];
   const service = "Cloudflare R2";
@@ -298,9 +312,10 @@ function validateCloudflareR2(
 /**
  * Validate Upstash Redis configuration
  */
-function validateUpstashRedis(
-  config: AppConfig
-): { errors: ValidationError[]; warnings: ValidationWarning[] } {
+function validateUpstashRedis(config: AppConfig): {
+  errors: ValidationError[];
+  warnings: ValidationWarning[];
+} {
   const errors: ValidationError[] = [];
   const warnings: ValidationWarning[] = [];
   const service = "Upstash Redis";
@@ -350,9 +365,10 @@ function validateUpstashRedis(
 /**
  * Validate PostHog configuration
  */
-function validatePostHog(
-  config: AppConfig
-): { errors: ValidationError[]; warnings: ValidationWarning[] } {
+function validatePostHog(config: AppConfig): {
+  errors: ValidationError[];
+  warnings: ValidationWarning[];
+} {
   const errors: ValidationError[] = [];
   const warnings: ValidationWarning[] = [];
   const service = "PostHog";
@@ -396,9 +412,10 @@ function validatePostHog(
 /**
  * Validate Database configuration
  */
-function validateDatabase(
-  config: AppConfig
-): { errors: ValidationError[]; warnings: ValidationWarning[] } {
+function validateDatabase(config: AppConfig): {
+  errors: ValidationError[];
+  warnings: ValidationWarning[];
+} {
   const errors: ValidationError[] = [];
   const warnings: ValidationWarning[] = [];
   const service = "Database";
@@ -439,7 +456,8 @@ function validateDatabase(
       warnings.push({
         service,
         field: "url",
-        message: "Database URL should start with a valid protocol (e.g., postgresql://)",
+        message:
+          "Database URL should start with a valid protocol (e.g., postgresql://)",
       });
     }
 
@@ -526,13 +544,15 @@ export function printValidationResults(results: ValidationResult[]): void {
     }
 
     for (const error of result.errors) {
-      console.log(`  ✗ ERROR [${error.service || "general"}]: ${error.message}`);
+      console.log(
+        `  ✗ ERROR [${error.service || "general"}]: ${error.message}`,
+      );
       totalErrors++;
     }
 
     for (const warning of result.warnings) {
       console.log(
-        `  ⚠ WARNING [${warning.service || "general"}]: ${warning.message}`
+        `  ⚠ WARNING [${warning.service || "general"}]: ${warning.message}`,
       );
       totalWarnings++;
     }
@@ -555,12 +575,13 @@ export function printValidationResults(results: ValidationResult[]): void {
 /**
  * Check if all production apps are properly configured
  */
-export function validateProductionReadiness(
-  registry: AppRegistry
-): { ready: boolean; issues: string[] } {
+export function validateProductionReadiness(registry: AppRegistry): {
+  ready: boolean;
+  issues: string[];
+} {
   const issues: string[] = [];
   const productionApps = registry.apps.filter(
-    (app) => app.environment === "production"
+    (app) => app.environment === "production",
   );
 
   if (productionApps.length === 0) {
@@ -573,7 +594,7 @@ export function validateProductionReadiness(
 
     if (!result.isValid) {
       issues.push(
-        `${app.id}: ${result.errors.length} error(s) - ${result.errors.map((e) => e.message).join(", ")}`
+        `${app.id}: ${result.errors.length} error(s) - ${result.errors.map((e) => e.message).join(", ")}`,
       );
     }
 

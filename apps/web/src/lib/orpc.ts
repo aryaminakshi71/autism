@@ -5,26 +5,31 @@
  * Uses @orpc/tanstack-query for React Query integration.
  */
 
+import type { AppRouter } from "@autism-legacy-20260205/api/router";
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
-import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import type { RouterClient } from "@orpc/server";
-import type { AppRouter } from "@autism-legacy-20260205/api/router";
+import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 
 /**
  * Create the RPC link with fetch
  */
 const rpcLink = new RPCLink({
-  url: typeof window !== "undefined" ? `${window.location.origin}/api/rpc` : "http://localhost:3002/api/rpc",
+  url:
+    typeof window !== "undefined"
+      ? `${window.location.origin}/api/rpc`
+      : "http://localhost:3002/api/rpc",
   fetch: (input: RequestInfo | URL, init?: RequestInit) => {
     console.log("[oRPC] Fetching:", input);
-    const isDemo = typeof window !== "undefined" && localStorage.getItem("demo_mode") === "true";
+    const isDemo =
+      typeof window !== "undefined" &&
+      localStorage.getItem("demo_mode") === "true";
 
     return fetch(input, {
       ...init,
       credentials: "include",
       headers: {
-        ...(init?.headers as Record<string, string> || {}),
+        ...((init?.headers as Record<string, string>) || {}),
         "x-demo-mode": isDemo ? "true" : "false",
       },
     });

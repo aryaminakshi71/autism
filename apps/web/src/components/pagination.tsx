@@ -16,14 +16,16 @@ export function Pagination({
   totalItems,
   itemsPerPage,
 }: PaginationProps) {
-  const startItem = totalItems && itemsPerPage ? (currentPage - 1) * itemsPerPage + 1 : 0;
-  const endItem = totalItems && itemsPerPage
-    ? Math.min(currentPage * itemsPerPage, totalItems)
-    : 0;
+  const startItem =
+    totalItems && itemsPerPage ? (currentPage - 1) * itemsPerPage + 1 : 0;
+  const endItem =
+    totalItems && itemsPerPage
+      ? Math.min(currentPage * itemsPerPage, totalItems)
+      : 0;
 
   return (
     <div className="flex items-center justify-between px-2 py-4">
-      <div className="text-sm text-gray-700">
+      <div className="text-gray-700 text-sm">
         {totalItems && itemsPerPage ? (
           <>
             Showing <span className="font-medium">{startItem}</span> to{" "}
@@ -41,7 +43,7 @@ export function Pagination({
           disabled={currentPage === 1}
           className="flex items-center gap-1"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="h-4 w-4" />
           Previous
         </Button>
         <div className="flex items-center gap-1">
@@ -75,7 +77,7 @@ export function Pagination({
           className="flex items-center gap-1"
         >
           Next
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
     </div>

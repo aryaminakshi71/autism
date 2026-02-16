@@ -1,6 +1,6 @@
+import { StartClient } from "@tanstack/react-start/client";
 import { StrictMode, startTransition } from "react";
 import { hydrateRoot } from "react-dom/client";
-import { StartClient } from "@tanstack/react-start/client";
 
 if (typeof document !== "undefined") {
   startTransition(() => {
@@ -8,7 +8,7 @@ if (typeof document !== "undefined") {
       document,
       <StrictMode>
         <StartClient />
-      </StrictMode>
+      </StrictMode>,
     );
   });
 }

@@ -3,7 +3,10 @@
   "name": "autism-api",
   "main": "./src/index.ts",
   "compatibility_date": "2025-01-10",
-  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
+  ],
 
   "vars": {
     "NODE_ENV": "development"

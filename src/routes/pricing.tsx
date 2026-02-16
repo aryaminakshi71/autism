@@ -1,84 +1,126 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/pricing')({
+export const Route = createFileRoute("/pricing")({
   component: PricingPage,
-})
+});
 
 function PricingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-muted to-background flex flex-col">
-      <nav className="border-b border-border bg-background/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-muted to-background">
+      <nav className="border-border border-b bg-background/80 backdrop-blur-md">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
             <a href="/" className="flex items-center space-x-2 no-underline">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary text-primary-foreground">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
                 <span className="font-bold text-lg">A</span>
               </div>
-              <span className="text-xl font-bold text-foreground">Autism Care</span>
+              <span className="font-bold text-foreground text-xl">
+                Autism Care
+              </span>
             </a>
-            <a href="/" className="flex items text-muted-foreground hover:text-foreground no-underline">
-              <ArrowLeft className="w-4 h-4 mr-2" />
+            <a
+              href="/"
+              className="items flex text-muted-foreground no-underline hover:text-foreground"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Home
             </a>
           </div>
         </div>
       </nav>
-      
-      <div className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+
+      <div className="flex flex-1 items-center justify-center px-4 py-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-16 text-center">
+            <h1 className="mb-4 font-bold text-4xl text-foreground tracking-tight md:text-5xl">
               Simple, Transparent Pricing
             </h1>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-muted-foreground text-xl">
               Choose the plan that works best for your needs
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-card rounded-2xl p-8 border border-border shadow-md">
-              <h3 className="text-xl font-bold mb-2">Starter</h3>
-              <p className="text-muted-foreground mb-4">For individuals</p>
-              <div className="text-4xl font-bold mb-6">$29<span className="text-lg font-normal">/month</span></div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center text-muted-foreground">✓ Basic features</li>
-                <li className="flex items-center text-muted-foreground">✓ Email support</li>
-                <li className="flex items-center text-muted-foreground">✓ 1 user</li>
+
+          <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
+            <div className="rounded-2xl border border-border bg-card p-8 shadow-md">
+              <h3 className="mb-2 font-bold text-xl">Starter</h3>
+              <p className="mb-4 text-muted-foreground">For individuals</p>
+              <div className="mb-6 font-bold text-4xl">
+                $29<span className="font-normal text-lg">/month</span>
+              </div>
+              <ul className="mb-8 space-y-3">
+                <li className="flex items-center text-muted-foreground">
+                  ✓ Basic features
+                </li>
+                <li className="flex items-center text-muted-foreground">
+                  ✓ Email support
+                </li>
+                <li className="flex items-center text-muted-foreground">
+                  ✓ 1 user
+                </li>
               </ul>
-              <a href="/register" className="block w-full py-3 text-center rounded-lg font-semibold border border-border hover:bg-muted no-underline text-foreground">
+              <a
+                href="/register"
+                className="block w-full rounded-lg border border-border py-3 text-center font-semibold text-foreground no-underline hover:bg-muted"
+              >
                 Get Started
               </a>
             </div>
-            
-            <div className="bg-card rounded-2xl p-8 border-2 border-primary shadow-lg relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-full">
+
+            <div className="relative rounded-2xl border-2 border-primary bg-card p-8 shadow-lg">
+              <div className="-top-3 -translate-x-1/2 absolute left-1/2 rounded-full bg-primary px-3 py-1 font-semibold text-primary-foreground text-xs">
                 Popular
               </div>
-              <h3 className="text-xl font-bold mb-2">Professional</h3>
-              <p className="text-muted-foreground mb-4">For small teams</p>
-              <div className="text-4xl font-bold mb-6">$79<span className="text-lg font-normal">/month</span></div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center text-muted-foreground">✓ All features</li>
-                <li className="flex items-center text-muted-foreground">✓ Priority support</li>
-                <li className="flex items-center text-muted-foreground">✓ 10 users</li>
-                <li className="flex items-center text-muted-foreground">✓ API access</li>
+              <h3 className="mb-2 font-bold text-xl">Professional</h3>
+              <p className="mb-4 text-muted-foreground">For small teams</p>
+              <div className="mb-6 font-bold text-4xl">
+                $79<span className="font-normal text-lg">/month</span>
+              </div>
+              <ul className="mb-8 space-y-3">
+                <li className="flex items-center text-muted-foreground">
+                  ✓ All features
+                </li>
+                <li className="flex items-center text-muted-foreground">
+                  ✓ Priority support
+                </li>
+                <li className="flex items-center text-muted-foreground">
+                  ✓ 10 users
+                </li>
+                <li className="flex items-center text-muted-foreground">
+                  ✓ API access
+                </li>
               </ul>
-              <a href="/register" className="block w-full py-3 text-center rounded-lg font-semibold bg-primary text-primary-foreground hover:opacity-90 no-underline">
+              <a
+                href="/register"
+                className="block w-full rounded-lg bg-primary py-3 text-center font-semibold text-primary-foreground no-underline hover:opacity-90"
+              >
                 Get Started
               </a>
             </div>
-            
-            <div className="bg-card rounded-2xl p-8 border border-border shadow-md">
-              <h3 className="text-xl font-bold mb-2">Enterprise</h3>
-              <p className="text-muted-foreground mb-4">For large organizations</p>
-              <div className="text-4xl font-bold mb-6">Custom</div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center text-muted-foreground">✓ Unlimited users</li>
-                <li className="flex items-center text-muted-foreground">✓ 24/7 support</li>
-                <li className="flex items-center text-muted-foreground">✓ Custom integrations</li>
-                <li className="flex items-center text-muted-foreground">✓ SLA</li>
+
+            <div className="rounded-2xl border border-border bg-card p-8 shadow-md">
+              <h3 className="mb-2 font-bold text-xl">Enterprise</h3>
+              <p className="mb-4 text-muted-foreground">
+                For large organizations
+              </p>
+              <div className="mb-6 font-bold text-4xl">Custom</div>
+              <ul className="mb-8 space-y-3">
+                <li className="flex items-center text-muted-foreground">
+                  ✓ Unlimited users
+                </li>
+                <li className="flex items-center text-muted-foreground">
+                  ✓ 24/7 support
+                </li>
+                <li className="flex items-center text-muted-foreground">
+                  ✓ Custom integrations
+                </li>
+                <li className="flex items-center text-muted-foreground">
+                  ✓ SLA
+                </li>
               </ul>
-              <a href="/contact" className="block w-full py-3 text-center rounded-lg font-semibold border border-border hover:bg-muted no-underline text-foreground">
+              <a
+                href="/contact"
+                className="block w-full rounded-lg border border-border py-3 text-center font-semibold text-foreground no-underline hover:bg-muted"
+              >
                 Contact Sales
               </a>
             </div>
@@ -86,7 +128,7 @@ function PricingPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from "lucide-react";

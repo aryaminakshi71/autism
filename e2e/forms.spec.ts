@@ -38,7 +38,9 @@ test.describe("Form Interactions E2E", () => {
     await expect(statusFilter).toBeVisible();
     await statusFilter.selectOption("mastered");
 
-    await expect(page.getByText("Picture exchange communication")).toBeVisible();
+    await expect(
+      page.getByText("Picture exchange communication"),
+    ).toBeVisible();
     await expect(page.getByText("Turn-taking in games")).toHaveCount(0);
   });
 

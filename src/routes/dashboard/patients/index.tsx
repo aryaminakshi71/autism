@@ -1,13 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Calendar,
-  Filter,
-  Mail,
-  Phone,
-  Plus,
-  Search,
-  User,
-} from "lucide-react";
+import { Calendar, Filter, Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
 
@@ -70,52 +62,52 @@ function PatientsPage() {
 
   return (
     <DashboardLayout title="Patients">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 transform text-gray-400" />
             <input
               type="text"
               placeholder="Search patients..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-64"
+              className="w-64 rounded-xl border border-gray-200 py-2 pr-4 pl-10 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
-          <button className="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors">
-            <Filter className="w-5 h-5" />
+          <button className="flex items-center space-x-2 rounded-xl border border-gray-200 px-4 py-2 text-gray-600 transition-colors hover:bg-gray-50">
+            <Filter className="h-5 w-5" />
             <span>Filter</span>
           </button>
         </div>
-        <button className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors">
-          <Plus className="w-5 h-5" />
+        <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+          <Plus className="h-5 w-5" />
           <span>Add Patient</span>
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-100">
+          <thead className="border-gray-100 border-b bg-gray-50">
             <tr>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Patient
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Date of Birth
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Diagnosis
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Status
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Therapist
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Last Session
               </th>
-              <th className="text-right py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-right font-semibold text-gray-600 text-sm">
                 Actions
               </th>
             </tr>
@@ -124,11 +116,11 @@ function PatientsPage() {
             {filteredPatients.map((patient) => (
               <tr
                 key={patient.id}
-                className="hover:bg-gray-50 transition-colors"
+                className="transition-colors hover:bg-gray-50"
               >
-                <td className="py-4 px-6">
+                <td className="px-6 py-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-medium text-indigo-600">
                       {patient.firstName.charAt(0)}
                       {patient.lastName.charAt(0)}
                     </div>
@@ -136,22 +128,22 @@ function PatientsPage() {
                       <p className="font-medium text-gray-900">
                         {patient.firstName} {patient.lastName}
                       </p>
-                      <p className="text-sm text-gray-500">ID: {patient.id}</p>
+                      <p className="text-gray-500 text-sm">ID: {patient.id}</p>
                     </div>
                   </div>
                 </td>
-                <td className="py-4 px-6">
+                <td className="px-6 py-4">
                   <div className="flex items-center space-x-2 text-gray-600">
-                    <Calendar className="w-4 h-4 text-gray-400" />
+                    <Calendar className="h-4 w-4 text-gray-400" />
                     <span>{patient.dateOfBirth}</span>
                   </div>
                 </td>
-                <td className="py-4 px-6">
+                <td className="px-6 py-4">
                   <span className="text-gray-600">{patient.diagnosis}</span>
                 </td>
-                <td className="py-4 px-6">
+                <td className="px-6 py-4">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    className={`rounded-full px-3 py-1 font-medium text-xs ${
                       patient.status === "active"
                         ? "bg-green-100 text-green-700"
                         : "bg-gray-100 text-gray-700"
@@ -160,14 +152,14 @@ function PatientsPage() {
                     {patient.status}
                   </span>
                 </td>
-                <td className="py-4 px-6 text-gray-600">
+                <td className="px-6 py-4 text-gray-600">
                   {patient.assignedTherapist}
                 </td>
-                <td className="py-4 px-6 text-gray-600">
+                <td className="px-6 py-4 text-gray-600">
                   {patient.lastSession}
                 </td>
-                <td className="py-4 px-6 text-right">
-                  <button className="text-indigo-600 hover:text-indigo-800 font-medium text-sm">
+                <td className="px-6 py-4 text-right">
+                  <button className="font-medium text-indigo-600 text-sm hover:text-indigo-800">
                     View Details
                   </button>
                 </td>

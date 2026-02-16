@@ -1,36 +1,36 @@
 export const ROUTES = {
-  HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
-  DASHBOARD: '/dashboard',
-  PROFILE: '/profile',
-  SETTINGS: '/settings',
+  HOME: "/",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  DASHBOARD: "/dashboard",
+  PROFILE: "/profile",
+  SETTINGS: "/settings",
   API: {
     AUTH: {
-      LOGIN: '/api/auth/login',
-      REGISTER: '/api/auth/register',
-      LOGOUT: '/api/auth/logout',
-      REFRESH: '/api/auth/refresh',
-      FORGOT_PASSWORD: '/api/auth/forgot-password',
-      RESET_PASSWORD: '/api/auth/reset-password',
-      ME: '/api/auth/me',
+      LOGIN: "/api/auth/login",
+      REGISTER: "/api/auth/register",
+      LOGOUT: "/api/auth/logout",
+      REFRESH: "/api/auth/refresh",
+      FORGOT_PASSWORD: "/api/auth/forgot-password",
+      RESET_PASSWORD: "/api/auth/reset-password",
+      ME: "/api/auth/me",
     },
-    USERS: '/api/users',
-    CONTACTS: '/api/contacts',
-    DEALS: '/api/deals',
-    TICKETS: '/api/tickets',
-    INVOICES: '/api/invoices',
-    PROJECTS: '/api/projects',
-    TASKS: '/api/tasks',
+    USERS: "/api/users",
+    CONTACTS: "/api/contacts",
+    DEALS: "/api/deals",
+    TICKETS: "/api/tickets",
+    INVOICES: "/api/invoices",
+    PROJECTS: "/api/projects",
+    TASKS: "/api/tasks",
   },
 } as const;
 
 export const API_METHODS = {
-  GET: 'GET',
-  POST: 'POST',
-  PUT: 'PUT',
-  PATCH: 'PATCH',
-  DELETE: 'DELETE',
+  GET: "GET",
+  POST: "POST",
+  PUT: "PUT",
+  PATCH: "PATCH",
+  DELETE: "DELETE",
 } as const;
 
 export const HTTP_STATUS = {
@@ -48,65 +48,65 @@ export const HTTP_STATUS = {
 } as const;
 
 export const USER_ROLES = {
-  ADMIN: 'admin',
-  MANAGER: 'manager',
-  USER: 'user',
-  VIEWER: 'viewer',
-  GUEST: 'guest',
+  ADMIN: "admin",
+  MANAGER: "manager",
+  USER: "user",
+  VIEWER: "viewer",
+  GUEST: "guest",
 } as const;
 
 export const TICKET_STATUS = {
-  OPEN: 'open',
-  IN_PROGRESS: 'in_progress',
-  PENDING: 'pending',
-  RESOLVED: 'resolved',
-  CLOSED: 'closed',
+  OPEN: "open",
+  IN_PROGRESS: "in_progress",
+  PENDING: "pending",
+  RESOLVED: "resolved",
+  CLOSED: "closed",
 } as const;
 
 export const TICKET_PRIORITY = {
-  LOW: 'low',
-  MEDIUM: 'medium',
-  HIGH: 'high',
-  URGENT: 'urgent',
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high",
+  URGENT: "urgent",
 } as const;
 
 export const DEAL_STAGES = {
-  QUALIFICATION: 'qualification',
-  PROPOSAL: 'proposal',
-  NEGOTIATION: 'negotiation',
-  CLOSED_WON: 'closed_won',
-  CLOSED_LOST: 'closed_lost',
+  QUALIFICATION: "qualification",
+  PROPOSAL: "proposal",
+  NEGOTIATION: "negotiation",
+  CLOSED_WON: "closed_won",
+  CLOSED_LOST: "closed_lost",
 } as const;
 
 export const PROJECT_STATUS = {
-  PLANNING: 'planning',
-  IN_PROGRESS: 'in_progress',
-  ON_HOLD: 'on_hold',
-  COMPLETED: 'completed',
-  CANCELLED: 'cancelled',
+  PLANNING: "planning",
+  IN_PROGRESS: "in_progress",
+  ON_HOLD: "on_hold",
+  COMPLETED: "completed",
+  CANCELLED: "cancelled",
 } as const;
 
 export const PAYMENT_STATUS = {
-  PENDING: 'pending',
-  PROCESSING: 'processing',
-  COMPLETED: 'completed',
-  FAILED: 'failed',
-  REFUNDED: 'refunded',
+  PENDING: "pending",
+  PROCESSING: "processing",
+  COMPLETED: "completed",
+  FAILED: "failed",
+  REFUNDED: "refunded",
 } as const;
 
 export const INVOICE_STATUS = {
-  DRAFT: 'draft',
-  SENT: 'sent',
-  PAID: 'paid',
-  OVERDUE: 'overdue',
-  CANCELLED: 'cancelled',
+  DRAFT: "draft",
+  SENT: "sent",
+  PAID: "paid",
+  OVERDUE: "overdue",
+  CANCELLED: "cancelled",
 } as const;
 
 export const STORAGE_KEYS = {
-  ACCESS_TOKEN: 'accessToken',
-  REFRESH_TOKEN: 'refreshToken',
-  USER: 'user',
-  DEMO_MODE: 'demo_mode',
-  THEME: 'theme',
-  LANGUAGE: 'language',
+  ACCESS_TOKEN: "accessToken",
+  REFRESH_TOKEN: "refreshToken",
+  USER: "user",
+  DEMO_MODE: "demo_mode",
+  THEME: "theme",
+  LANGUAGE: "language",
 } as const;

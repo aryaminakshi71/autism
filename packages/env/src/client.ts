@@ -42,8 +42,8 @@ export const env: ClientEnv = (() => {
   try {
     return clientSchema.parse({
       VITE_PUBLIC_SITE_URL: import.meta.env?.VITE_PUBLIC_SITE_URL,
-      VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY:
-        import.meta.env?.VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+      VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY: import.meta.env
+        ?.VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY,
       VITE_PUBLIC_POSTHOG_KEY: import.meta.env?.VITE_PUBLIC_POSTHOG_KEY,
       VITE_PUBLIC_POSTHOG_HOST: import.meta.env?.VITE_PUBLIC_POSTHOG_HOST,
       VITE_PUBLIC_CDN_URL: import.meta.env?.VITE_PUBLIC_CDN_URL,

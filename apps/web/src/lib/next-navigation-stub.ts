@@ -47,10 +47,13 @@ export function useSearchParams() {
     toString: () => {
       const params = search as Record<string, unknown>;
       return new URLSearchParams(
-        Object.entries(params).reduce((acc, [k, v]) => {
-          acc[k] = String(v);
-          return acc;
-        }, {} as Record<string, string>)
+        Object.entries(params).reduce(
+          (acc, [k, v]) => {
+            acc[k] = String(v);
+            return acc;
+          },
+          {} as Record<string, string>,
+        ),
       ).toString();
     },
   };

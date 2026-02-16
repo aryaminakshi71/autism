@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
 // Web-compatible network info (using browser APIs instead of React Native NetInfo)
 type NetInfoState = {
@@ -10,38 +10,38 @@ type NetInfoState = {
 };
 
 const getNetInfo = (): Promise<NetInfoState> => {
-  if (typeof window === 'undefined' || !navigator.onLine) {
+  if (typeof window === "undefined" || !navigator.onLine) {
     return Promise.resolve({
       isConnected: false,
       isInternetReachable: false,
-      type: 'none',
+      type: "none",
     });
   }
   return Promise.resolve({
     isConnected: navigator.onLine,
     isInternetReachable: navigator.onLine,
-    type: navigator.onLine ? 'wifi' : 'none',
+    type: navigator.onLine ? "wifi" : "none",
   });
 };
 
 export function useOnlineStatus(): boolean {
   const [isOnline, setIsOnline] = useState(() => {
-    if (typeof window === 'undefined') return true;
+    if (typeof window === "undefined") return true;
     return navigator.onLine;
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
@@ -50,35 +50,43 @@ export function useOnlineStatus(): boolean {
 
 export function useNetworkType(): string {
   const [networkType, setNetworkType] = useState(() => {
-    if (typeof window === 'undefined') return 'unknown';
+    if (typeof window === "undefined") return "unknown";
     // Try to detect connection type using Network Information API if available
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    const connection =
+      (navigator as any).connection ||
+      (navigator as any).mozConnection ||
+      (navigator as any).webkitConnection;
     if (connection) {
-      return connection.effectiveType || connection.type || 'unknown';
+      return connection.effectiveType || connection.type || "unknown";
     }
-    return navigator.onLine ? 'wifi' : 'none';
+    return navigator.onLine ? "wifi" : "none";
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
-    
+    const connection =
+      (navigator as any).connection ||
+      (navigator as any).mozConnection ||
+      (navigator as any).webkitConnection;
+
     if (connection) {
       const updateConnection = () => {
-        setNetworkType(connection.effectiveType || connection.type || 'unknown');
+        setNetworkType(
+          connection.effectiveType || connection.type || "unknown",
+        );
       };
-      connection.addEventListener('change', updateConnection);
-      return () => connection.removeEventListener('change', updateConnection);
+      connection.addEventListener("change", updateConnection);
+      return () => connection.removeEventListener("change", updateConnection);
     } else {
       // Fallback to online/offline events
-      const handleOnline = () => setNetworkType('wifi');
-      const handleOffline = () => setNetworkType('none');
-      window.addEventListener('online', handleOnline);
-      window.addEventListener('offline', handleOffline);
+      const handleOnline = () => setNetworkType("wifi");
+      const handleOffline = () => setNetworkType("none");
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
       return () => {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
       };
     }
   }, []);
@@ -96,10 +104,10 @@ export function useSyncStatus() {
     setSyncError(null);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setLastSync(new Date());
     } catch (error) {
-      setSyncError(error instanceof Error ? error.message : 'Sync failed');
+      setSyncError(error instanceof Error ? error.message : "Sync failed");
     } finally {
       setIsSyncing(false);
     }
@@ -109,7 +117,7 @@ export function useSyncStatus() {
     lastSync,
     isSyncing,
     syncError,
-    sync
+    sync,
   };
 }
 
@@ -126,27 +134,30 @@ export function useOfflineData<T>(key: string, defaultValue: T) {
         setData(JSON.parse(stored));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load data');
+      setError(err instanceof Error ? err.message : "Failed to load data");
     } finally {
       setIsLoading(false);
     }
   }, [key]);
 
-  const saveData = useCallback(async (newData: T) => {
-    try {
-      setData(newData);
-      await AsyncStorage.setItem(key, JSON.stringify(newData));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save data');
-    }
-  }, [key]);
+  const saveData = useCallback(
+    async (newData: T) => {
+      try {
+        setData(newData);
+        await AsyncStorage.setItem(key, JSON.stringify(newData));
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to save data");
+      }
+    },
+    [key],
+  );
 
   const clearData = useCallback(async () => {
     try {
       setData(defaultValue);
       await AsyncStorage.removeItem(key);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to clear data');
+      setError(err instanceof Error ? err.message : "Failed to clear data");
     }
   }, [key, defaultValue]);
 
@@ -163,14 +174,14 @@ export function useOfflineData<T>(key: string, defaultValue: T) {
     clearData,
     isLoading,
     error,
-    refresh: loadData
+    refresh: loadData,
   };
 }
 
 // Web-compatible storage (using localStorage instead of AsyncStorage)
 const AsyncStorage = {
   getItem: (key: string): Promise<string | null> => {
-    if (typeof window === 'undefined') return Promise.resolve(null);
+    if (typeof window === "undefined") return Promise.resolve(null);
     try {
       return Promise.resolve(localStorage.getItem(key));
     } catch {
@@ -178,7 +189,7 @@ const AsyncStorage = {
     }
   },
   setItem: (key: string, value: string): Promise<void> => {
-    if (typeof window === 'undefined') return Promise.resolve();
+    if (typeof window === "undefined") return Promise.resolve();
     try {
       localStorage.setItem(key, value);
       return Promise.resolve();
@@ -187,7 +198,7 @@ const AsyncStorage = {
     }
   },
   removeItem: (key: string): Promise<void> => {
-    if (typeof window === 'undefined') return Promise.resolve();
+    if (typeof window === "undefined") return Promise.resolve();
     try {
       localStorage.removeItem(key);
       return Promise.resolve();

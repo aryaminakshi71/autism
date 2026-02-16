@@ -4,7 +4,7 @@
  */
 
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import type { AppConfig, AppRegistry, SpreadsheetRow } from "./types";
 
 /**
@@ -140,36 +140,15 @@ function rowsToCSV(rows: SpreadsheetRow[]): string {
 /**
  * Export registry to CSV (masked secrets)
  */
-export function exportToCSV(registry: AppRegistry, outputPath?: string): string {
+export function exportToCSV(
+  registry: AppRegistry,
+  outputPath?: string,
+): string {
   const rows = registry.apps.map(appToRow);
   const csv = rowsToCSV(rows);
 
-  const finalPath = outputPath || resolve(process.cwd(), "exports", "apps-credentials.csv");
-  const dir = dirname(finalPath);
-
-  if (!existsSync(dir)) {
-    mkdirSync(dir, { recursive: true });
-  }
-
-  writeFileSync(finalPath, csv, "utf-8");
-  console.log(`Exported ${rows.length} apps to ${finalPath}`);
-  console.log("Note: Secrets are masked for security. Use --full flag for complete export.");
-
-  return finalPath;
-}
-
-/**
- * Export registry to CSV with full secrets (SECURE - for backup only)
- */
-export function exportToCSVFull(
-  registry: AppRegistry,
-  outputPath?: string
-): string {
-  const rows = registry.apps.map(appToRowFull);
-  const csv = rowsToCSV(rows);
-
   const finalPath =
-    outputPath || resolve(process.cwd(), "exports", "apps-credentials-SECURE.csv");
+    outputPath || resolve(process.cwd(), "exports", "apps-credentials.csv");
   const dir = dirname(finalPath);
 
   if (!existsSync(dir)) {
@@ -179,7 +158,35 @@ export function exportToCSVFull(
   writeFileSync(finalPath, csv, "utf-8");
   console.log(`Exported ${rows.length} apps to ${finalPath}`);
   console.log(
-    "⚠️  WARNING: This file contains unmasked secrets. Store securely!"
+    "Note: Secrets are masked for security. Use --full flag for complete export.",
+  );
+
+  return finalPath;
+}
+
+/**
+ * Export registry to CSV with full secrets (SECURE - for backup only)
+ */
+export function exportToCSVFull(
+  registry: AppRegistry,
+  outputPath?: string,
+): string {
+  const rows = registry.apps.map(appToRowFull);
+  const csv = rowsToCSV(rows);
+
+  const finalPath =
+    outputPath ||
+    resolve(process.cwd(), "exports", "apps-credentials-SECURE.csv");
+  const dir = dirname(finalPath);
+
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true });
+  }
+
+  writeFileSync(finalPath, csv, "utf-8");
+  console.log(`Exported ${rows.length} apps to ${finalPath}`);
+  console.log(
+    "⚠️  WARNING: This file contains unmasked secrets. Store securely!",
   );
 
   return finalPath;
@@ -191,7 +198,7 @@ export function exportToCSVFull(
 export function exportToJSON(
   registry: AppRegistry,
   outputPath?: string,
-  maskSecrets = true
+  maskSecrets = true,
 ): string {
   const data = maskSecrets
     ? {
@@ -227,7 +234,7 @@ export function exportToJSON(
                   accountId: app.services.cloudflareR2.accountId,
                   accessKeyId: app.services.cloudflareR2.accessKeyId,
                   secretAccessKey: maskSecret(
-                    app.services.cloudflareR2.secretAccessKey
+                    app.services.cloudflareR2.secretAccessKey,
                   ),
                 }
               : undefined,
@@ -251,7 +258,9 @@ export function exportToJSON(
     : registry;
 
   const json = JSON.stringify(data, null, 2);
-  const fileName = maskSecrets ? "apps-credentials.json" : "apps-credentials-SECURE.json";
+  const fileName = maskSecrets
+    ? "apps-credentials.json"
+    : "apps-credentials-SECURE.json";
   const finalPath = outputPath || resolve(process.cwd(), "exports", fileName);
   const dir = dirname(finalPath);
 
@@ -264,7 +273,7 @@ export function exportToJSON(
 
   if (!maskSecrets) {
     console.log(
-      "⚠️  WARNING: This file contains unmasked secrets. Store securely!"
+      "⚠️  WARNING: This file contains unmasked secrets. Store securely!",
     );
   }
 
@@ -302,7 +311,7 @@ export function generateSummaryTable(registry: AppRegistry): string {
       "-".repeat(colWidths.storage + 2) +
       "+" +
       "-".repeat(colWidths.db + 2) +
-      "+"
+      "+",
   );
 
   const headerRow =
@@ -331,7 +340,7 @@ export function generateSummaryTable(registry: AppRegistry): string {
       "=".repeat(colWidths.storage + 2) +
       "+" +
       "=".repeat(colWidths.db + 2) +
-      "+"
+      "+",
   );
 
   // Rows
@@ -342,7 +351,8 @@ export function generateSummaryTable(registry: AppRegistry): string {
         : "✗";
     const stripeStatus = app.services.stripe?.secretKey ? "✓" : "✗";
     const storageStatus =
-      app.services.cloudflareR2?.bucketName || app.services.upstashRedis?.restUrl
+      app.services.cloudflareR2?.bucketName ||
+      app.services.upstashRedis?.restUrl
         ? "✓"
         : "✗";
     const dbStatus = app.services.database?.url ? "✓" : "✗";
@@ -374,7 +384,7 @@ export function generateSummaryTable(registry: AppRegistry): string {
       "-".repeat(colWidths.storage + 2) +
       "+" +
       "-".repeat(colWidths.db + 2) +
-      "+"
+      "+",
   );
 
   return lines.join("\n");
@@ -385,7 +395,7 @@ export function generateSummaryTable(registry: AppRegistry): string {
  */
 export function generateCostEstimate(registry: AppRegistry): string {
   const productionApps = registry.apps.filter(
-    (app) => app.environment === "production"
+    (app) => app.environment === "production",
   );
 
   const lines: string[] = [

@@ -1,92 +1,101 @@
-'use client'
+"use client";
 
 // Standardized SaaS Header Component - Used across all apps
 // Includes: Logo, Nav Links, Try Demo, Sign In
 
-import * as React from 'react'
-import { Link } from '@tanstack/react-router'
-import { cn } from '../../lib/index'
+import { Link } from "@tanstack/react-router";
+import * as React from "react";
+import { cn } from "../../lib/index";
 
 interface NavItem {
-  label: string
-  href: string
+  label: string;
+  href: string;
 }
 
 interface SaaSHeaderProps {
-  logo?: React.ReactNode
-  logoText?: string
-  logoIcon?: React.ReactNode
-  navItems?: NavItem[]
-  themeColor?: string
-  themeColorSecondary?: string
-  className?: string
-  demoHref?: string
-  signInHref?: string
-  showDemo?: boolean
-  showSignIn?: boolean
+  logo?: React.ReactNode;
+  logoText?: string;
+  logoIcon?: React.ReactNode;
+  navItems?: NavItem[];
+  themeColor?: string;
+  themeColorSecondary?: string;
+  className?: string;
+  demoHref?: string;
+  signInHref?: string;
+  showDemo?: boolean;
+  showSignIn?: boolean;
 }
 
 const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { label: 'Features', href: '#features' },
-  { label: 'Pricing', href: '#pricing' },
-]
+  { label: "Features", href: "#features" },
+  { label: "Pricing", href: "#pricing" },
+];
 
 export function SaaSHeader({
   logo,
-  logoText = 'App',
+  logoText = "App",
   logoIcon,
   navItems = DEFAULT_NAV_ITEMS,
-  themeColor = '#3b82f6',
+  themeColor = "#3b82f6",
   themeColorSecondary,
   className,
-  demoHref = '/demo',
-  signInHref = '/login',
+  demoHref = "/demo",
+  signInHref = "/login",
   showDemo = true,
   showSignIn = true,
 }: SaaSHeaderProps) {
-  const gradientTo = themeColorSecondary || `${themeColor}dd`
+  const gradientTo = themeColorSecondary || `${themeColor}dd`;
 
   const renderNavLink = (item: NavItem) => {
-    if (item.href.startsWith('#')) {
+    if (item.href.startsWith("#")) {
       return (
         <a
           key={item.href}
           href={item.href}
-          className="text-gray-600 font-medium hover:text-gray-900 no-underline hidden md:block"
+          className="hidden font-medium text-gray-600 no-underline hover:text-gray-900 md:block"
         >
           {item.label}
         </a>
-      )
+      );
     }
 
     return (
       <Link
         key={item.href}
         to={item.href}
-        className="text-gray-600 font-medium hover:text-gray-900 no-underline hidden md:block"
+        className="hidden font-medium text-gray-600 no-underline hover:text-gray-900 md:block"
       >
         {item.label}
       </Link>
-    )
-  }
+    );
+  };
 
   return (
-    <nav className={cn('border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur-md z-50', className)}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <nav
+      className={cn(
+        "sticky top-0 z-50 border-gray-100 border-b bg-white/80 backdrop-blur-md",
+        className,
+      )}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 no-underline">
             {logo || (
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: `linear-gradient(135deg, ${themeColor}, ${gradientTo})` }}
+                className="flex h-10 w-10 items-center justify-center rounded-xl"
+                style={{
+                  background: `linear-gradient(135deg, ${themeColor}, ${gradientTo})`,
+                }}
               >
                 {logoIcon || (
-                  <span className="text-white font-bold text-lg">{logoText.charAt(0)}</span>
+                  <span className="font-bold text-lg text-white">
+                    {logoText.charAt(0)}
+                  </span>
                 )}
               </div>
             )}
-            <span className="text-xl font-bold text-gray-900">{logoText}</span>
+            <span className="font-bold text-gray-900 text-xl">{logoText}</span>
           </Link>
 
           {/* Nav Items + Auth */}
@@ -98,7 +107,7 @@ export function SaaSHeader({
             {showDemo && (
               <Link
                 to={demoHref}
-                className="text-gray-600 font-medium hover:text-gray-900 no-underline"
+                className="font-medium text-gray-600 no-underline hover:text-gray-900"
               >
                 Try Demo
               </Link>
@@ -108,7 +117,7 @@ export function SaaSHeader({
             {showSignIn && (
               <Link
                 to={signInHref}
-                className="text-gray-600 font-medium hover:text-gray-900 no-underline"
+                className="font-medium text-gray-600 no-underline hover:text-gray-900"
               >
                 Sign In
               </Link>
@@ -117,7 +126,7 @@ export function SaaSHeader({
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
-export { DEFAULT_NAV_ITEMS as HEADER_DEFAULT_NAV_ITEMS }
+export { DEFAULT_NAV_ITEMS as HEADER_DEFAULT_NAV_ITEMS };

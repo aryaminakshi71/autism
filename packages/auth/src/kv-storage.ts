@@ -4,8 +4,11 @@
  * Provides secondary storage for sessions and tokens using Cloudflare KV.
  */
 
+import type {
+  KVNamespace,
+  KVNamespacePutOptions,
+} from "@cloudflare/workers-types";
 import type { SecondaryStorage } from "better-auth";
-import type { KVNamespace, KVNamespacePutOptions } from "@cloudflare/workers-types";
 
 const AUTH_PREFIX = "auth:";
 

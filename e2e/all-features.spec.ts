@@ -30,8 +30,12 @@ test("Landing Page - pricing cards display correctly", async ({ page }) => {
   const pricingSection = page.locator("#pricing");
   await expect(pricingSection).toBeVisible();
 
-  await expect(page.getByRole("heading", { name: "Free", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Starter", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Free", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Starter", exact: true }),
+  ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Professional", exact: true }),
   ).toBeVisible();
@@ -50,8 +54,12 @@ test("Landing Page - features section has all 4 cards", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Simple Operations", exact: true }),
   ).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Analytics", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Security", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Analytics", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Security", exact: true }),
+  ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "API & Integrations", exact: true }),
   ).toBeVisible();
@@ -61,7 +69,9 @@ test("Landing Page - footer displays correctly", async ({ page }) => {
   await page.goto("/");
   await page.waitForLoadState("networkidle");
 
-  const footer = page.locator("footer").filter({ hasText: "All rights reserved" });
+  const footer = page
+    .locator("footer")
+    .filter({ hasText: "All rights reserved" });
   await expect(footer).toBeVisible();
 });
 

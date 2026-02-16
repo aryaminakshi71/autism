@@ -126,22 +126,22 @@ function SessionsPage() {
 
   return (
     <DashboardLayout title="Sessions">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 transform text-gray-400" />
             <input
               type="text"
               placeholder="Search sessions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-64"
+              className="w-64 rounded-xl border border-gray-200 py-2 pr-4 pl-10 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="rounded-xl border border-gray-200 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="all">All Status</option>
             <option value="scheduled">Scheduled</option>
@@ -150,38 +150,38 @@ function SessionsPage() {
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-        <button className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors">
-          <Plus className="w-5 h-5" />
+        <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+          <Plus className="h-5 w-5" />
           <span>Schedule Session</span>
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-100">
+          <thead className="border-gray-100 border-b bg-gray-50">
             <tr>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Date & Time
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Patient
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Therapist
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Type
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Duration
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Location
               </th>
-              <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-left font-semibold text-gray-600 text-sm">
                 Status
               </th>
-              <th className="text-right py-4 px-6 text-sm font-semibold text-gray-600">
+              <th className="px-6 py-4 text-right font-semibold text-gray-600 text-sm">
                 Actions
               </th>
             </tr>
@@ -190,26 +190,26 @@ function SessionsPage() {
             {filteredSessions.map((session) => (
               <tr
                 key={session.id}
-                className="hover:bg-gray-50 transition-colors"
+                className="transition-colors hover:bg-gray-50"
               >
-                <td className="py-4 px-6">
+                <td className="px-6 py-4">
                   <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4 text-gray-400" />
+                    <Calendar className="h-4 w-4 text-gray-400" />
                     <span className="font-medium text-gray-900">
                       {formatDate(session.scheduledStart)}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <Clock className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">
+                  <div className="mt-1 flex items-center space-x-2">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-gray-600 text-sm">
                       {formatTime(session.scheduledStart)} -{" "}
                       {formatTime(session.scheduledEnd)}
                     </span>
                   </div>
                 </td>
-                <td className="py-4 px-6">
+                <td className="px-6 py-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-sm font-medium">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 font-medium text-indigo-600 text-sm">
                       {session.patient
                         .split(" ")
                         .map((n) => n[0])
@@ -220,35 +220,35 @@ function SessionsPage() {
                     </span>
                   </div>
                 </td>
-                <td className="py-4 px-6">
+                <td className="px-6 py-4">
                   <div className="flex items-center space-x-2">
-                    <User className="w-4 h-4 text-gray-400" />
+                    <User className="h-4 w-4 text-gray-400" />
                     <span className="text-gray-600">{session.therapist}</span>
                   </div>
                 </td>
-                <td className="py-4 px-6 text-gray-600">{session.type}</td>
-                <td className="py-4 px-6 text-gray-600">
+                <td className="px-6 py-4 text-gray-600">{session.type}</td>
+                <td className="px-6 py-4 text-gray-600">
                   {session.duration} min
                 </td>
-                <td className="py-4 px-6">
+                <td className="px-6 py-4">
                   <div className="flex items-center space-x-2">
                     {session.telehealth ? (
-                      <Video className="w-4 h-4 text-indigo-500" />
+                      <Video className="h-4 w-4 text-indigo-500" />
                     ) : (
-                      <MapPin className="w-4 h-4 text-gray-400" />
+                      <MapPin className="h-4 w-4 text-gray-400" />
                     )}
                     <span className="text-gray-600">{session.location}</span>
                   </div>
                 </td>
-                <td className="py-4 px-6">
+                <td className="px-6 py-4">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(session.status)}`}
+                    className={`rounded-full px-3 py-1 font-medium text-xs ${getStatusColor(session.status)}`}
                   >
                     {session.status}
                   </span>
                 </td>
-                <td className="py-4 px-6 text-right">
-                  <button className="text-indigo-600 hover:text-indigo-800 font-medium text-sm">
+                <td className="px-6 py-4 text-right">
+                  <button className="font-medium text-indigo-600 text-sm hover:text-indigo-800">
                     {session.status === "scheduled" ? "Start" : "View"}
                   </button>
                 </td>

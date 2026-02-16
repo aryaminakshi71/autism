@@ -6,7 +6,7 @@
 
 import type { Auth } from "@autism-legacy-20260205/auth";
 import type { Logger } from "@autism-legacy-20260205/logger";
-import type { KVNamespace, R2Bucket, Fetcher } from "@cloudflare/workers-types";
+import type { Fetcher, KVNamespace, R2Bucket } from "@cloudflare/workers-types";
 
 /**
  * Cloudflare Worker environment bindings

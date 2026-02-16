@@ -1,13 +1,13 @@
-import { StrictMode, startTransition } from 'react'
-import { hydrateRoot } from 'react-dom/client'
-import { StartClient } from '@tanstack/react-start/client'
-import { initAnalytics } from './lib/analytics'
-import { initSentry } from './lib/sentry'
-import { registerServiceWorker } from './lib/service-worker'
+import { StartClient } from "@tanstack/react-start/client";
+import { StrictMode, startTransition } from "react";
+import { hydrateRoot } from "react-dom/client";
+import { initAnalytics } from "./lib/analytics";
+import { initSentry } from "./lib/sentry";
+import { registerServiceWorker } from "./lib/service-worker";
 
-initSentry()
-initAnalytics()
-registerServiceWorker()
+initSentry();
+initAnalytics();
+registerServiceWorker();
 
 startTransition(() => {
   hydrateRoot(
@@ -15,5 +15,5 @@ startTransition(() => {
     <StrictMode>
       <StartClient />
     </StrictMode>,
-  )
-})
+  );
+});

@@ -4,22 +4,31 @@
  * User and organization settings.
  */
 
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { User, Building, Bell, Shield, CreditCard, Key, Save, Loader2 } from "lucide-react";
 import {
+  Button,
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  Button,
   Input,
   Tabs,
+  TabsContent,
   TabsList,
   TabsTrigger,
-  TabsContent,
 } from "@autism-legacy-20260205/ui";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  Bell,
+  Building,
+  CreditCard,
+  Key,
+  Loader2,
+  Save,
+  Shield,
+  User,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/settings")({
@@ -100,36 +109,45 @@ function SettingsPage() {
     await new Promise((resolve) => setTimeout(resolve, 800));
     setSaving(false);
     toast.success("Password updated successfully");
-    setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    setPasswordData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-500">Manage your account and organization settings</p>
+        <h1 className="font-bold text-2xl text-gray-900">Settings</h1>
+        <p className="text-gray-500">
+          Manage your account and organization settings
+        </p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList>
           <TabsTrigger value="profile" className="flex items-center gap-2">
-            <User className="w-4 h-4" />
+            <User className="h-4 w-4" />
             Profile
           </TabsTrigger>
           <TabsTrigger value="organization" className="flex items-center gap-2">
-            <Building className="w-4 h-4" />
+            <Building className="h-4 w-4" />
             Organization
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center gap-2">
-            <Bell className="w-4 h-4" />
+          <TabsTrigger
+            value="notifications"
+            className="flex items-center gap-2"
+          >
+            <Bell className="h-4 w-4" />
             Notifications
           </TabsTrigger>
           <TabsTrigger value="security" className="flex items-center gap-2">
-            <Shield className="w-4 h-4" />
+            <Shield className="h-4 w-4" />
             Security
           </TabsTrigger>
           <TabsTrigger value="billing" className="flex items-center gap-2">
-            <CreditCard className="w-4 h-4" />
+            <CreditCard className="h-4 w-4" />
             Billing
           </TabsTrigger>
         </TabsList>
@@ -138,50 +156,74 @@ function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
-              <CardDescription>Update your personal details and contact information</CardDescription>
+              <CardDescription>
+                Update your personal details and contact information
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <label className="mb-1 block font-medium text-gray-700 text-sm">
+                    First Name
+                  </label>
                   <Input
                     value={profileData.firstName}
-                    onChange={(e) => setProfileData({ ...profileData, firstName: e.target.value })}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        firstName: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <label className="mb-1 block font-medium text-gray-700 text-sm">
+                    Last Name
+                  </label>
                   <Input
                     value={profileData.lastName}
-                    onChange={(e) => setProfileData({ ...profileData, lastName: e.target.value })}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        lastName: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="mb-1 block font-medium text-gray-700 text-sm">
+                  Email
+                </label>
                 <Input
                   type="email"
                   value={profileData.email}
-                  onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, email: e.target.value })
+                  }
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <label className="mb-1 block font-medium text-gray-700 text-sm">
+                  Phone
+                </label>
                 <Input
                   type="tel"
                   value={profileData.phone}
-                  onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, phone: e.target.value })
+                  }
                 />
               </div>
               <Button onClick={handleSaveProfile} disabled={saving}>
                 {saving ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Saving...
                   </>
                 ) : (
                   <>
-                    <Save className="w-4 h-4 mr-2" />
+                    <Save className="mr-2 h-4 w-4" />
                     Save Changes
                   </>
                 )}
@@ -194,38 +236,65 @@ function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Organization Details</CardTitle>
-              <CardDescription>Manage your organization's information and settings</CardDescription>
+              <CardDescription>
+                Manage your organization's information and settings
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Organization Name</label>
-                <Input value={orgData.name} onChange={(e) => setOrgData({ ...orgData, name: e.target.value })} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
-                <Input value={orgData.industry} onChange={(e) => setOrgData({ ...orgData, industry: e.target.value })} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
+                <label className="mb-1 block font-medium text-gray-700 text-sm">
+                  Organization Name
+                </label>
                 <Input
-                  type="url"
-                  value={orgData.website}
-                  onChange={(e) => setOrgData({ ...orgData, website: e.target.value })}
+                  value={orgData.name}
+                  onChange={(e) =>
+                    setOrgData({ ...orgData, name: e.target.value })
+                  }
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <Input value={orgData.address} onChange={(e) => setOrgData({ ...orgData, address: e.target.value })} />
+                <label className="mb-1 block font-medium text-gray-700 text-sm">
+                  Industry
+                </label>
+                <Input
+                  value={orgData.industry}
+                  onChange={(e) =>
+                    setOrgData({ ...orgData, industry: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-1 block font-medium text-gray-700 text-sm">
+                  Website
+                </label>
+                <Input
+                  type="url"
+                  value={orgData.website}
+                  onChange={(e) =>
+                    setOrgData({ ...orgData, website: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-1 block font-medium text-gray-700 text-sm">
+                  Address
+                </label>
+                <Input
+                  value={orgData.address}
+                  onChange={(e) =>
+                    setOrgData({ ...orgData, address: e.target.value })
+                  }
+                />
               </div>
               <Button onClick={handleSaveOrg} disabled={saving}>
                 {saving ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Saving...
                   </>
                 ) : (
                   <>
-                    <Save className="w-4 h-4 mr-2" />
+                    <Save className="mr-2 h-4 w-4" />
                     Save Changes
                   </>
                 )}
@@ -238,54 +307,91 @@ function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>Choose how you want to be notified about important events</CardDescription>
+              <CardDescription>
+                Choose how you want to be notified about important events
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <label className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Email Notifications</span>
+                  <span className="font-medium text-gray-700 text-sm">
+                    Email Notifications
+                  </span>
                   <input
                     type="checkbox"
                     checked={notifications.email}
-                    onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })}
+                    onChange={(e) =>
+                      setNotifications({
+                        ...notifications,
+                        email: e.target.checked,
+                      })
+                    }
                     className="rounded"
                   />
                 </label>
                 <label className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">SMS Notifications</span>
+                  <span className="font-medium text-gray-700 text-sm">
+                    SMS Notifications
+                  </span>
                   <input
                     type="checkbox"
                     checked={notifications.sms}
-                    onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })}
+                    onChange={(e) =>
+                      setNotifications({
+                        ...notifications,
+                        sms: e.target.checked,
+                      })
+                    }
                     className="rounded"
                   />
                 </label>
-                <div className="border-t pt-3 space-y-3">
-                  <p className="text-sm font-medium text-gray-900">What to notify me about:</p>
+                <div className="space-y-3 border-t pt-3">
+                  <p className="font-medium text-gray-900 text-sm">
+                    What to notify me about:
+                  </p>
                   <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">New Care Plans</span>
+                    <span className="text-gray-700 text-sm">
+                      New Care Plans
+                    </span>
                     <input
                       type="checkbox"
                       checked={notifications.deals}
-                      onChange={(e) => setNotifications({ ...notifications, deals: e.target.checked })}
+                      onChange={(e) =>
+                        setNotifications({
+                          ...notifications,
+                          deals: e.target.checked,
+                        })
+                      }
                       className="rounded"
                     />
                   </label>
                   <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">New Referrals</span>
+                    <span className="text-gray-700 text-sm">New Referrals</span>
                     <input
                       type="checkbox"
                       checked={notifications.leads}
-                      onChange={(e) => setNotifications({ ...notifications, leads: e.target.checked })}
+                      onChange={(e) =>
+                        setNotifications({
+                          ...notifications,
+                          leads: e.target.checked,
+                        })
+                      }
                       className="rounded"
                     />
                   </label>
                   <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">Activity Updates</span>
+                    <span className="text-gray-700 text-sm">
+                      Activity Updates
+                    </span>
                     <input
                       type="checkbox"
                       checked={notifications.activities}
-                      onChange={(e) => setNotifications({ ...notifications, activities: e.target.checked })}
+                      onChange={(e) =>
+                        setNotifications({
+                          ...notifications,
+                          activities: e.target.checked,
+                        })
+                      }
                       className="rounded"
                     />
                   </label>
@@ -294,12 +400,12 @@ function SettingsPage() {
               <Button onClick={handleSaveNotifications} disabled={saving}>
                 {saving ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Saving...
                   </>
                 ) : (
                   <>
-                    <Save className="w-4 h-4 mr-2" />
+                    <Save className="mr-2 h-4 w-4" />
                     Save Preferences
                   </>
                 )}
@@ -312,48 +418,71 @@ function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Key className="w-5 h-5" />
+                <Key className="h-5 w-5" />
                 Change Password
               </CardTitle>
-              <CardDescription>Update your password to keep your account secure</CardDescription>
+              <CardDescription>
+                Update your password to keep your account secure
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                <label className="mb-1 block font-medium text-gray-700 text-sm">
+                  Current Password
+                </label>
                 <Input
                   type="password"
                   placeholder="Enter current password"
                   value={passwordData.currentPassword}
-                  onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      currentPassword: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                <label className="mb-1 block font-medium text-gray-700 text-sm">
+                  New Password
+                </label>
                 <Input
                   type="password"
                   placeholder="Enter new password"
                   value={passwordData.newPassword}
-                  onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      newPassword: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                <label className="mb-1 block font-medium text-gray-700 text-sm">
+                  Confirm New Password
+                </label>
                 <Input
                   type="password"
                   placeholder="Confirm new password"
                   value={passwordData.confirmPassword}
-                  onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                 />
               </div>
               <Button onClick={handleUpdatePassword} disabled={saving}>
                 {saving ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Updating...
                   </>
                 ) : (
                   <>
-                    <Key className="w-4 h-4 mr-2" />
+                    <Key className="mr-2 h-4 w-4" />
                     Update Password
                   </>
                 )}
@@ -366,21 +495,31 @@ function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Billing Information</CardTitle>
-              <CardDescription>Manage your subscription and payment methods</CardDescription>
+              <CardDescription>
+                Manage your subscription and payment methods
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium text-gray-900">Current Plan</span>
-                  <span className="text-blue-600 font-semibold">Professional</span>
+              <div className="rounded-lg bg-gray-50 p-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="font-medium text-gray-900">
+                    Current Plan
+                  </span>
+                  <span className="font-semibold text-blue-600">
+                    Professional
+                  </span>
                 </div>
-                <p className="text-sm text-gray-600">$29/month - Billed monthly</p>
+                <p className="text-gray-600 text-sm">
+                  $29/month - Billed monthly
+                </p>
               </div>
               <div className="space-y-2">
                 <Button
                   variant="outline"
                   className="w-full"
-                  onClick={() => toast.info("Payment method update coming soon!")}
+                  onClick={() =>
+                    toast.info("Payment method update coming soon!")
+                  }
                 >
                   Update Payment Method
                 </Button>
@@ -393,8 +532,12 @@ function SettingsPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
-                  onClick={() => toast.warning("Please contact support to cancel your subscription")}
+                  className="w-full text-red-600 hover:bg-red-50 hover:text-red-700"
+                  onClick={() =>
+                    toast.warning(
+                      "Please contact support to cancel your subscription",
+                    )
+                  }
                 >
                   Cancel Subscription
                 </Button>

@@ -6,17 +6,23 @@ interface ErrorBoundaryWrapperProps {
   fallback?: ReactNode;
 }
 
-export function ErrorBoundaryWrapper({ children, fallback }: ErrorBoundaryWrapperProps) {
+export function ErrorBoundaryWrapper({
+  children,
+  fallback,
+}: ErrorBoundaryWrapperProps) {
   const defaultFallback = (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
-        <p className="text-gray-700 mb-4">
-          An unexpected error occurred. Please refresh the page or contact support if the problem persists.
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+        <h1 className="mb-4 font-bold text-2xl text-red-600">
+          Something went wrong
+        </h1>
+        <p className="mb-4 text-gray-700">
+          An unexpected error occurred. Please refresh the page or contact
+          support if the problem persists.
         </p>
         <button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         >
           Refresh Page
         </button>

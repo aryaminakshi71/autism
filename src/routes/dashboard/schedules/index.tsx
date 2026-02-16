@@ -147,36 +147,36 @@ function SchedulesPage() {
 
   return (
     <DashboardLayout title="Visual Schedules">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 transform text-gray-400" />
             <input
               type="text"
               placeholder="Search schedules..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-64"
+              className="w-64 rounded-xl border border-gray-200 py-2 pr-4 pl-10 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <div className="flex items-center bg-gray-100 rounded-xl p-1">
+          <div className="flex items-center rounded-xl bg-gray-100 p-1">
             <button
               onClick={() => setViewMode("list")}
-              className={`p-2 rounded-lg transition-colors ${viewMode === "list" ? "bg-white shadow-sm" : "text-gray-500"}`}
+              className={`rounded-lg p-2 transition-colors ${viewMode === "list" ? "bg-white shadow-sm" : "text-gray-500"}`}
             >
-              <List className="w-5 h-5" />
+              <List className="h-5 w-5" />
             </button>
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded-lg transition-colors ${viewMode === "grid" ? "bg-white shadow-sm" : "text-gray-500"}`}
+              className={`rounded-lg p-2 transition-colors ${viewMode === "grid" ? "bg-white shadow-sm" : "text-gray-500"}`}
             >
-              <Grid className="w-5 h-5" />
+              <Grid className="h-5 w-5" />
             </button>
           </div>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors">
-            <Plus className="w-5 h-5" />
+          <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+            <Plus className="h-5 w-5" />
             <span>Create Schedule</span>
           </button>
         </div>
@@ -187,71 +187,71 @@ function SchedulesPage() {
           {filteredSchedules.map((schedule) => (
             <div
               key={schedule.id}
-              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+              className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="mb-4 flex items-start justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
-                    <Calendar className="w-6 h-6" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+                    <Calendar className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 text-lg">
                       {schedule.name}
                     </h3>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-gray-500 text-sm">
                       Patient: {schedule.patient}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getTypeColor(schedule.type)}`}
+                    className={`rounded-full px-3 py-1 font-medium text-xs ${getTypeColor(schedule.type)}`}
                   >
                     {schedule.type}
                   </span>
                   {schedule.isDefault && (
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                    <span className="rounded-full bg-yellow-100 px-3 py-1 font-medium text-xs text-yellow-700">
                       Default
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="border-t border-gray-100 pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="border-gray-100 border-t pt-4">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                   {schedule.items.map((item, index) => (
                     <div
                       key={index}
-                      className={`flex items-center space-x-3 p-3 rounded-lg ${
+                      className={`flex items-center space-x-3 rounded-lg p-3 ${
                         item.completed ? "bg-green-50" : "bg-gray-50"
                       }`}
                     >
                       <span className="text-xl">{item.icon}</span>
                       <div className="flex-1">
                         {item.time && (
-                          <span className="text-xs text-gray-500 flex items-center space-x-1">
-                            <Clock className="w-3 h-3" />
+                          <span className="flex items-center space-x-1 text-gray-500 text-xs">
+                            <Clock className="h-3 w-3" />
                             <span>{item.time}</span>
                           </span>
                         )}
                         <p
-                          className={`text-sm font-medium ${item.completed ? "text-green-700 line-through" : "text-gray-700"}`}
+                          className={`font-medium text-sm ${item.completed ? "text-green-700 line-through" : "text-gray-700"}`}
                         >
                           {item.activity}
                         </p>
                         {item.isFirstThen && (
-                          <span className="text-xs text-purple-600 font-medium">
+                          <span className="font-medium text-purple-600 text-xs">
                             First Then
                           </span>
                         )}
                         {item.isChoice && (
-                          <span className="text-xs text-orange-600 font-medium">
+                          <span className="font-medium text-orange-600 text-xs">
                             Choice Board
                           </span>
                         )}
                       </div>
                       <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
                           item.completed
                             ? "border-green-500 bg-green-500 text-white"
                             : "border-gray-300"
@@ -264,17 +264,17 @@ function SchedulesPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end space-x-3 mt-4 pt-4 border-t border-gray-100">
-                <button className="flex items-center space-x-1 px-3 py-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                  <Copy className="w-4 h-4" />
+              <div className="mt-4 flex items-center justify-end space-x-3 border-gray-100 border-t pt-4">
+                <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700">
+                  <Copy className="h-4 w-4" />
                   <span className="text-sm">Duplicate</span>
                 </button>
-                <button className="flex items-center space-x-1 px-3 py-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                  <Edit className="w-4 h-4" />
+                <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700">
+                  <Edit className="h-4 w-4" />
                   <span className="text-sm">Edit</span>
                 </button>
-                <button className="flex items-center space-x-1 px-3 py-2 text-red-500 hover:text-red-700 rounded-lg hover:bg-red-50 transition-colors">
-                  <Trash className="w-4 h-4" />
+                <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700">
+                  <Trash className="h-4 w-4" />
                   <span className="text-sm">Delete</span>
                 </button>
               </div>
@@ -282,27 +282,27 @@ function SchedulesPage() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredSchedules.map((schedule) => (
             <div
               key={schedule.id}
-              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+              className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
-                  <Calendar className="w-5 h-5" />
+              <div className="mb-4 flex items-start justify-between">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+                  <Calendar className="h-5 w-5" />
                 </div>
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(schedule.type)}`}
+                  className={`rounded-full px-2 py-1 font-medium text-xs ${getTypeColor(schedule.type)}`}
                 >
                   {schedule.type}
                 </span>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">
+              <h3 className="mb-1 font-semibold text-gray-900">
                 {schedule.name}
               </h3>
-              <p className="text-sm text-gray-500 mb-4">{schedule.patient}</p>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <p className="mb-4 text-gray-500 text-sm">{schedule.patient}</p>
+              <div className="flex items-center space-x-2 text-gray-600 text-sm">
                 <span>{schedule.items.length} activities</span>
                 <span>·</span>
                 <span>

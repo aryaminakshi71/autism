@@ -4,10 +4,10 @@
  * Comprehensive health check endpoint with database and service checks.
  */
 
-import { z } from "zod";
-import { pub } from "../procedures";
 import { createDb } from "@autism-legacy-20260205/storage";
+import { z } from "zod";
 import { getQueryStats, getSlowQueries } from "../lib/db-performance";
+import { pub } from "../procedures";
 
 const startTime = Date.now();
 
@@ -30,24 +30,36 @@ export const healthRouter = {
             responseTime: z.number().optional(),
             error: z.string().optional(),
           }),
-          cache: z.object({
-            status: z.enum(["healthy", "unhealthy", "unknown"]),
-            responseTime: z.number().optional(),
-            error: z.string().optional(),
-          }).optional(),
+          cache: z
+            .object({
+              status: z.enum(["healthy", "unhealthy", "unknown"]),
+              responseTime: z.number().optional(),
+              error: z.string().optional(),
+            })
+            .optional(),
         }),
         uptime: z.number().optional(),
-        performance: z.object({
-          avgQueryTime: z.number().optional(),
-          slowQueries: z.number().optional(),
-          errorRate: z.number().optional(),
-        }).optional(),
+        performance: z
+          .object({
+            avgQueryTime: z.number().optional(),
+            slowQueries: z.number().optional(),
+            errorRate: z.number().optional(),
+          })
+          .optional(),
       }),
     )
     .handler(async ({ context }) => {
       const checks: {
-        database: { status: "healthy" | "unhealthy" | "unknown"; responseTime: number; error?: string };
-        cache: { status: "healthy" | "unhealthy" | "unknown"; responseTime: number; error?: string };
+        database: {
+          status: "healthy" | "unhealthy" | "unknown";
+          responseTime: number;
+          error?: string;
+        };
+        cache: {
+          status: "healthy" | "unhealthy" | "unknown";
+          responseTime: number;
+          error?: string;
+        };
       } = {
         database: { status: "unknown", responseTime: 0 },
         cache: { status: "unknown", responseTime: 0 },
@@ -113,7 +125,8 @@ export const healthRouter = {
       // Determine overall status
       const overallStatus =
         checks.database.status === "healthy" &&
-        (checks.cache?.status === "healthy" || checks.cache?.status === "unknown")
+        (checks.cache?.status === "healthy" ||
+          checks.cache?.status === "unknown")
           ? "ok"
           : checks.database.status === "unhealthy"
             ? "error"

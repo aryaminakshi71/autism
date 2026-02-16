@@ -4,23 +4,32 @@
  * Family outreach and communication workflows.
  */
 
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Mail, BarChart3, Users, Send, TrendingUp, Calendar, Plus, Eye, MousePointerClick } from "lucide-react";
 import {
+  Badge,
+  Button,
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  Button,
-  Badge,
-  FormModal,
   FormField,
+  FormModal,
   Input,
   Textarea,
-  Select,
 } from "@autism-legacy-20260205/ui";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  BarChart3,
+  Calendar,
+  Eye,
+  Mail,
+  MousePointerClick,
+  Plus,
+  Send,
+  TrendingUp,
+  Users,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/marketing")({
@@ -68,11 +77,23 @@ function MarketingPage() {
   });
 
   const stats = [
-    { label: "Total Updates", value: campaigns.length.toString(), icon: Mail, change: "+3 this month" },
-    { label: "Active Updates", value: campaigns.filter((c) => c.status === "active").length.toString(), icon: Send, change: "2 scheduled" },
+    {
+      label: "Total Updates",
+      value: campaigns.length.toString(),
+      icon: Mail,
+      change: "+3 this month",
+    },
+    {
+      label: "Active Updates",
+      value: campaigns.filter((c) => c.status === "active").length.toString(),
+      icon: Send,
+      change: "2 scheduled",
+    },
     {
       label: "Total Recipients",
-      value: campaigns.reduce((sum, c) => sum + c.recipients, 0).toLocaleString(),
+      value: campaigns
+        .reduce((sum, c) => sum + c.recipients, 0)
+        .toLocaleString(),
       icon: Users,
       change: "+12% vs last month",
     },
@@ -114,27 +135,35 @@ function MarketingPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Family Outreach</h1>
-          <p className="text-gray-500">Manage caregiver updates and resources</p>
+          <h1 className="font-bold text-2xl text-gray-900">Family Outreach</h1>
+          <p className="text-gray-500">
+            Manage caregiver updates and resources
+          </p>
         </div>
-        <Button variant="primary" leftIcon={<Plus className="w-4 h-4" />} onClick={() => setIsModalOpen(true)}>
+        <Button
+          variant="primary"
+          leftIcon={<Plus className="h-4 w-4" />}
+          onClick={() => setIsModalOpen(true)}
+        >
           Create Update
         </Button>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.label}>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <stat.icon className="w-6 h-6 text-blue-600" />
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                  <stat.icon className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
-              <div className="text-sm text-gray-600 mb-1">{stat.label}</div>
-              <div className="text-xs text-green-600">{stat.change}</div>
+              <div className="mb-1 font-bold text-2xl text-gray-900">
+                {stat.value}
+              </div>
+              <div className="mb-1 text-gray-600 text-sm">{stat.label}</div>
+              <div className="text-green-600 text-xs">{stat.change}</div>
             </CardContent>
           </Card>
         ))}
@@ -144,40 +173,63 @@ function MarketingPage() {
       <Card>
         <CardHeader>
           <CardTitle>Recent Updates</CardTitle>
-          <CardDescription>View and manage caregiver communications</CardDescription>
+          <CardDescription>
+            View and manage caregiver communications
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {campaigns.map((campaign) => (
               <div
                 key={campaign.id}
-                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
+                className="flex items-center justify-between rounded-lg border border-gray-200 p-4 transition hover:bg-gray-50"
               >
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-gray-900">{campaign.name}</h3>
+                  <div className="mb-2 flex items-center gap-3">
+                    <h3 className="font-semibold text-gray-900">
+                      {campaign.name}
+                    </h3>
                     <Badge
-                      variant={campaign.status === "active" ? "default" : campaign.status === "draft" ? "outline" : "outline"}
-                      className={campaign.status === "active" ? "bg-green-100 text-green-800" : ""}
+                      variant={
+                        campaign.status === "active"
+                          ? "default"
+                          : campaign.status === "draft"
+                            ? "outline"
+                            : "outline"
+                      }
+                      className={
+                        campaign.status === "active"
+                          ? "bg-green-100 text-green-800"
+                          : ""
+                      }
                     >
                       {campaign.status}
                     </Badge>
                   </div>
-                  <div className="grid grid-cols-4 gap-4 text-sm text-gray-600">
+                  <div className="grid grid-cols-4 gap-4 text-gray-600 text-sm">
                     <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4 text-gray-400" />
-                      <span className="font-medium text-gray-900">{campaign.recipients}</span> recipients
+                      <Users className="h-4 w-4 text-gray-400" />
+                      <span className="font-medium text-gray-900">
+                        {campaign.recipients}
+                      </span>{" "}
+                      recipients
                     </div>
                     <div className="flex items-center gap-1">
-                      <Eye className="w-4 h-4 text-gray-400" />
-                      <span className="font-medium text-gray-900">{campaign.opened}</span> opened
+                      <Eye className="h-4 w-4 text-gray-400" />
+                      <span className="font-medium text-gray-900">
+                        {campaign.opened}
+                      </span>{" "}
+                      opened
                     </div>
                     <div className="flex items-center gap-1">
-                      <MousePointerClick className="w-4 h-4 text-gray-400" />
-                      <span className="font-medium text-gray-900">{campaign.clicked}</span> clicked
+                      <MousePointerClick className="h-4 w-4 text-gray-400" />
+                      <span className="font-medium text-gray-900">
+                        {campaign.clicked}
+                      </span>{" "}
+                      clicked
                     </div>
                     <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <Calendar className="h-4 w-4 text-gray-400" />
                       {campaign.sent}
                     </div>
                   </div>
@@ -197,42 +249,59 @@ function MarketingPage() {
       </Card>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="hover:shadow-lg transition cursor-pointer" onClick={() => toast.info("Message templates coming soon!")}>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <Card
+          className="cursor-pointer transition hover:shadow-lg"
+          onClick={() => toast.info("Message templates coming soon!")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Mail className="w-6 h-6 text-blue-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                <Mail className="h-6 w-6 text-blue-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1">Message Templates</h3>
-                <p className="text-sm text-gray-600">Create and manage caregiver updates</p>
+                <h3 className="mb-1 font-semibold text-gray-900">
+                  Message Templates
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Create and manage caregiver updates
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="hover:shadow-lg transition cursor-pointer" onClick={() => toast.info("Analytics coming soon!")}>
+        <Card
+          className="cursor-pointer transition hover:shadow-lg"
+          onClick={() => toast.info("Analytics coming soon!")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-blue-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                <BarChart3 className="h-6 w-6 text-blue-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1">Analytics</h3>
-                <p className="text-sm text-gray-600">View engagement and outcomes metrics</p>
+                <h3 className="mb-1 font-semibold text-gray-900">Analytics</h3>
+                <p className="text-gray-600 text-sm">
+                  View engagement and outcomes metrics
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="hover:shadow-lg transition cursor-pointer" onClick={() => toast.info("Segments coming soon!")}>
+        <Card
+          className="cursor-pointer transition hover:shadow-lg"
+          onClick={() => toast.info("Segments coming soon!")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-blue-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                <Users className="h-6 w-6 text-blue-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1">Groups</h3>
-                <p className="text-sm text-gray-600">Create targeted caregiver groups</p>
+                <h3 className="mb-1 font-semibold text-gray-900">Groups</h3>
+                <p className="text-gray-600 text-sm">
+                  Create targeted caregiver groups
+                </p>
               </div>
             </div>
           </CardContent>
@@ -251,7 +320,9 @@ function MarketingPage() {
           <FormField label="Update Name" required>
             <Input
               value={newCampaign.name}
-              onChange={(e) => setNewCampaign({ ...newCampaign, name: e.target.value })}
+              onChange={(e) =>
+                setNewCampaign({ ...newCampaign, name: e.target.value })
+              }
               placeholder="e.g., Therapy Program Update"
               required
             />
@@ -259,7 +330,9 @@ function MarketingPage() {
           <FormField label="Message Subject" required>
             <Input
               value={newCampaign.subject}
-              onChange={(e) => setNewCampaign({ ...newCampaign, subject: e.target.value })}
+              onChange={(e) =>
+                setNewCampaign({ ...newCampaign, subject: e.target.value })
+              }
               placeholder="e.g., New resources for home routines"
               required
             />
@@ -268,7 +341,9 @@ function MarketingPage() {
             <select
               className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
               value={newCampaign.recipients}
-              onChange={(e) => setNewCampaign({ ...newCampaign, recipients: e.target.value })}
+              onChange={(e) =>
+                setNewCampaign({ ...newCampaign, recipients: e.target.value })
+              }
             >
               <option value="all">All Families</option>
               <option value="leads">Referrals Only</option>
@@ -279,7 +354,9 @@ function MarketingPage() {
           <FormField label="Message Content" required>
             <Textarea
               value={newCampaign.content}
-              onChange={(e) => setNewCampaign({ ...newCampaign, content: e.target.value })}
+              onChange={(e) =>
+                setNewCampaign({ ...newCampaign, content: e.target.value })
+              }
               placeholder="Write your caregiver update here..."
               rows={6}
               required

@@ -72,7 +72,9 @@ const serverSchema = clientSchema.extend({
 
   LOG_AGGREGATION_ENDPOINT: z.string().url().or(z.literal("")).optional(),
   LOG_AGGREGATION_API_KEY: z.string().optional(),
-  LOG_AGGREGATION_SERVICE: z.enum(["datadog", "logtail", "cloudwatch", "custom"]).optional(),
+  LOG_AGGREGATION_SERVICE: z
+    .enum(["datadog", "logtail", "cloudwatch", "custom"])
+    .optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverSchema>;

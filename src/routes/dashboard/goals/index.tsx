@@ -98,12 +98,12 @@ function GoalsPage() {
 
   const getTrendIcon = (current: number, target: number, status: string) => {
     if (status === "mastered")
-      return <TrendingUp className="w-4 h-4 text-green-500" />;
+      return <TrendingUp className="h-4 w-4 text-green-500" />;
     if (current >= target)
-      return <TrendingUp className="w-4 h-4 text-green-500" />;
+      return <TrendingUp className="h-4 w-4 text-green-500" />;
     if (current >= target * 0.7)
-      return <Minus className="w-4 h-4 text-yellow-500" />;
-    return <TrendingDown className="w-4 h-4 text-red-500" />;
+      return <Minus className="h-4 w-4 text-yellow-500" />;
+    return <TrendingDown className="h-4 w-4 text-red-500" />;
   };
 
   const getProgressColor = (
@@ -119,22 +119,22 @@ function GoalsPage() {
 
   return (
     <DashboardLayout title="Goals & Progress">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 transform text-gray-400" />
             <input
               type="text"
               placeholder="Search goals..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-64"
+              className="w-64 rounded-xl border border-gray-200 py-2 pr-4 pl-10 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="rounded-xl border border-gray-200 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -142,13 +142,13 @@ function GoalsPage() {
             <option value="inactive">Inactive</option>
           </select>
         </div>
-        <button className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors">
-          <Plus className="w-5 h-5" />
+        <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+          <Plus className="h-5 w-5" />
           <span>Add Goal</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredGoals.map((goal) => {
           const progressPercent = Math.min(
             (goal.currentValue / goal.targetValue) * 100,
@@ -157,20 +157,20 @@ function GoalsPage() {
           return (
             <div
               key={goal.id}
-              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+              className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="mb-4 flex items-start justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
-                    <Target className="w-5 h-5" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+                    <Target className="h-5 w-5" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">{goal.name}</h3>
-                    <p className="text-sm text-gray-500">{goal.patient}</p>
+                    <p className="text-gray-500 text-sm">{goal.patient}</p>
                   </div>
                 </div>
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  className={`rounded-full px-2 py-1 font-medium text-xs ${
                     goal.priority === "high"
                       ? "bg-red-100 text-red-700"
                       : goal.priority === "medium"
@@ -183,14 +183,14 @@ function GoalsPage() {
               </div>
 
               <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">{goal.category}</span>
-                  <span className="text-sm font-medium text-gray-900">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-gray-600 text-sm">{goal.category}</span>
+                  <span className="font-medium text-gray-900 text-sm">
                     {goal.currentValue}/{goal.targetValue}
                     {goal.unit}
                   </span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-2 overflow-hidden rounded-full bg-gray-100">
                   <div
                     className={`h-full ${getProgressColor(goal.currentValue, goal.targetValue, goal.status)} transition-all duration-300`}
                     style={{ width: `${progressPercent}%` }}
@@ -198,19 +198,19 @@ function GoalsPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between border-gray-100 border-t pt-4">
                 <div className="flex items-center space-x-2">
                   {getTrendIcon(
                     goal.currentValue,
                     goal.targetValue,
                     goal.status,
                   )}
-                  <span className="text-sm text-gray-600">
+                  <span className="text-gray-600 text-sm">
                     {progressPercent.toFixed(0)}%
                   </span>
                 </div>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  className={`rounded-full px-3 py-1 font-medium text-xs ${
                     goal.status === "active"
                       ? "bg-blue-100 text-blue-700"
                       : goal.status === "mastered"

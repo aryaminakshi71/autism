@@ -13,8 +13,12 @@ export interface EmailMessage {
 }
 
 export interface EmailService {
-  send(message: EmailMessage): Promise<{ success: boolean; messageId?: string }>;
-  sendBulk(messages: EmailMessage[]): Promise<{ success: boolean; sent: number; failed: number }>;
+  send(
+    message: EmailMessage,
+  ): Promise<{ success: boolean; messageId?: string }>;
+  sendBulk(
+    messages: EmailMessage[],
+  ): Promise<{ success: boolean; sent: number; failed: number }>;
 }
 
 /**

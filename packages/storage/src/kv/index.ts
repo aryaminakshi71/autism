@@ -1,4 +1,7 @@
-import type { KVNamespace, KVNamespacePutOptions } from "@cloudflare/workers-types";
+import type {
+  KVNamespace,
+  KVNamespacePutOptions,
+} from "@cloudflare/workers-types";
 
 export interface KVStorage {
   get(key: string): Promise<string | null>;

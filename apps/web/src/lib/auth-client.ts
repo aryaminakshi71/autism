@@ -1,11 +1,9 @@
-import { createAuthClient } from "better-auth/react";
 import { organizationClient } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
   baseURL: "", // Use relative URLs - Vite proxy handles /api/* requests
-  plugins: [
-    organizationClient(),
-  ],
+  plugins: [organizationClient()],
   fetchOptions: {
     credentials: "include", // Important for cookies
   },
@@ -29,10 +27,4 @@ export const authClient = createAuthClient({
 // } as any;
 
 // Export commonly used methods
-export const {
-  signIn,
-  signUp,
-  signOut,
-  useSession,
-  organization,
-} = authClient;
+export const { signIn, signUp, signOut, useSession, organization } = authClient;

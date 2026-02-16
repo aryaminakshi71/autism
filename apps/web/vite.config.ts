@@ -1,12 +1,12 @@
-import { defineConfig, loadEnv } from "vite";
-import { cloudflare } from '@cloudflare/vite-plugin';
+import path from "path";
+import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
-import viteTsConfigPaths from "vite-tsconfig-paths";
 import { visualizer } from "rollup-plugin-visualizer";
-import path from "path";
+import { defineConfig, loadEnv } from "vite";
+import viteTsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig(({ mode }) => {
   // Capture PORT from shell BEFORE loadEnv (which might load PORT from .env)
@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       // Exclude workspace packages so they are compiled as source
       exclude: [
-        '@autism-legacy-20260205/env',
+        "@autism-legacy-20260205/env",
         "@autism-legacy-20260205/api",
         "@autism-legacy-20260205/ui",
       ],
@@ -35,8 +35,8 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     build: {
-      target: 'esnext',
-      minify: 'esbuild',
+      target: "esnext",
+      minify: "esbuild",
       sourcemap: false,
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
@@ -49,14 +49,16 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       viteTsConfigPaths({
-        projects: ['./tsconfig.json'],
+        projects: ["./tsconfig.json"],
       }),
-      ...(process.env.SKIP_CLOUDFLARE !== 'true' ? [
-        cloudflare({
-          viteEnvironment: { name: 'ssr' },
-          persist: true,
-        })
-      ] : []),
+      ...(process.env.SKIP_CLOUDFLARE !== "true"
+        ? [
+            cloudflare({
+              viteEnvironment: { name: "ssr" },
+              persist: true,
+            }),
+          ]
+        : []),
       ...(enableDevtools ? [devtools()] : []),
       tailwindcss(),
       tanstackStart({
@@ -66,13 +68,14 @@ export default defineConfig(({ mode }) => {
       }),
       viteReact(),
       // Bundle analyzer (only in production builds when ANALYZE=true)
-      process.env.ANALYZE === 'true' && visualizer({
-        filename: './dist/stats.html',
-        open: true,
-        gzipSize: true,
-        brotliSize: true,
-        template: 'treemap',
-      }),
+      process.env.ANALYZE === "true" &&
+        visualizer({
+          filename: "./dist/stats.html",
+          open: true,
+          gzipSize: true,
+          brotliSize: true,
+          template: "treemap",
+        }),
     ],
   };
 });

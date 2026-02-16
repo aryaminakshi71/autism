@@ -4,28 +4,35 @@
  * Session timeline and management.
  */
 
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { Pagination } from "@/components/pagination";
 import {
+  Badge,
+  Button,
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  Button,
-  Badge,
-  FormModal,
-  FormField,
-  Input,
-  Textarea,
-  Select,
   EmptyState,
+  FormField,
+  FormModal,
+  Input,
   Loading,
+  Textarea,
 } from "@autism-legacy-20260205/ui";
-import { Plus, Phone, Mail, Calendar, FileText, CheckCircle, Clock } from "lucide-react";
-import { activitiesApi } from "../lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  FileText,
+  Mail,
+  Phone,
+  Plus,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { Pagination } from "@/components/pagination";
+import { activitiesApi } from "../lib/api";
 
 export const Route = createFileRoute("/app/activities")({
   component: ActivitiesPage,
@@ -75,7 +82,12 @@ function ActivitiesPage() {
       toast.success("Session created successfully");
       queryClient.invalidateQueries({ queryKey: ["activities"] });
       setIsModalOpen(false);
-      setNewActivity({ type: "call", subject: "", description: "", dueDate: "" });
+      setNewActivity({
+        type: "call",
+        subject: "",
+        description: "",
+        dueDate: "",
+      });
     },
     onError: (error: Error) => {
       const errorMessage = error.message || "Failed to create session";
@@ -86,19 +98,21 @@ function ActivitiesPage() {
 
   const activities = data?.data || [];
   const totalItems = data?.total || 0;
-  const totalPages = data?.totalPages || (data?.total && data?.limit ? Math.ceil(data.total / data.limit) : 1);
-  
+  const totalPages =
+    data?.totalPages ||
+    (data?.total && data?.limit ? Math.ceil(data.total / data.limit) : 1);
+
   // Filter activities
   const pendingActivities = activities.filter((a: any) => !a.completedAt);
   const completedActivities = activities.filter((a: any) => a.completedAt);
-  
+
   // For display, use paginated activities from API
   const paginatedActivities = activities;
 
   const getActivityIcon = (type: string) => {
     const activityType = ACTIVITY_TYPES.find((t) => t.value === type);
     const Icon = activityType?.icon || FileText;
-    return <Icon className="w-5 h-5" />;
+    return <Icon className="h-5 w-5" />;
   };
 
   return (
@@ -106,10 +120,16 @@ function ActivitiesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Sessions</h1>
-          <p className="text-gray-500">Track sessions, follow-ups, and care updates</p>
+          <h1 className="font-bold text-2xl text-gray-900">Sessions</h1>
+          <p className="text-gray-500">
+            Track sessions, follow-ups, and care updates
+          </p>
         </div>
-        <Button variant="primary" leftIcon={<Plus className="w-4 h-4" />} onClick={() => setIsModalOpen(true)}>
+        <Button
+          variant="primary"
+          leftIcon={<Plus className="h-4 w-4" />}
+          onClick={() => setIsModalOpen(true)}
+        >
           Log Session
         </Button>
       </div>
@@ -119,12 +139,14 @@ function ActivitiesPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-5 h-5 text-yellow-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-100">
+                <Clock className="h-5 w-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Pending</p>
-                <p className="text-2xl font-bold text-gray-900">{pendingActivities.length}</p>
+                <p className="text-gray-500 text-sm">Pending</p>
+                <p className="font-bold text-2xl text-gray-900">
+                  {pendingActivities.length}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -132,12 +154,14 @@ function ActivitiesPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-green-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
+                <CheckCircle className="h-5 w-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Completed</p>
-                <p className="text-2xl font-bold text-gray-900">{completedActivities.length}</p>
+                <p className="text-gray-500 text-sm">Completed</p>
+                <p className="font-bold text-2xl text-gray-900">
+                  {completedActivities.length}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -145,12 +169,14 @@ function ActivitiesPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-blue-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                <Calendar className="h-5 w-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">This Week</p>
-                <p className="text-2xl font-bold text-gray-900">{activities.length}</p>
+                <p className="text-gray-500 text-sm">This Week</p>
+                <p className="font-bold text-2xl text-gray-900">
+                  {activities.length}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -166,7 +192,7 @@ function ActivitiesPage() {
         </Card>
       ) : activities.length === 0 ? (
         <EmptyState
-          icon={<Calendar className="w-12 h-12" />}
+          icon={<Calendar className="h-12 w-12" />}
           title="No sessions yet"
           description="Start logging sessions and care updates."
           action={{ label: "Log Session", onClick: () => setIsModalOpen(true) }}
@@ -182,22 +208,37 @@ function ActivitiesPage() {
                 {paginatedActivities.map((activity: any) => {
                   const isPending = !activity.completedAt;
                   return (
-                    <div key={activity.id} className={`flex items-start gap-4 p-3 rounded-lg ${isPending ? 'bg-yellow-50' : 'bg-gray-50'}`}>
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isPending ? 'bg-yellow-100 text-yellow-600' : 'bg-green-100 text-green-600'}`}>
-                        {isPending ? getActivityIcon(activity.type) : <CheckCircle className="w-5 h-5" />}
+                    <div
+                      key={activity.id}
+                      className={`flex items-start gap-4 rounded-lg p-3 ${isPending ? "bg-yellow-50" : "bg-gray-50"}`}
+                    >
+                      <div
+                        className={`flex h-10 w-10 items-center justify-center rounded-lg ${isPending ? "bg-yellow-100 text-yellow-600" : "bg-green-100 text-green-600"}`}
+                      >
+                        {isPending ? (
+                          getActivityIcon(activity.type)
+                        ) : (
+                          <CheckCircle className="h-5 w-5" />
+                        )}
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">{activity.subject}</p>
-                        <div className="flex items-center gap-2 mt-1">
+                        <p className="font-medium text-gray-900">
+                          {activity.subject}
+                        </p>
+                        <div className="mt-1 flex items-center gap-2">
                           <Badge variant="outline">{activity.type}</Badge>
                           {isPending && activity.dueDate && (
-                            <span className="text-xs text-gray-500">
-                              Due: {new Date(activity.dueDate).toLocaleDateString()}
+                            <span className="text-gray-500 text-xs">
+                              Due:{" "}
+                              {new Date(activity.dueDate).toLocaleDateString()}
                             </span>
                           )}
                           {!isPending && activity.completedAt && (
-                            <span className="text-xs text-gray-500">
-                              Completed: {new Date(activity.completedAt).toLocaleDateString()}
+                            <span className="text-gray-500 text-xs">
+                              Completed:{" "}
+                              {new Date(
+                                activity.completedAt,
+                              ).toLocaleDateString()}
                             </span>
                           )}
                         </div>
@@ -237,31 +278,41 @@ function ActivitiesPage() {
             <select
               className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
               value={newActivity.type}
-              onChange={(e) => setNewActivity({ ...newActivity, type: e.target.value })}
+              onChange={(e) =>
+                setNewActivity({ ...newActivity, type: e.target.value })
+              }
             >
               {ACTIVITY_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>{t.label}</option>
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
               ))}
             </select>
           </FormField>
           <FormField label="Subject" required>
             <Input
               value={newActivity.subject}
-              onChange={(e) => setNewActivity({ ...newActivity, subject: e.target.value })}
+              onChange={(e) =>
+                setNewActivity({ ...newActivity, subject: e.target.value })
+              }
               required
             />
           </FormField>
           <FormField label="Description">
             <Textarea
               value={newActivity.description}
-              onChange={(e) => setNewActivity({ ...newActivity, description: e.target.value })}
+              onChange={(e) =>
+                setNewActivity({ ...newActivity, description: e.target.value })
+              }
             />
           </FormField>
           <FormField label="Due Date">
             <Input
               type="datetime-local"
               value={newActivity.dueDate}
-              onChange={(e) => setNewActivity({ ...newActivity, dueDate: e.target.value })}
+              onChange={(e) =>
+                setNewActivity({ ...newActivity, dueDate: e.target.value })
+              }
             />
           </FormField>
         </div>

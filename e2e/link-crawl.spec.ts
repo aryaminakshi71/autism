@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 // Crawling is slow and not browser-engine-specific; run it once (chromium) to
 // keep the full matrix (chromium/firefox/webkit/mobile) from timing out.
@@ -73,7 +73,9 @@ test("crawl internal links", async ({ page }, testInfo) => {
 
     visited.add(normalized);
 
-    await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => {});
+    await page
+      .waitForLoadState("networkidle", { timeout: 10000 })
+      .catch(() => {});
     if (WAIT_AFTER_NAV_MS > 0) {
       await page.waitForTimeout(WAIT_AFTER_NAV_MS);
     }
@@ -81,9 +83,7 @@ test("crawl internal links", async ({ page }, testInfo) => {
     if (current.depth >= MAX_DEPTH) continue;
 
     const links = await page.$$eval("a[href]", (elements) =>
-      elements
-        .map((el) => el.getAttribute("href") || "")
-        .filter(Boolean)
+      elements.map((el) => el.getAttribute("href") || "").filter(Boolean),
     );
 
     for (const href of links) {
@@ -104,5 +104,8 @@ test("crawl internal links", async ({ page }, testInfo) => {
     }
   }
 
-  expect(visited.size, "No pages were visited during link crawl").toBeGreaterThan(0);
+  expect(
+    visited.size,
+    "No pages were visited during link crawl",
+  ).toBeGreaterThan(0);
 });

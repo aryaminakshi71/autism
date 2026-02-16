@@ -5,12 +5,12 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import type { AppConfig, AppRegistry, Environment } from "./types";
 import {
   createDefaultAppConfig,
   generateEnvContent,
   getEnvFileName,
 } from "./template";
+import type { AppConfig, AppRegistry, Environment } from "./types";
 
 const REGISTRY_FILE = "app-registry.json";
 const REGISTRY_VERSION = "1.0.0";
@@ -77,16 +77,16 @@ export function addApp(
   id: string,
   name: string,
   domain: string,
-  environment: Environment
+  environment: Environment,
 ): AppConfig {
   // Check if app already exists
   const existingApp = registry.apps.find(
-    (app) => app.id === id && app.environment === environment
+    (app) => app.id === id && app.environment === environment,
   );
 
   if (existingApp) {
     throw new Error(
-      `App ${id} (${environment}) already exists in the registry`
+      `App ${id} (${environment}) already exists in the registry`,
     );
   }
 
@@ -120,7 +120,7 @@ export function addApp(
 export function removeApp(
   registry: AppRegistry,
   id: string,
-  environment?: Environment
+  environment?: Environment,
 ): boolean {
   const initialLength = registry.apps.length;
 
@@ -140,10 +140,10 @@ export function removeApp(
 export function getApp(
   registry: AppRegistry,
   id: string,
-  environment?: Environment
+  environment?: Environment,
 ): AppConfig | undefined {
   return registry.apps.find(
-    (app) => app.id === id && (!environment || app.environment === environment)
+    (app) => app.id === id && (!environment || app.environment === environment),
   );
 }
 
@@ -154,10 +154,10 @@ export function updateApp(
   registry: AppRegistry,
   id: string,
   environment: Environment,
-  updates: Partial<AppConfig>
+  updates: Partial<AppConfig>,
 ): AppConfig | undefined {
   const appIndex = registry.apps.findIndex(
-    (app) => app.id === id && app.environment === environment
+    (app) => app.id === id && app.environment === environment,
   );
 
   if (appIndex === -1) {
@@ -181,7 +181,7 @@ export function updateApp(
  */
 export function listApps(
   registry: AppRegistry,
-  environment?: Environment
+  environment?: Environment,
 ): AppConfig[] {
   if (environment) {
     return registry.apps.filter((app) => app.environment === environment);
@@ -192,10 +192,7 @@ export function listApps(
 /**
  * Generate .env file for an app
  */
-export function generateEnvFile(
-  config: AppConfig,
-  outputDir?: string
-): string {
+export function generateEnvFile(config: AppConfig, outputDir?: string): string {
   const content = generateEnvContent(config);
   const fileName = getEnvFileName(config.environment);
   const outputPath = outputDir
@@ -219,7 +216,7 @@ export function generateEnvFile(
  */
 export function generateAllEnvFiles(
   registry: AppRegistry,
-  outputDir?: string
+  outputDir?: string,
 ): string[] {
   const paths: string[] = [];
 
@@ -239,7 +236,7 @@ export function updateServiceCredentials(
   appId: string,
   environment: Environment,
   service: keyof AppConfig["services"],
-  credentials: Record<string, string>
+  credentials: Record<string, string>,
 ): boolean {
   const app = getApp(registry, appId, environment);
   if (!app) {
@@ -266,14 +263,20 @@ export function batchAddApps(
     name: string;
     domain: string;
     environments: Environment[];
-  }>
+  }>,
 ): AppConfig[] {
   const addedApps: AppConfig[] = [];
 
   for (const appDef of apps) {
     for (const env of appDef.environments) {
       try {
-        const app = addApp(registry, appDef.id, appDef.name, appDef.domain, env);
+        const app = addApp(
+          registry,
+          appDef.id,
+          appDef.name,
+          appDef.domain,
+          env,
+        );
         addedApps.push(app);
       } catch (error) {
         console.warn(`Skipping ${appDef.id} (${env}): ${error}`);
@@ -291,7 +294,7 @@ export function cloneAppToEnvironment(
   registry: AppRegistry,
   appId: string,
   sourceEnv: Environment,
-  targetEnv: Environment
+  targetEnv: Environment,
 ): AppConfig | undefined {
   const sourceApp = getApp(registry, appId, sourceEnv);
   if (!sourceApp) {
@@ -336,7 +339,7 @@ export function cloneAppToEnvironment(
  */
 export function setRegistryDefaults(
   registry: AppRegistry,
-  defaults: AppRegistry["defaults"]
+  defaults: AppRegistry["defaults"],
 ): void {
   registry.defaults = {
     ...registry.defaults,
@@ -374,7 +377,8 @@ export function getRegistryStats(registry: AppRegistry): {
     if (app.services.google?.clientId) servicesConfigured.google++;
     if (app.services.github?.clientId) servicesConfigured.github++;
     if (app.services.stripe?.secretKey) servicesConfigured.stripe++;
-    if (app.services.cloudflareR2?.bucketName) servicesConfigured.cloudflareR2++;
+    if (app.services.cloudflareR2?.bucketName)
+      servicesConfigured.cloudflareR2++;
     if (app.services.upstashRedis?.restUrl) servicesConfigured.upstashRedis++;
     if (app.services.postHog?.apiKey) servicesConfigured.postHog++;
     if (app.services.database?.url) servicesConfigured.database++;

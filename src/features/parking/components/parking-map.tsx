@@ -80,8 +80,8 @@ export function ParkingMap({ onSpotSelect, selectedSpot }: ParkingMapProps) {
 
   return (
     <div className="w-full rounded-2xl border border-border bg-card p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-card-foreground">
+      <div className="mb-6 flex items-center justify-between">
+        <h3 className="font-semibold text-card-foreground text-lg">
           Select a Spot
         </h3>
         <div className="flex items-center gap-4 text-xs">
@@ -102,8 +102,8 @@ export function ParkingMap({ onSpotSelect, selectedSpot }: ParkingMapProps) {
 
       <div className="relative">
         {/* Entrance */}
-        <div className="flex items-center justify-center mb-6 py-2 border-y-2 border-dashed border-border">
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+        <div className="mb-6 flex items-center justify-center border-border border-y-2 border-dashed py-2">
+          <span className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
             Entrance
           </span>
         </div>
@@ -112,10 +112,10 @@ export function ParkingMap({ onSpotSelect, selectedSpot }: ParkingMapProps) {
         <div className="space-y-3">
           {rows.map((row) => (
             <div key={row} className="flex items-center gap-2">
-              <span className="w-6 text-sm font-medium text-muted-foreground">
+              <span className="w-6 font-medium text-muted-foreground text-sm">
                 {row}
               </span>
-              <div className="flex-1 grid grid-cols-8 gap-2">
+              <div className="grid flex-1 grid-cols-8 gap-2">
                 {spots
                   .filter((s) => s.row === row)
                   .map((spot) => (
@@ -125,16 +125,20 @@ export function ParkingMap({ onSpotSelect, selectedSpot }: ParkingMapProps) {
                       onClick={() => handleSpotClick(spot)}
                       disabled={spot.status !== "available"}
                       className={cn(
-                        "relative aspect-[3/4] rounded-md flex flex-col items-center justify-center text-xs font-medium transition-all",
-                        getSpotColor(spot)
+                        "relative flex aspect-[3/4] flex-col items-center justify-center rounded-md font-medium text-xs transition-all",
+                        getSpotColor(spot),
                       )}
                     >
                       <span className="text-[10px]">{spot.id}</span>
                       {spot.type === "handicap" && (
-                        <span className="absolute bottom-0.5 text-[8px]">♿</span>
+                        <span className="absolute bottom-0.5 text-[8px]">
+                          ♿
+                        </span>
                       )}
                       {spot.type === "ev" && (
-                        <span className="absolute bottom-0.5 text-[8px]">⚡</span>
+                        <span className="absolute bottom-0.5 text-[8px]">
+                          ⚡
+                        </span>
                       )}
                     </button>
                   ))}
@@ -144,8 +148,8 @@ export function ParkingMap({ onSpotSelect, selectedSpot }: ParkingMapProps) {
         </div>
 
         {/* Exit */}
-        <div className="flex items-center justify-center mt-6 py-2 border-y-2 border-dashed border-border">
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+        <div className="mt-6 flex items-center justify-center border-border border-y-2 border-dashed py-2">
+          <span className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
             Exit
           </span>
         </div>

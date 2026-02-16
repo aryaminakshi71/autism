@@ -4,8 +4,8 @@
  * Client-side hooks and utilities for authentication.
  */
 
-import { createAuthClient } from "better-auth/react";
 import { organizationClient } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/react";
 
 /**
  * Create auth client - call this in your app with the correct base URL

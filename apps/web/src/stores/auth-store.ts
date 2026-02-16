@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { createAuthClient } from "better-auth/react";
 
 export interface AuthState {
   user: any | null;

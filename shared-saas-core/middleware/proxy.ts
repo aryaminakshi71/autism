@@ -1,28 +1,32 @@
-import { authRateLimit, getClientIp, checkRateLimit } from '../utils/rate-limit'
+import {
+  authRateLimit,
+  checkRateLimit,
+  getClientIp,
+} from "../utils/rate-limit";
 
 export async function proxy(request: Request) {
   // Rate limit check for sensitive endpoints
-  const pathname = new URL(request.url).pathname
-  const sensitiveEndpoints = ['/login', '/register', '/api/auth/signin']
-  
-  if (sensitiveEndpoints.some(p => pathname.startsWith(p))) {
-    const ip = getClientIp(request as any)
-    const rateLimitResult = await checkRateLimit(authRateLimit, ip)
-    
+  const pathname = new URL(request.url).pathname;
+  const sensitiveEndpoints = ["/login", "/register", "/api/auth/signin"];
+
+  if (sensitiveEndpoints.some((p) => pathname.startsWith(p))) {
+    const ip = getClientIp(request as any);
+    const rateLimitResult = await checkRateLimit(authRateLimit, ip);
+
     if (!rateLimitResult.success) {
-      return new Response('Too Many Requests', {
+      return new Response("Too Many Requests", {
         status: 429,
         headers: {
-          'Retry-After': '60',
-          'X-RateLimit-Limit': String(rateLimitResult.limit),
-          'X-RateLimit-Remaining': String(rateLimitResult.remaining),
-          'X-RateLimit-Reset': String(rateLimitResult.reset),
+          "Retry-After": "60",
+          "X-RateLimit-Limit": String(rateLimitResult.limit),
+          "X-RateLimit-Remaining": String(rateLimitResult.remaining),
+          "X-RateLimit-Reset": String(rateLimitResult.reset),
         },
-      })
+      });
     }
   }
 
-  const response = new Response(null, { status: 200 })
+  const response = new Response(null, { status: 200 });
 
   const cspHeader = [
     "default-src 'self'",
@@ -37,28 +41,26 @@ export async function proxy(request: Request) {
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'self'",
-  ].join('; ')
+  ].join("; ");
 
   const headers = {
-    'X-DNS-Prefetch-Control': 'on',
-    'X-Frame-Options': 'SAMEORIGIN',
-    'X-Content-Type-Options': 'nosniff',
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    'Content-Security-Policy': cspHeader,
-    'X-XSS-Protection': '1; mode=block',
-  }
+    "X-DNS-Prefetch-Control": "on",
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "Content-Security-Policy": cspHeader,
+    "X-XSS-Protection": "1; mode=block",
+  };
 
   Object.entries(headers).forEach(([key, value]) => {
-    response.headers.set(key, value)
-  })
+    response.headers.set(key, value);
+  });
 
-  return response
+  return response;
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
-}
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};

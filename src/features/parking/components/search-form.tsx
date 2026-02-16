@@ -11,7 +11,7 @@ export function SearchForm() {
 
   return (
     <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-lg">
-      <h2 className="text-lg font-semibold text-card-foreground mb-5">
+      <h2 className="mb-5 font-semibold text-card-foreground text-lg">
         Find parking near
       </h2>
 
@@ -21,7 +21,7 @@ export function SearchForm() {
             Location
           </Label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <MapPin className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
               id="location"
               placeholder="Enter address or location"
@@ -34,11 +34,11 @@ export function SearchForm() {
 
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
-            <Label htmlFor="date" className="text-xs text-muted-foreground">
+            <Label htmlFor="date" className="text-muted-foreground text-xs">
               Date
             </Label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Calendar className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="date"
                 type="date"
@@ -49,11 +49,11 @@ export function SearchForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="time" className="text-xs text-muted-foreground">
+            <Label htmlFor="time" className="text-muted-foreground text-xs">
               Time
             </Label>
             <div className="relative">
-              <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Clock className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="time"
                 type="time"
@@ -65,7 +65,7 @@ export function SearchForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="duration" className="text-xs text-muted-foreground">
+          <Label htmlFor="duration" className="text-muted-foreground text-xs">
             Duration
           </Label>
           <select
@@ -83,7 +83,7 @@ export function SearchForm() {
           </select>
         </div>
 
-        <Button className="w-full gap-2 mt-2" size="lg">
+        <Button className="mt-2 w-full gap-2" size="lg">
           <Search className="h-4 w-4" />
           Search
         </Button>

@@ -1,24 +1,33 @@
 // Drizzle enums for PostgreSQL - derived from core enums
 import {
-  ORGANIZATION_ROLE_VALUES,
+  ACTIVITY_TYPE_VALUES,
+  BILLING_PLAN_VALUES,
   CONTACT_STATUS_VALUES,
   DEAL_STAGE_VALUES,
   LEAD_SOURCE_VALUES,
-  ACTIVITY_TYPE_VALUES,
-  BILLING_PLAN_VALUES,
+  ORGANIZATION_ROLE_VALUES,
   SUBSCRIPTION_STATUS_VALUES,
 } from "@autism-legacy-20260205/core";
 import { pgEnum } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
 // Drizzle pgEnum definitions - use the array directly
-export const organizationRoleEnum = pgEnum("organization_role", ORGANIZATION_ROLE_VALUES);
-export const contactStatusEnum = pgEnum("contact_status", CONTACT_STATUS_VALUES);
+export const organizationRoleEnum = pgEnum(
+  "organization_role",
+  ORGANIZATION_ROLE_VALUES,
+);
+export const contactStatusEnum = pgEnum(
+  "contact_status",
+  CONTACT_STATUS_VALUES,
+);
 export const dealStageEnum = pgEnum("deal_stage", DEAL_STAGE_VALUES);
 export const leadSourceEnum = pgEnum("lead_source", LEAD_SOURCE_VALUES);
 export const activityTypeEnum = pgEnum("activity_type", ACTIVITY_TYPE_VALUES);
 export const billingPlanEnum = pgEnum("billing_plan", BILLING_PLAN_VALUES);
-export const subscriptionStatusEnum = pgEnum("subscription_status", SUBSCRIPTION_STATUS_VALUES);
+export const subscriptionStatusEnum = pgEnum(
+  "subscription_status",
+  SUBSCRIPTION_STATUS_VALUES,
+);
 
 // Zod enums for validation (re-exported from core)
 export const organizationRoleZodEnum = z.enum(ORGANIZATION_ROLE_VALUES);

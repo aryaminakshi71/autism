@@ -4,13 +4,13 @@
  * Dashboard statistics and metrics.
  */
 
-import { z } from "zod";
-import { eq, desc } from "drizzle-orm";
-import { orgAuthed, getDb, schema } from "../procedures";
 import { getOrCache } from "@autism-legacy-20260205/storage/redis";
+import { desc, eq } from "drizzle-orm";
+import { z } from "zod";
 import type { OrgContext } from "../context";
 import { isDemoRequest } from "../lib/demo";
 import { getDemoDashboardStats } from "../lib/demo-data";
+import { getDb, orgAuthed, schema } from "../procedures";
 
 const { contacts, deals, activities } = schema;
 
@@ -25,8 +25,7 @@ function formatTimeAgo(date: Date | string): string {
 
   if (diffMins < 1) return "just now";
   if (diffMins < 60) return `${diffMins} min ago`;
-  if (diffHours < 24)
-    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
   if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
   return then.toLocaleDateString();
 }
@@ -58,7 +57,7 @@ export const dashboardRouter = {
             stage: z.string(),
             value: z.number(),
             count: z.number(),
-          })
+          }),
         ),
         recentActivities: z.array(
           z.object({
@@ -66,9 +65,9 @@ export const dashboardRouter = {
             type: z.string(),
             message: z.string(),
             time: z.string(),
-          })
+          }),
         ),
-      })
+      }),
     )
     .handler(async ({ context }: { context: OrgContext }) => {
       if (isDemoRequest(context)) {
@@ -95,9 +94,11 @@ export const dashboardRouter = {
             .where(eq(deals.organizationId, orgId));
 
           const activeDeals = allDeals.filter(
-            (d: any) => d.stage !== "won" && d.stage !== "lost"
+            (d: any) => d.stage !== "won" && d.stage !== "lost",
           ).length;
-          const wonDeals = allDeals.filter((d: any) => d.stage === "won").length;
+          const wonDeals = allDeals.filter(
+            (d: any) => d.stage === "won",
+          ).length;
           const totalDeals = allDeals.length;
 
           const conversionRate =
@@ -105,7 +106,10 @@ export const dashboardRouter = {
 
           const revenue = allDeals
             .filter((d: any) => d.stage === "won")
-            .reduce((sum: number, d: any) => sum + (parseFloat(d.value) || 0), 0);
+            .reduce(
+              (sum: number, d: any) => sum + (parseFloat(d.value) || 0),
+              0,
+            );
 
           // Calculate changes (simplified - would need previous period data)
           const contactsChange = 0; // TODO: Calculate from previous period
@@ -123,7 +127,9 @@ export const dashboardRouter = {
           ];
 
           allDeals.forEach((deal: any) => {
-            const stageIndex = pipeline.findIndex((p) => p.stage === deal.stage);
+            const stageIndex = pipeline.findIndex(
+              (p) => p.stage === deal.stage,
+            );
             if (stageIndex >= 0) {
               pipeline[stageIndex].count++;
               pipeline[stageIndex].value += parseFloat(deal.value) || 0;
@@ -143,7 +149,7 @@ export const dashboardRouter = {
                 type: activity.type,
                 message: `${activity.type}: ${activity.subject}`,
                 time: formatTimeAgo(activity.createdAt),
-              }))
+              })),
             );
 
           return {
@@ -159,7 +165,7 @@ export const dashboardRouter = {
             recentActivities,
           };
         },
-        300 // 5 minutes TTL for analytics
+        300, // 5 minutes TTL for analytics
       );
     }),
 };

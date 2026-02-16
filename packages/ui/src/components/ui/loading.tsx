@@ -1,32 +1,35 @@
-'use client'
-
-import * as React from 'react'
-import { cn } from '../../lib/index'
+"use client";
+import { cn } from "../../lib/index";
 
 export interface LoadingProps {
-  size?: 'sm' | 'md' | 'lg'
-  className?: string
-  text?: string
+  size?: "sm" | "md" | "lg";
+  className?: string;
+  text?: string;
 }
 
-const Loading = ({ size = 'md', className, text }: LoadingProps) => {
+const Loading = ({ size = "md", className, text }: LoadingProps) => {
   const sizeClasses = {
-    sm: 'h-4 w-4',
-    md: 'h-8 w-8',
-    lg: 'h-12 w-12',
-  }
+    sm: "h-4 w-4",
+    md: "h-8 w-8",
+    lg: "h-12 w-12",
+  };
 
   return (
-    <div className={cn('flex flex-col items-center justify-center gap-2', className)}>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center gap-2",
+        className,
+      )}
+    >
       <div
         className={cn(
-          'animate-spin rounded-full border-2 border-gray-300 border-t-blue-600',
-          sizeClasses[size]
+          "animate-spin rounded-full border-2 border-gray-300 border-t-blue-600",
+          sizeClasses[size],
         )}
       />
-      {text && <p className="text-sm text-gray-500">{text}</p>}
+      {text && <p className="text-gray-500 text-sm">{text}</p>}
     </div>
-  )
-}
+  );
+};
 
-export { Loading }
+export { Loading };

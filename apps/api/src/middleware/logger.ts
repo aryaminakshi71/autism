@@ -4,8 +4,11 @@
  * Request-scoped logging middleware for Hono.
  */
 
+import {
+  type Logger,
+  createRequestLogger,
+} from "@autism-legacy-20260205/logger";
 import type { Context, Next } from "hono";
-import { createRequestLogger, type Logger } from "@autism-legacy-20260205/logger";
 
 const SKIP_PATHS = ["/api/health", "/health", "/favicon.ico", "/robots.txt"];
 

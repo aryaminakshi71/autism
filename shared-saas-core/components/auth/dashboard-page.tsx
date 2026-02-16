@@ -1,112 +1,137 @@
-'use client'
+"use client";
 
 // Standardized Dashboard Page Component - Used across all apps
 // Uses Tailwind design tokens for consistent dark/light mode support
 
-import * as React from 'react'
-import { Link, useNavigate } from '@tanstack/react-router'
-import { 
-  LayoutDashboard, 
-  Settings, 
-  LogOut, 
-  Menu, 
-  X,
-  Home,
+import { Link, useNavigate } from "@tanstack/react-router";
+import {
   BarChart3,
-  Users,
+  Bell,
   FileText,
-  Bell
-} from 'lucide-react'
-import { cn } from '../../lib'
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Settings,
+  Users,
+  X,
+} from "lucide-react";
+import * as React from "react";
+import { cn } from "../../lib";
 
 interface NavItem {
-  label: string
-  href: string
-  icon?: React.ReactNode
-  children?: NavItem[] // Support for nested navigation
+  label: string;
+  href: string;
+  icon?: React.ReactNode;
+  children?: NavItem[]; // Support for nested navigation
 }
 
 interface DashboardPageProps {
-  appName?: string
-  themeColor?: string
-  themeColorSecondary?: string
-  logoIcon?: React.ReactNode
-  children?: React.ReactNode
-  navItems?: NavItem[]
-  activeNavItem?: string
+  appName?: string;
+  themeColor?: string;
+  themeColorSecondary?: string;
+  logoIcon?: React.ReactNode;
+  children?: React.ReactNode;
+  navItems?: NavItem[];
+  activeNavItem?: string;
 }
 
 const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-  { label: 'Analytics', href: '/dashboard/analytics', icon: <BarChart3 className="w-5 h-5" /> },
-  { label: 'Users', href: '/dashboard/users', icon: <Users className="w-5 h-5" /> },
-  { label: 'Reports', href: '/dashboard/reports', icon: <FileText className="w-5 h-5" /> },
-  { label: 'Settings', href: '/dashboard/settings', icon: <Settings className="w-5 h-5" /> },
-]
+  {
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: <LayoutDashboard className="h-5 w-5" />,
+  },
+  {
+    label: "Analytics",
+    href: "/dashboard/analytics",
+    icon: <BarChart3 className="h-5 w-5" />,
+  },
+  {
+    label: "Users",
+    href: "/dashboard/users",
+    icon: <Users className="h-5 w-5" />,
+  },
+  {
+    label: "Reports",
+    href: "/dashboard/reports",
+    icon: <FileText className="h-5 w-5" />,
+  },
+  {
+    label: "Settings",
+    href: "/dashboard/settings",
+    icon: <Settings className="h-5 w-5" />,
+  },
+];
 
 export function DashboardPage({
-  appName = 'App',
+  appName = "App",
   themeColor,
   themeColorSecondary,
   logoIcon,
   children,
   navItems = DEFAULT_NAV_ITEMS,
-  activeNavItem = '/dashboard',
+  activeNavItem = "/dashboard",
 }: DashboardPageProps) {
-  const navigate = useNavigate()
-  const [user, setUser] = React.useState<any>(null)
-  const [sidebarOpen, setSidebarOpen] = React.useState(false)
-  const [expandedItems, setExpandedItems] = React.useState<Set<string>>(new Set())
+  const navigate = useNavigate();
+  const [user, setUser] = React.useState<any>(null);
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const [expandedItems, setExpandedItems] = React.useState<Set<string>>(
+    new Set(),
+  );
 
   React.useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (user) return
-    
+    if (typeof window === "undefined") return;
+    if (user) return;
+
     try {
-      const userStr = localStorage.getItem('user')
+      const userStr = localStorage.getItem("user");
       if (userStr) {
-        setUser(JSON.parse(userStr))
+        setUser(JSON.parse(userStr));
       } else {
-        const hasRedirected = sessionStorage.getItem('dashboard-redirect-attempt')
+        const hasRedirected = sessionStorage.getItem(
+          "dashboard-redirect-attempt",
+        );
         if (!hasRedirected) {
-          sessionStorage.setItem('dashboard-redirect-attempt', 'true')
-          navigate({ to: '/login' })
+          sessionStorage.setItem("dashboard-redirect-attempt", "true");
+          navigate({ to: "/login" });
         }
       }
     } catch (e) {
-      console.error('Error reading user from localStorage:', e)
-      const hasRedirected = sessionStorage.getItem('dashboard-redirect-attempt')
+      console.error("Error reading user from localStorage:", e);
+      const hasRedirected = sessionStorage.getItem(
+        "dashboard-redirect-attempt",
+      );
       if (!hasRedirected) {
-        sessionStorage.setItem('dashboard-redirect-attempt', 'true')
-        navigate({ to: '/login' })
+        sessionStorage.setItem("dashboard-redirect-attempt", "true");
+        navigate({ to: "/login" });
       }
     }
-  }, [])
+  }, []);
 
   const toggleExpanded = (href: string) => {
     setExpandedItems((prev) => {
-      const next = new Set(prev)
+      const next = new Set(prev);
       if (next.has(href)) {
-        next.delete(href)
+        next.delete(href);
       } else {
-        next.add(href)
+        next.add(href);
       }
-      return next
-    })
-  }
+      return next;
+    });
+  };
 
   const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('user')
-      localStorage.removeItem('isDemo')
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("user");
+      localStorage.removeItem("isDemo");
     }
-    navigate({ to: '/' })
-  }
+    navigate({ to: "/" });
+  };
 
   const renderNavItem = (item: NavItem, depth: number = 0): React.ReactNode => {
-    const hasChildren = item.children && item.children.length > 0
-    const isActive = activeNavItem === item.href
-    const isExpanded = expandedItems.has(item.href)
+    const hasChildren = item.children && item.children.length > 0;
+    const isActive = activeNavItem === item.href;
+    const isExpanded = expandedItems.has(item.href);
 
     return (
       <div key={item.href}>
@@ -114,9 +139,9 @@ export function DashboardPage({
           <button
             onClick={() => toggleExpanded(item.href)}
             className={cn(
-              'w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-xl font-medium transition-colors',
-              'text-foreground/70 hover:text-foreground hover:bg-accent',
-              isActive && 'bg-primary text-primary-foreground'
+              "flex w-full items-center justify-between space-x-3 rounded-xl px-4 py-3 font-medium transition-colors",
+              "text-foreground/70 hover:bg-accent hover:text-foreground",
+              isActive && "bg-primary text-primary-foreground",
             )}
             style={{ paddingLeft: `${1 + depth}rem` }}
           >
@@ -124,16 +149,20 @@ export function DashboardPage({
               {item.icon}
               <span>{item.label}</span>
             </div>
-            <span className={cn('transition-transform', isExpanded && 'rotate-90')}>›</span>
+            <span
+              className={cn("transition-transform", isExpanded && "rotate-90")}
+            >
+              ›
+            </span>
           </button>
         ) : (
           <Link
             to={item.href}
             className={cn(
-              'flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-colors no-underline',
+              "flex items-center space-x-3 rounded-xl px-4 py-3 font-medium no-underline transition-colors",
               isActive
-                ? 'bg-primary text-primary-foreground'
-                : 'text-foreground/70 hover:text-foreground hover:bg-accent'
+                ? "bg-primary text-primary-foreground"
+                : "text-foreground/70 hover:bg-accent hover:text-foreground",
             )}
             style={{ paddingLeft: `${1 + depth}rem` }}
           >
@@ -147,102 +176,109 @@ export function DashboardPage({
           </div>
         )}
       </div>
-    )
-  }
+    );
+  };
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-8 h-8 border-4 border-muted rounded-full border-t-primary animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-muted border-t-primary" />
       </div>
-    )
+    );
   }
 
-  const isDemo = typeof window !== 'undefined' && localStorage.getItem('isDemo') === 'true'
+  const isDemo =
+    typeof window !== "undefined" && localStorage.getItem("isDemo") === "true";
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="flex min-h-screen bg-background">
       {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
+        <div
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      <aside 
+      <aside
         className={cn(
-          'fixed lg:static inset-y-0 left-0 z-50 w-64 bg-card border-r border-border',
-          'transform transition-transform duration-200 ease-in-out',
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+          "fixed inset-y-0 left-0 z-50 w-64 border-border border-r bg-card lg:static",
+          "transform transition-transform duration-200 ease-in-out",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
-        <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-border border-b p-4">
             <Link to="/" className="flex items-center space-x-2 no-underline">
               {logoIcon || (
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary text-primary-foreground">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
                   <span className="font-bold text-lg">{appName.charAt(0)}</span>
                 </div>
               )}
-              <span className="text-lg font-bold text-foreground">{appName}</span>
+              <span className="font-bold text-foreground text-lg">
+                {appName}
+              </span>
             </Link>
-            <button 
+            <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground lg:hidden"
             >
-              <X className="w-6 h-6" />
+              <X className="h-6 w-6" />
             </button>
           </div>
 
           {isDemo && (
-            <div className="mx-4 mt-4 p-3 rounded-lg text-sm bg-primary/10 text-primary border border-primary/20">
+            <div className="mx-4 mt-4 rounded-lg border border-primary/20 bg-primary/10 p-3 text-primary text-sm">
               Demo Mode Active
             </div>
           )}
 
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 space-y-1 overflow-y-auto p-4">
             {navItems.map((item) => renderNavItem(item, 0))}
           </nav>
 
-          <div className="p-4 border-t border-border">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-primary-foreground font-medium">
-                {user.firstName?.charAt(0) || user.email?.charAt(0) || 'U'}
+          <div className="border-border border-t p-4">
+            <div className="mb-4 flex items-center space-x-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-medium text-primary-foreground">
+                {user.firstName?.charAt(0) || user.email?.charAt(0) || "U"}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-foreground font-medium truncate">
-                  {user.firstName || user.email?.split('@')[0]}
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium text-foreground">
+                  {user.firstName || user.email?.split("@")[0]}
                 </p>
-                <p className="text-muted-foreground text-sm truncate">{user.email}</p>
+                <p className="truncate text-muted-foreground text-sm">
+                  {user.email}
+                </p>
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center space-x-2 px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-xl transition-colors"
+              className="flex w-full items-center justify-center space-x-2 rounded-xl px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="h-5 w-5" />
               <span>Sign Out</span>
             </button>
           </div>
         </div>
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="bg-card border-b border-border sticky top-0 z-30">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-30 border-border border-b bg-card">
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground lg:hidden"
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="h-6 w-6" />
               </button>
-              <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
+              <h1 className="font-semibold text-foreground text-xl">
+                Dashboard
+              </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="text-muted-foreground hover:text-foreground relative">
-                <Bell className="w-6 h-6" />
-                <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary" />
+              <button className="relative text-muted-foreground hover:text-foreground">
+                <Bell className="h-6 w-6" />
+                <span className="-top-1 -right-1 absolute h-2 w-2 rounded-full bg-primary" />
               </button>
             </div>
           </div>
@@ -250,17 +286,24 @@ export function DashboardPage({
 
         <main className="flex-1 p-6">
           {children || (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
               {[
-                { label: 'Total Users', value: '1,234', change: '+12%' },
-                { label: 'Revenue', value: '$45,678', change: '+8%' },
-                { label: 'Active Sessions', value: '567', change: '+24%' },
-                { label: 'Conversion Rate', value: '3.2%', change: '+2%' },
+                { label: "Total Users", value: "1,234", change: "+12%" },
+                { label: "Revenue", value: "$45,678", change: "+8%" },
+                { label: "Active Sessions", value: "567", change: "+24%" },
+                { label: "Conversion Rate", value: "3.2%", change: "+2%" },
               ].map((stat, index) => (
-                <div key={index} className="bg-card rounded-xl p-6 shadow-sm border border-border">
+                <div
+                  key={index}
+                  className="rounded-xl border border-border bg-card p-6 shadow-sm"
+                >
                   <p className="text-muted-foreground text-sm">{stat.label}</p>
-                  <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
-                  <p className="text-sm mt-2 text-primary">{stat.change} from last month</p>
+                  <p className="mt-1 font-bold text-2xl text-foreground">
+                    {stat.value}
+                  </p>
+                  <p className="mt-2 text-primary text-sm">
+                    {stat.change} from last month
+                  </p>
                 </div>
               ))}
             </div>
@@ -268,7 +311,7 @@ export function DashboardPage({
         </main>
       </div>
     </div>
-  )
+  );
 }
 
-export { DEFAULT_NAV_ITEMS as DASHBOARD_DEFAULT_NAV_ITEMS }
+export { DEFAULT_NAV_ITEMS as DASHBOARD_DEFAULT_NAV_ITEMS };

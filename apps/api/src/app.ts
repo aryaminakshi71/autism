@@ -4,24 +4,24 @@
  * Hono app with oRPC integration for Cloudflare Workers.
  */
 
+import { createDb } from "@autism-legacy-20260205/storage";
+import { OpenAPIGenerator } from "@orpc/openapi";
+import { onError } from "@orpc/server";
+import { RPCHandler } from "@orpc/server/fetch";
+import { ZodToJsonSchemaConverter } from "@orpc/zod";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
-import { RPCHandler } from "@orpc/server/fetch";
-import { OpenAPIGenerator } from "@orpc/openapi";
-import { ZodToJsonSchemaConverter } from "@orpc/zod";
-import { onError } from "@orpc/server";
-import { createDb } from "@autism-legacy-20260205/storage";
-import { appRouter } from "./routers";
+// import { captureException as sentryCaptureException } from "./lib/sentry";
+import type { AppEnv, InitialContext } from "./context";
 import { createAuthFromEnv } from "./lib/create-auth-from-env";
+import { APIError } from "./lib/errors";
 import { loggerMiddleware } from "./middleware/logger";
 // Monitoring imports disabled for Cloudflare Workers compatibility
 // import { initSentry } from "./lib/sentry";
 // import { initDatadog } from "./lib/datadog";
 import { rateLimitRedis } from "./middleware/rate-limit-redis";
-import { APIError, formatErrorResponse, captureException } from "./lib/errors";
-// import { captureException as sentryCaptureException } from "./lib/sentry";
-import type { AppEnv, InitialContext } from "./context";
+import { appRouter } from "./routers";
 
 /**
  * Create Hono app with all routes
@@ -33,7 +33,10 @@ export function createApp() {
   // (Sentry and Datadog require semver which fails in Workers environment)
 
   // Global middleware
-  app.use("*", cors({ origin: (origin: string | null) => origin, credentials: true }));
+  app.use(
+    "*",
+    cors({ origin: (origin: string | null) => origin, credentials: true }),
+  );
   app.use("*", requestId());
   app.use("*", loggerMiddleware);
 
@@ -66,7 +69,9 @@ export function createApp() {
 
     console.log("[Debug DB] Connection String Check:", {
       val: connectionString,
-      isLocal: connectionString.includes("localhost") || connectionString.includes("127.0.0.1")
+      isLocal:
+        connectionString.includes("localhost") ||
+        connectionString.includes("127.0.0.1"),
     });
 
     const db = createDb({ connectionString });
@@ -100,19 +105,28 @@ export function createApp() {
       await db.execute("SELECT 1");
       console.log("✅ DB Connection successful");
     } catch (dbErr) {
-      console.error("❌ DB Connection Failed detected in request handler:", dbErr);
-      return c.json({
-        error: "Database Connection Failed",
-        details: String(dbErr),
-        stack: dbErr instanceof Error ? dbErr.stack : undefined
-      }, 500);
+      console.error(
+        "❌ DB Connection Failed detected in request handler:",
+        dbErr,
+      );
+      return c.json(
+        {
+          error: "Database Connection Failed",
+          details: String(dbErr),
+          stack: dbErr instanceof Error ? dbErr.stack : undefined,
+        },
+        500,
+      );
     }
 
     try {
       return await auth.handler(c.req.raw);
     } catch (e) {
       console.error("[Auth Error]", e);
-      return c.json({ error: "Internal Server Error", details: String(e) }, 500);
+      return c.json(
+        { error: "Internal Server Error", details: String(e) },
+        500,
+      );
     }
   });
 
@@ -121,12 +135,12 @@ export function createApp() {
     interceptors: [
       onError((error: unknown) => {
         console.error("[RPC Error]", error);
-        
+
         // Capture in Sentry (disabled for Cloudflare Workers compatibility)
         // if (error instanceof Error) {
         //   sentryCaptureException(error);
         // }
-        
+
         // Handle APIError
         if (error instanceof APIError) {
           // APIError will be handled by oRPC's error handling

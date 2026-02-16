@@ -4,24 +4,24 @@
  * Referral management page.
  */
 
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { Pagination } from "@/components/pagination";
 import {
+  Badge,
+  Button,
   Card,
   CardContent,
-  Button,
-  Input,
-  Badge,
-  FormModal,
-  FormField,
   EmptyState,
+  FormField,
+  FormModal,
+  Input,
   Loading,
 } from "@autism-legacy-20260205/ui";
-import { Plus, Search, Mail, Webhook, UserPlus } from "lucide-react";
-import { leadsApi } from "../lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { Mail, Plus, Search, UserPlus, Webhook } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { Pagination } from "@/components/pagination";
+import { leadsApi } from "../lib/api";
 
 export const Route = createFileRoute("/app/leads")({
   component: LeadsPage,
@@ -100,7 +100,8 @@ function LeadsPage() {
   });
 
   const convertMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) => leadsApi.convert(id, data),
+    mutationFn: ({ id, data }: { id: string; data: any }) =>
+      leadsApi.convert(id, data),
     onSuccess: () => {
       toast.success("Referral converted to learner");
       queryClient.invalidateQueries({ queryKey: ["leads"] });
@@ -110,8 +111,9 @@ function LeadsPage() {
 
   const leads = data?.data || [];
   const totalItems = data?.total || 0;
-  const totalPages = data?.total && data?.limit ? Math.ceil(data.total / data.limit) : 1;
-  
+  const totalPages =
+    data?.total && data?.limit ? Math.ceil(data.total / data.limit) : 1;
+
   // Client-side filtering for search
   const filteredLeads = leads.filter((lead: any) => {
     if (!search) return true;
@@ -136,10 +138,16 @@ function LeadsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Referrals</h1>
-          <p className="text-gray-500">Capture and manage referrals from community partners</p>
+          <h1 className="font-bold text-2xl text-gray-900">Referrals</h1>
+          <p className="text-gray-500">
+            Capture and manage referrals from community partners
+          </p>
         </div>
-        <Button variant="primary" leftIcon={<Plus className="w-4 h-4" />} onClick={() => setIsModalOpen(true)}>
+        <Button
+          variant="primary"
+          leftIcon={<Plus className="h-4 w-4" />}
+          onClick={() => setIsModalOpen(true)}
+        >
           Add Referral
         </Button>
       </div>
@@ -148,33 +156,39 @@ function LeadsPage() {
       <div className="grid grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
-            <p className="text-sm text-gray-500">New</p>
-            <p className="text-2xl font-bold text-blue-600">{leadCounts.new}</p>
+            <p className="text-gray-500 text-sm">New</p>
+            <p className="font-bold text-2xl text-blue-600">{leadCounts.new}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <p className="text-sm text-gray-500">Contacted</p>
-            <p className="text-2xl font-bold text-yellow-600">{leadCounts.contacted}</p>
+            <p className="text-gray-500 text-sm">Contacted</p>
+            <p className="font-bold text-2xl text-yellow-600">
+              {leadCounts.contacted}
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <p className="text-sm text-gray-500">Qualified</p>
-            <p className="text-2xl font-bold text-green-600">{leadCounts.qualified}</p>
+            <p className="text-gray-500 text-sm">Qualified</p>
+            <p className="font-bold text-2xl text-green-600">
+              {leadCounts.qualified}
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <p className="text-sm text-gray-500">Converted</p>
-            <p className="text-2xl font-bold text-purple-600">{leadCounts.converted}</p>
+            <p className="text-gray-500 text-sm">Converted</p>
+            <p className="font-bold text-2xl text-purple-600">
+              {leadCounts.converted}
+            </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Search */}
       <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-gray-400" />
         <Input
           placeholder="Search referrals..."
           value={search}
@@ -192,10 +206,13 @@ function LeadsPage() {
         </Card>
       ) : leads.length === 0 ? (
         <EmptyState
-          icon={<Webhook className="w-12 h-12" />}
+          icon={<Webhook className="h-12 w-12" />}
           title="No referrals yet"
           description="Start capturing referrals by adding your first one."
-          action={{ label: "Add Referral", onClick: () => setIsModalOpen(true) }}
+          action={{
+            label: "Add Referral",
+            onClick: () => setIsModalOpen(true),
+          }}
         />
       ) : (
         <>
@@ -203,68 +220,76 @@ function LeadsPage() {
             <CardContent className="p-0">
               <div className="divide-y divide-gray-100">
                 {filteredLeads.map((lead: any) => (
-                <div key={lead.id} className="flex items-center justify-between p-4 hover:bg-gray-50">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                      <Mail className="w-5 h-5 text-purple-600" />
+                  <div
+                    key={lead.id}
+                    className="flex items-center justify-between p-4 hover:bg-gray-50"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
+                        <Mail className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {lead.firstName} {lead.lastName}
+                          {lead.companyName && (
+                            <span className="text-gray-500">
+                              {" "}
+                              at {lead.companyName}
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-gray-500 text-sm">{lead.email}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {lead.firstName} {lead.lastName}
-                        {lead.companyName && <span className="text-gray-500"> at {lead.companyName}</span>}
-                      </p>
-                      <p className="text-sm text-gray-500">{lead.email}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant={
-                        lead.status === "converted"
-                          ? "success"
-                          : lead.status === "qualified"
-                          ? "primary"
-                          : "default"
-                      }
-                    >
-                      {lead.status}
-                    </Badge>
-                    <Badge variant="outline">{lead.source}</Badge>
-                    {lead.status !== "converted" && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<UserPlus className="w-4 h-4" />}
-                        onClick={() =>
-                          convertMutation.mutate({
-                            id: lead.id,
-                            data: {
-                              firstName: lead.firstName || "Unknown",
-                              lastName: lead.lastName || "",
-                              companyName: lead.companyName,
-                            },
-                          })
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant={
+                          lead.status === "converted"
+                            ? "success"
+                            : lead.status === "qualified"
+                              ? "primary"
+                              : "default"
                         }
-                        loading={convertMutation.isPending}
                       >
-                        Convert
-                      </Button>
-                    )}
+                        {lead.status}
+                      </Badge>
+                      <Badge variant="outline">{lead.source}</Badge>
+                      {lead.status !== "converted" && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<UserPlus className="h-4 w-4" />}
+                          onClick={() =>
+                            convertMutation.mutate({
+                              id: lead.id,
+                              data: {
+                                firstName: lead.firstName || "Unknown",
+                                lastName: lead.lastName || "",
+                                companyName: lead.companyName,
+                              },
+                            })
+                          }
+                          loading={convertMutation.isPending}
+                        >
+                          Convert
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            totalItems={totalItems}
-            itemsPerPage={itemsPerPage}
-          />
-        )}
-      </>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+            />
+          )}
+        </>
       )}
 
       {/* Create Referral Modal */}
@@ -284,7 +309,9 @@ function LeadsPage() {
             <Input
               type="email"
               value={newLead.email}
-              onChange={(e) => setNewLead({ ...newLead, email: e.target.value })}
+              onChange={(e) =>
+                setNewLead({ ...newLead, email: e.target.value })
+              }
               required
             />
           </FormField>
@@ -292,36 +319,48 @@ function LeadsPage() {
             <FormField label="First Name">
               <Input
                 value={newLead.firstName}
-                onChange={(e) => setNewLead({ ...newLead, firstName: e.target.value })}
+                onChange={(e) =>
+                  setNewLead({ ...newLead, firstName: e.target.value })
+                }
               />
             </FormField>
             <FormField label="Last Name">
               <Input
                 value={newLead.lastName}
-                onChange={(e) => setNewLead({ ...newLead, lastName: e.target.value })}
+                onChange={(e) =>
+                  setNewLead({ ...newLead, lastName: e.target.value })
+                }
               />
             </FormField>
           </div>
           <FormField label="Clinic or School">
             <Input
               value={newLead.companyName}
-              onChange={(e) => setNewLead({ ...newLead, companyName: e.target.value })}
+              onChange={(e) =>
+                setNewLead({ ...newLead, companyName: e.target.value })
+              }
             />
           </FormField>
           <FormField label="Phone">
             <Input
               value={newLead.phone}
-              onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })}
+              onChange={(e) =>
+                setNewLead({ ...newLead, phone: e.target.value })
+              }
             />
           </FormField>
           <FormField label="Source">
             <select
               className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
               value={newLead.source}
-              onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
+              onChange={(e) =>
+                setNewLead({ ...newLead, source: e.target.value })
+              }
             >
               {LEAD_SOURCES.map((s) => (
-                <option key={s.value} value={s.value}>{s.label}</option>
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
               ))}
             </select>
           </FormField>

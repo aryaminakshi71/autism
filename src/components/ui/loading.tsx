@@ -37,10 +37,10 @@ export class ErrorBoundary extends Component<
         return this.props.fallback;
       }
       return (
-        <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+        <div className="flex min-h-[400px] flex-col items-center justify-center p-8 text-center">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
             <svg
-              className="w-8 h-8 text-red-600"
+              className="h-8 w-8 text-red-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -53,19 +53,19 @@ export class ErrorBoundary extends Component<
               />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="mb-2 font-semibold text-gray-900 text-xl">
             Something went wrong
           </h2>
-          <p className="text-gray-600 mb-4 max-w-md">
+          <p className="mb-4 max-w-md text-gray-600">
             We encountered an unexpected error. Please try refreshing the page
             or contact support if the problem persists.
           </p>
           {this.state.error && (
-            <details className="text-left text-sm text-gray-500 mb-4 p-4 bg-gray-50 rounded-lg max-w-md">
-              <summary className="cursor-pointer font-medium text-gray-700 mb-2">
+            <details className="mb-4 max-w-md rounded-lg bg-gray-50 p-4 text-left text-gray-500 text-sm">
+              <summary className="mb-2 cursor-pointer font-medium text-gray-700">
                 Error Details
               </summary>
-              <p className="font-mono text-xs break-all">
+              <p className="break-all font-mono text-xs">
                 {this.state.error.message}
               </p>
             </details>
@@ -75,7 +75,7 @@ export class ErrorBoundary extends Component<
               this.setState({ hasError: false, error: null, errorInfo: null });
               window.location.reload();
             }}
-            className="px-6 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
+            className="rounded-xl bg-indigo-600 px-6 py-2 text-white transition-colors hover:bg-indigo-700"
           >
             Refresh Page
           </button>
@@ -104,7 +104,7 @@ export function LoadingSpinner({
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <div
-        className={`${sizeClasses[size]} border-gray-200 border-t-indigo-600 rounded-full animate-spin`}
+        className={`${sizeClasses[size]} animate-spin rounded-full border-gray-200 border-t-indigo-600`}
       />
     </div>
   );
@@ -118,9 +118,9 @@ export function LoadingOverlay({
   message = "Loading...",
 }: LoadingOverlayProps) {
   return (
-    <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
       <LoadingSpinner size="lg" />
-      <p className="mt-4 text-gray-600 font-medium">{message}</p>
+      <p className="mt-4 font-medium text-gray-600">{message}</p>
     </div>
   );
 }
@@ -164,7 +164,7 @@ export function TableSkeleton({
 }) {
   return (
     <div className="space-y-4">
-      <div className="flex gap-4 pb-4 border-b border-gray-100">
+      <div className="flex gap-4 border-gray-100 border-b pb-4">
         {Array.from({ length: columns }).map((_, i) => (
           <Skeleton key={i} width={`${100 / columns}%`} height="1.5rem" />
         ))}
@@ -186,8 +186,8 @@ export function TableSkeleton({
 
 export function CardSkeleton({ hasImage = true }: { hasImage?: boolean }) {
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-      <div className="flex items-start justify-between mb-4">
+    <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="mb-4 flex items-start justify-between">
         {hasImage && <Skeleton width="3rem" height="3rem" variant="circular" />}
         <Skeleton width="5rem" height="1.5rem" />
       </div>
@@ -199,13 +199,13 @@ export function CardSkeleton({ hasImage = true }: { hasImage?: boolean }) {
 
 export function StatsSkeleton() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
         <div
           key={i}
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+          className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <Skeleton width="3rem" height="3rem" variant="rectangular" />
             <Skeleton width="5rem" height="1rem" />
           </div>

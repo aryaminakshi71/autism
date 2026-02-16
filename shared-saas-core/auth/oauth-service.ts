@@ -1,4 +1,4 @@
-import { authService, TokenPayload } from './auth-service';
+import { TokenPayload, authService } from "./auth-service";
 
 interface OAuthConfig {
   google: {
@@ -15,19 +15,23 @@ interface OAuthConfig {
 
 const config: OAuthConfig = {
   google: {
-    clientId: process.env.GOOGLE_CLIENT_ID || '',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-    redirectUri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google/callback',
+    clientId: process.env.GOOGLE_CLIENT_ID || "",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    redirectUri:
+      process.env.GOOGLE_REDIRECT_URI ||
+      "http://localhost:3000/api/auth/google/callback",
   },
   github: {
-    clientId: process.env.GITHUB_CLIENT_ID || '',
-    clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
-    redirectUri: process.env.GITHUB_REDIRECT_URI || 'http://localhost:3000/api/auth/github/callback',
+    clientId: process.env.GITHUB_CLIENT_ID || "",
+    clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+    redirectUri:
+      process.env.GITHUB_REDIRECT_URI ||
+      "http://localhost:3000/api/auth/github/callback",
   },
 };
 
 export interface OAuthUser {
-  provider: 'google' | 'github';
+  provider: "google" | "github";
   id: string;
   email: string;
   name: string;
@@ -45,10 +49,10 @@ class OAuthService {
     const params = new URLSearchParams({
       client_id: config.google.clientId,
       redirect_uri: config.google.redirectUri,
-      response_type: 'code',
-      scope: 'openid email profile',
-      access_type: 'offline',
-      prompt: 'consent',
+      response_type: "code",
+      scope: "openid email profile",
+      access_type: "offline",
+      prompt: "consent",
       state,
     });
 
@@ -59,7 +63,7 @@ class OAuthService {
     const params = new URLSearchParams({
       client_id: config.github.clientId,
       redirect_uri: config.github.redirectUri,
-      scope: 'read:user user:email',
+      scope: "read:user user:email",
       state,
     });
 
@@ -67,20 +71,20 @@ class OAuthService {
   }
 
   async exchangeGoogleCode(code: string): Promise<OAuthTokens> {
-    const response = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    const response = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
         code,
         client_id: config.google.clientId,
         client_secret: config.google.clientSecret,
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         redirect_uri: config.google.redirectUri,
       }),
     });
 
     const data = await response.json();
-    
+
     return {
       accessToken: data.access_token,
       refreshToken: data.refresh_token,
@@ -89,21 +93,24 @@ class OAuthService {
   }
 
   async exchangeGitHubCode(code: string): Promise<OAuthTokens> {
-    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+    const tokenResponse = await fetch(
+      "https://github.com/login/oauth/access_token",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          code,
+          client_id: config.github.clientId,
+          client_secret: config.github.clientSecret,
+        }),
       },
-      body: JSON.stringify({
-        code,
-        client_id: config.github.clientId,
-        client_secret: config.github.clientSecret,
-      }),
-    });
+    );
 
     const data = await tokenResponse.json();
-    
+
     return {
       accessToken: data.access_token,
       expiresIn: 3600 * 24 * 30,
@@ -111,14 +118,17 @@ class OAuthService {
   }
 
   async getGoogleUser(accessToken: string): Promise<OAuthUser> {
-    const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+    const response = await fetch(
+      "https://www.googleapis.com/oauth2/v2/userinfo",
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+    );
 
     const data = await response.json();
-    
+
     return {
-      provider: 'google',
+      provider: "google",
       id: data.id,
       email: data.email,
       name: data.name,
@@ -127,21 +137,22 @@ class OAuthService {
   }
 
   async getGitHubUser(accessToken: string): Promise<OAuthUser> {
-    const userResponse = await fetch('https://api.github.com/user', {
+    const userResponse = await fetch("https://api.github.com/user", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
     const userData = await userResponse.json();
 
-    const emailResponse = await fetch('https://api.github.com/user/emails', {
+    const emailResponse = await fetch("https://api.github.com/user/emails", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
     const emails = await emailResponse.json();
-    const primaryEmail = emails.find((e: any) => e.primary)?.email || userData.email;
+    const primaryEmail =
+      emails.find((e: any) => e.primary)?.email || userData.email;
 
     return {
-      provider: 'github',
+      provider: "github",
       id: userData.id.toString(),
       email: primaryEmail,
       name: userData.name || userData.login,
@@ -150,14 +161,14 @@ class OAuthService {
   }
 
   async handleOAuthCallback(
-    provider: 'google' | 'github',
+    provider: "google" | "github",
     code: string,
-    state: string
+    state: string,
   ): Promise<{ user: OAuthUser; tokens: TokenPayload }> {
     let tokens: OAuthTokens;
     let user: OAuthUser;
 
-    if (provider === 'google') {
+    if (provider === "google") {
       tokens = await this.exchangeGoogleCode(code);
       user = await this.getGoogleUser(tokens.accessToken);
     } else {
@@ -168,8 +179,8 @@ class OAuthService {
     const tokenPayload: TokenPayload = {
       userId: `${provider}-${user.id}`,
       email: user.email,
-      role: 'user',
-      companyId: 'default',
+      role: "user",
+      companyId: "default",
     };
 
     const authTokens = authService.generateTokens(tokenPayload);

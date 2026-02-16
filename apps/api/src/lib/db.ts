@@ -8,7 +8,10 @@
  * environment bindings are request-scoped.
  */
 
-import { createDb as createDbClient, schema } from "@autism-legacy-20260205/storage";
+import {
+  createDb as createDbClient,
+  schema,
+} from "@autism-legacy-20260205/storage";
 import type { InitialContext } from "../context";
 
 export { schema };
@@ -18,7 +21,9 @@ export { schema };
  * Use this in procedures instead of accessing db from context
  */
 export function getDb(context: Pick<InitialContext, "env">) {
-  return createDbClient({ connectionString: context.env.DATABASE.connectionString });
+  return createDbClient({
+    connectionString: context.env.DATABASE.connectionString,
+  });
 }
 
 /**

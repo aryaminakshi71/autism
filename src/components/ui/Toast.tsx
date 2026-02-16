@@ -46,7 +46,7 @@ export function Toast({
   return (
     <div
       className={cn(
-        "flex items-start gap-3 p-4 rounded-lg border shadow-lg max-w-sm",
+        "flex max-w-sm items-start gap-3 rounded-lg border p-4 shadow-lg",
         toastStyles[type],
       )}
       role="alert"
@@ -91,7 +91,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <toastContext.Provider value={{ show, hide }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+      <div className="pointer-events-none fixed right-4 bottom-4 z-50 flex flex-col gap-2">
         {toasts.map((toast) => (
           <div key={toast.id} className="pointer-events-auto">
             <Toast {...toast} onClose={hide} />

@@ -7,7 +7,8 @@
 const dayMs = 24 * 60 * 60 * 1000;
 const now = Date.now();
 
-const isoDate = (offsetDays: number) => new Date(now - offsetDays * dayMs).toISOString();
+const isoDate = (offsetDays: number) =>
+  new Date(now - offsetDays * dayMs).toISOString();
 
 export type DemoContact = {
   id: string;
@@ -548,7 +549,8 @@ export function getDemoDashboardStats() {
     (deal) => deal.stage !== "won" && deal.stage !== "lost",
   ).length;
   const wonDeals = demoDeals.filter((deal) => deal.stage === "won").length;
-  const conversionRate = totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0;
+  const conversionRate =
+    totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0;
 
   const revenue = demoDeals
     .filter((deal) => deal.stage === "won")
@@ -571,7 +573,10 @@ export function getDemoDashboardStats() {
   });
 
   const recentActivities = [...demoActivities]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
     .slice(0, 10)
     .map((activity) => ({
       id: activity.id,

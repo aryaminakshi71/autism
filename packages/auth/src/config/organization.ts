@@ -38,7 +38,9 @@ export function organizationConfig(config: OrganizationConfig = {}) {
     sendInvitationEmail:
       sendInvitationEmail ??
       (async ({ email, organization }) => {
-        console.log(`[Auth] Invitation to ${email} for org ${organization.name}`);
+        console.log(
+          `[Auth] Invitation to ${email} for org ${organization.name}`,
+        );
       }),
   });
 }

@@ -1,7 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+} from "@autism-legacy-20260205/ui";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { ArrowLeft, CheckCircle, Mail } from "lucide-react";
 import { useState } from "react";
-import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
-import { Button, Input, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@autism-legacy-20260205/ui";
 
 export const Route = createFileRoute("/forgot-password")({
   component: ForgotPasswordPage,
@@ -22,10 +30,13 @@ function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <Link to="/" className="text-2xl font-bold text-blue-600 inline-block mb-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <Link
+            to="/"
+            className="mb-4 inline-block font-bold text-2xl text-blue-600"
+          >
             Autism Platform
           </Link>
         </div>
@@ -41,15 +52,18 @@ function ForgotPasswordPage() {
           </CardHeader>
           <CardContent>
             {submitted ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-green-600" />
+              <div className="py-8 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Check Your Email</h3>
-                <p className="text-gray-600 mb-6">
-                  We've sent password reset instructions to <strong>{email}</strong>
+                <h3 className="mb-2 font-semibold text-gray-900 text-lg">
+                  Check Your Email
+                </h3>
+                <p className="mb-6 text-gray-600">
+                  We've sent password reset instructions to{" "}
+                  <strong>{email}</strong>
                 </p>
-                <p className="text-sm text-gray-500 mb-6">
+                <p className="mb-6 text-gray-500 text-sm">
                   Didn't receive the email? Check your spam folder or{" "}
                   <button
                     onClick={() => setSubmitted(false)}
@@ -60,7 +74,7 @@ function ForgotPasswordPage() {
                 </p>
                 <Link to="/login">
                   <Button variant="outline" className="w-full">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <ArrowLeft className="mr-2 h-4 w-4" />
                     Back to Sign In
                   </Button>
                 </Link>
@@ -68,11 +82,14 @@ function ForgotPasswordPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="email"
+                    className="mb-1 block font-medium text-gray-700 text-sm"
+                  >
                     Email address
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Mail className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 transform text-gray-400" />
                     <Input
                       id="email"
                       type="email"
@@ -90,9 +107,9 @@ function ForgotPasswordPage() {
                 <div className="text-center">
                   <Link
                     to="/login"
-                    className="text-sm text-blue-600 hover:text-blue-700 hover:underline inline-flex items-center gap-1"
+                    className="inline-flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700 hover:underline"
                   >
-                    <ArrowLeft className="w-4 h-4" />
+                    <ArrowLeft className="h-4 w-4" />
                     Back to Sign In
                   </Link>
                 </div>
@@ -102,9 +119,12 @@ function ForgotPasswordPage() {
         </Card>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-gray-600 text-sm">
             Don't have an account?{" "}
-            <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+            <Link
+              to="/register"
+              className="font-medium text-blue-600 hover:text-blue-700"
+            >
               Sign up
             </Link>
           </p>

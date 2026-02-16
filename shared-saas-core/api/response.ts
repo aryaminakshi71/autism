@@ -21,7 +21,10 @@ export interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
-export function createSuccessResponse<T>(data: T, message?: string): ApiResponse<T> {
+export function createSuccessResponse<T>(
+  data: T,
+  message?: string,
+): ApiResponse<T> {
   return {
     success: true,
     data,
@@ -40,10 +43,10 @@ export function createPaginatedResponse<T>(
   items: T[],
   page: number,
   limit: number,
-  total: number
+  total: number,
 ): ApiResponse<PaginatedResponse<T>> {
   const totalPages = Math.ceil(total / limit);
-  
+
   return {
     success: true,
     data: {
@@ -59,40 +62,40 @@ export function createPaginatedResponse<T>(
 }
 
 export function handleApiError(error: unknown): ApiResponse<null> {
-  console.error('API Error:', error);
-  
+  console.error("API Error:", error);
+
   if (error instanceof Error) {
     return createErrorResponse(error.message);
   }
-  
-  return createErrorResponse('An unexpected error occurred');
+
+  return createErrorResponse("An unexpected error occurred");
 }
 
 export function buildQueryString(params: Record<string, any>): string {
   const searchParams = new URLSearchParams();
-  
+
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') {
+    if (value !== undefined && value !== null && value !== "") {
       if (Array.isArray(value)) {
-        value.forEach(v => searchParams.append(key, String(v)));
+        value.forEach((v) => searchParams.append(key, String(v)));
       } else {
         searchParams.append(key, String(value));
       }
     }
   });
-  
+
   return searchParams.toString();
 }
 
 export async function fetchApi<T>(
   url: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<ApiResponse<T>> {
   try {
     const response = await fetch(url, {
       ...options,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options?.headers,
       },
     });
@@ -100,7 +103,7 @@ export async function fetchApi<T>(
     const data = await response.json();
 
     if (!response.ok) {
-      return createErrorResponse(data.error || 'Request failed');
+      return createErrorResponse(data.error || "Request failed");
     }
 
     return createSuccessResponse(data.data || data);

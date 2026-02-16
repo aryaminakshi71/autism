@@ -4,24 +4,24 @@
  * Learner management page with list view.
  */
 
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { Pagination } from "@/components/pagination";
 import {
+  Badge,
+  Button,
   Card,
   CardContent,
-  Button,
-  Input,
-  Badge,
-  FormModal,
-  FormField,
   EmptyState,
+  FormField,
+  FormModal,
+  Input,
   Loading,
 } from "@autism-legacy-20260205/ui";
-import { Plus, Search, Mail, Building2 } from "lucide-react";
-import { contactsApi } from "../lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { Building2, Mail, Plus, Search } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { Pagination } from "@/components/pagination";
+import { contactsApi } from "../lib/api";
 
 export const Route = createFileRoute("/app/contacts")({
   component: ContactsPage,
@@ -43,7 +43,8 @@ function ContactsPage() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["contacts", search, currentPage],
-    queryFn: () => contactsApi.list({ page: currentPage, limit: itemsPerPage, search }),
+    queryFn: () =>
+      contactsApi.list({ page: currentPage, limit: itemsPerPage, search }),
     retry: 2,
   });
 
@@ -65,7 +66,13 @@ function ContactsPage() {
       toast.success("Learner created successfully");
       queryClient.invalidateQueries({ queryKey: ["contacts"] });
       setIsModalOpen(false);
-      setNewContact({ firstName: "", lastName: "", email: "", phone: "", companyName: "" });
+      setNewContact({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        companyName: "",
+      });
     },
     onError: (error: Error) => {
       const errorMessage = error.message || "Failed to create contact";
@@ -84,7 +91,9 @@ function ContactsPage() {
 
   const contacts = data?.data || [];
   const totalItems = data?.total || 0;
-  const totalPages = data?.totalPages || (data?.total && data?.limit ? Math.ceil(data.total / data.limit) : 1);
+  const totalPages =
+    data?.totalPages ||
+    (data?.total && data?.limit ? Math.ceil(data.total / data.limit) : 1);
 
   // Client-side filtering for search (server-side search can be added later)
   const filteredContacts = contacts.filter((contact: any) => {
@@ -103,18 +112,24 @@ function ContactsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Learners</h1>
-          <p className="text-gray-500">Manage learner profiles, care teams, and relationships</p>
+          <h1 className="font-bold text-2xl text-gray-900">Learners</h1>
+          <p className="text-gray-500">
+            Manage learner profiles, care teams, and relationships
+          </p>
         </div>
-        <Button variant="primary" leftIcon={<Plus className="w-4 h-4" />} onClick={() => setIsModalOpen(true)}>
+        <Button
+          variant="primary"
+          leftIcon={<Plus className="h-4 w-4" />}
+          onClick={() => setIsModalOpen(true)}
+        >
           Add Learner
         </Button>
       </div>
 
       {/* Search */}
       <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div className="relative max-w-md flex-1">
+          <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Search contacts..."
             value={search}
@@ -133,7 +148,7 @@ function ContactsPage() {
         </Card>
       ) : contacts.length === 0 ? (
         <EmptyState
-          icon={<Building2 className="w-12 h-12" />}
+          icon={<Building2 className="h-12 w-12" />}
           title="No contacts yet"
           description="Get started by adding your first contact."
           action={{ label: "Add Learner", onClick: () => setIsModalOpen(true) }}
@@ -144,32 +159,43 @@ function ContactsPage() {
             <CardContent className="p-0">
               <div className="divide-y divide-gray-100">
                 {filteredContacts.map((contact: any) => (
-                  <div key={contact.id} className="flex items-center justify-between p-4 hover:bg-gray-50">
+                  <div
+                    key={contact.id}
+                    className="flex items-center justify-between p-4 hover:bg-gray-50"
+                  >
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium text-blue-600">
-                          {contact.firstName?.[0]}{contact.lastName?.[0]}
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
+                        <span className="font-medium text-blue-600 text-sm">
+                          {contact.firstName?.[0]}
+                          {contact.lastName?.[0]}
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">{contact.firstName} {contact.lastName}</p>
-                        <div className="flex items-center gap-4 mt-1">
+                        <p className="font-medium text-gray-900">
+                          {contact.firstName} {contact.lastName}
+                        </p>
+                        <div className="mt-1 flex items-center gap-4">
                           {contact.email && (
-                            <span className="flex items-center gap-1 text-sm text-gray-500">
-                              <Mail className="w-3 h-3" /> {contact.email}
+                            <span className="flex items-center gap-1 text-gray-500 text-sm">
+                              <Mail className="h-3 w-3" /> {contact.email}
                             </span>
                           )}
                           {contact.companyName && (
-                            <span className="flex items-center gap-1 text-sm text-gray-500">
-                              <Building2 className="w-3 h-3" /> {contact.companyName}
+                            <span className="flex items-center gap-1 text-gray-500 text-sm">
+                              <Building2 className="h-3 w-3" />{" "}
+                              {contact.companyName}
                             </span>
                           )}
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant={contact.status === 'customer' ? 'success' : 'default'}>
-                        {contact.status || 'contact'}
+                      <Badge
+                        variant={
+                          contact.status === "customer" ? "success" : "default"
+                        }
+                      >
+                        {contact.status || "contact"}
                       </Badge>
                       <Button
                         variant="ghost"
@@ -214,14 +240,18 @@ function ContactsPage() {
             <FormField label="First Name" required>
               <Input
                 value={newContact.firstName}
-                onChange={(e) => setNewContact({ ...newContact, firstName: e.target.value })}
+                onChange={(e) =>
+                  setNewContact({ ...newContact, firstName: e.target.value })
+                }
                 required
               />
             </FormField>
             <FormField label="Last Name" required>
               <Input
                 value={newContact.lastName}
-                onChange={(e) => setNewContact({ ...newContact, lastName: e.target.value })}
+                onChange={(e) =>
+                  setNewContact({ ...newContact, lastName: e.target.value })
+                }
                 required
               />
             </FormField>
@@ -230,19 +260,25 @@ function ContactsPage() {
             <Input
               type="email"
               value={newContact.email}
-              onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+              onChange={(e) =>
+                setNewContact({ ...newContact, email: e.target.value })
+              }
             />
           </FormField>
           <FormField label="Phone">
             <Input
               value={newContact.phone}
-              onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
+              onChange={(e) =>
+                setNewContact({ ...newContact, phone: e.target.value })
+              }
             />
           </FormField>
           <FormField label="Clinic or School">
             <Input
               value={newContact.companyName}
-              onChange={(e) => setNewContact({ ...newContact, companyName: e.target.value })}
+              onChange={(e) =>
+                setNewContact({ ...newContact, companyName: e.target.value })
+              }
             />
           </FormField>
         </div>

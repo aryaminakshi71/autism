@@ -157,7 +157,9 @@ test.describe("Autism Care Platform", () => {
       await expect(
         page.getByRole("button", { name: "Core Words" }),
       ).toBeVisible();
-      await expect(page.getByRole("button", { name: "Feelings" })).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Feelings" }),
+      ).toBeVisible();
       await expect(page.getByRole("button", { name: "Actions" })).toBeVisible();
     });
 
@@ -194,10 +196,16 @@ test.describe("Autism Care Platform", () => {
 
     test("should have status badges", async ({ page }) => {
       await expect(
-        page.locator("span").filter({ hasText: /^scheduled$/ }).first(),
+        page
+          .locator("span")
+          .filter({ hasText: /^scheduled$/ })
+          .first(),
       ).toBeVisible();
       await expect(
-        page.locator("span").filter({ hasText: /^completed$/ }).first(),
+        page
+          .locator("span")
+          .filter({ hasText: /^completed$/ })
+          .first(),
       ).toBeVisible();
     });
   });
@@ -211,7 +219,9 @@ test.describe("Autism Care Platform", () => {
       const closeMenu = page.getByRole("button", {
         name: "Close navigation menu",
       });
-      const isSidebarAlreadyOpen = await closeMenu.isVisible().catch(() => false);
+      const isSidebarAlreadyOpen = await closeMenu
+        .isVisible()
+        .catch(() => false);
       if (!isSidebarAlreadyOpen) {
         const openMenu = page.getByRole("button", {
           name: "Open navigation menu",

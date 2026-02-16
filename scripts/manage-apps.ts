@@ -21,35 +21,35 @@
  *   bun run scripts/manage-apps.ts batch-add               # Batch add apps from stdin
  */
 
-import { createInterface } from "node:readline";
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Environment } from "./multi-app/types";
+import { createInterface } from "node:readline";
 import {
+  SERVICE_PROVIDERS,
   addApp,
   batchAddApps,
   createEmptyRegistry,
+  exportToCSV,
+  exportToCSVFull,
+  exportToJSON,
   generateAllEnvFiles,
+  generateCostEstimate,
   generateEnvFile,
+  generateMinimalTemplate,
+  generateSetupChecklist,
+  generateSummaryTable,
   getApp,
   getRegistryStats,
   listApps,
   loadRegistry,
+  printValidationResults,
   removeApp,
   saveRegistry,
   validateAppConfig,
   validateProductionReadiness,
   validateRegistry,
-  printValidationResults,
-  exportToCSV,
-  exportToCSVFull,
-  exportToJSON,
-  generateCostEstimate,
-  generateSetupChecklist,
-  generateSummaryTable,
-  generateMinimalTemplate,
-  SERVICE_PROVIDERS,
 } from "./multi-app";
+import type { Environment } from "./multi-app/types";
 
 const HELP_TEXT = `
 Multi-App Credentials Management CLI
@@ -199,7 +199,9 @@ async function main() {
       const env = (envArg || "production") as Environment;
 
       if (!["development", "staging", "production"].includes(env)) {
-        console.error("Environment must be: development, staging, or production");
+        console.error(
+          "Environment must be: development, staging, or production",
+        );
         process.exit(1);
       }
 
@@ -210,7 +212,9 @@ async function main() {
         console.log(`Domain: ${app.domain}`);
         console.log(`\nNext steps:`);
         console.log(`  1. Configure services in app-registry.json`);
-        console.log(`  2. Run: bun run scripts/manage-apps.ts generate ${id} ${env}`);
+        console.log(
+          `  2. Run: bun run scripts/manage-apps.ts generate ${id} ${env}`,
+        );
       } catch (error) {
         console.error(`Error: ${error}`);
         process.exit(1);
@@ -231,7 +235,9 @@ async function main() {
 
       if (removed) {
         saveRegistry(registry);
-        console.log(`Removed app: ${id}${env ? ` (${env})` : " (all environments)"}`);
+        console.log(
+          `Removed app: ${id}${env ? ` (${env})` : " (all environments)"}`,
+        );
       } else {
         console.error(`App not found: ${id}`);
         process.exit(1);
@@ -374,7 +380,11 @@ async function main() {
       }
 
       const template = generateMinimalTemplate(id, domain);
-      const outputPath = resolve(process.cwd(), "generated-envs", `${id}-template.env`);
+      const outputPath = resolve(
+        process.cwd(),
+        "generated-envs",
+        `${id}-template.env`,
+      );
 
       // Ensure directory exists
       const { mkdirSync, existsSync } = await import("node:fs");
@@ -435,7 +445,9 @@ async function main() {
 
     case "batch-add": {
       console.log("Enter JSON array of apps (Ctrl+D to finish):");
-      console.log('Format: [{"id": "app-1", "name": "My App", "domain": "myapp.com", "environments": ["production"]}]');
+      console.log(
+        'Format: [{"id": "app-1", "name": "My App", "domain": "myapp.com", "environments": ["production"]}]',
+      );
 
       try {
         const input = await readStdin();

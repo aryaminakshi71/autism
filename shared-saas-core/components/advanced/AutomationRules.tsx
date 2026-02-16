@@ -1,27 +1,34 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Zap, Plus, Trash2, Edit2, ToggleLeft, ToggleRight } from 'lucide-react'
-import { cn } from '../../utils'
+import {
+  Edit2,
+  Plus,
+  ToggleLeft,
+  ToggleRight,
+  Trash2,
+  Zap,
+} from "lucide-react";
+import { useState } from "react";
+import { cn } from "../../utils";
 
 interface AutomationRule {
-  id: string
-  name: string
-  description: string
-  trigger: string
-  action: string
-  enabled: boolean
-  lastRun?: Date
-  runCount: number
+  id: string;
+  name: string;
+  description: string;
+  trigger: string;
+  action: string;
+  enabled: boolean;
+  lastRun?: Date;
+  runCount: number;
 }
 
 interface AutomationRulesProps {
-  rules?: AutomationRule[]
-  onCreate?: () => void
-  onEdit?: (rule: AutomationRule) => void
-  onDelete?: (id: string) => void
-  onToggle?: (id: string, enabled: boolean) => void
-  className?: string
+  rules?: AutomationRule[];
+  onCreate?: () => void;
+  onEdit?: (rule: AutomationRule) => void;
+  onDelete?: (id: string) => void;
+  onToggle?: (id: string, enabled: boolean) => void;
+  className?: string;
 }
 
 export function AutomationRules({
@@ -32,33 +39,35 @@ export function AutomationRules({
   onToggle,
   className,
 }: AutomationRulesProps) {
-  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
-    <div className={cn('space-y-4', className)}>
+    <div className={cn("space-y-4", className)}>
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">Automation Rules</h3>
-          <p className="text-sm text-gray-500 mt-1">
+          <h3 className="font-semibold text-gray-900 text-lg">
+            Automation Rules
+          </h3>
+          <p className="mt-1 text-gray-500 text-sm">
             Automate repetitive tasks and workflows
           </p>
         </div>
         <button
           onClick={onCreate}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="h-4 w-4" />
           New Rule
         </button>
       </div>
 
       {rules.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-          <Zap className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500 mb-2">No automation rules yet</p>
+        <div className="rounded-lg border border-gray-200 bg-gray-50 py-12 text-center">
+          <Zap className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+          <p className="mb-2 text-gray-500">No automation rules yet</p>
           <button
             onClick={onCreate}
-            className="text-blue-600 hover:text-blue-700 font-medium"
+            className="font-medium text-blue-600 hover:text-blue-700"
           >
             Create your first rule
           </button>
@@ -68,7 +77,7 @@ export function AutomationRules({
           {rules.map((rule) => (
             <div
               key={rule.id}
-              className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow"
+              className="rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -76,40 +85,44 @@ export function AutomationRules({
                     <h4 className="font-semibold text-gray-900">{rule.name}</h4>
                     <button
                       onClick={() => onToggle?.(rule.id, !rule.enabled)}
-                      className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700"
+                      className="flex items-center gap-2 text-gray-500 text-sm hover:text-gray-700"
                     >
                       {rule.enabled ? (
-                        <ToggleRight className="w-5 h-5 text-green-600" />
+                        <ToggleRight className="h-5 w-5 text-green-600" />
                       ) : (
-                        <ToggleLeft className="w-5 h-5 text-gray-400" />
+                        <ToggleLeft className="h-5 w-5 text-gray-400" />
                       )}
-                      <span>{rule.enabled ? 'Enabled' : 'Disabled'}</span>
+                      <span>{rule.enabled ? "Enabled" : "Disabled"}</span>
                     </button>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">{rule.description}</p>
-                  <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
+                  <p className="mt-1 text-gray-600 text-sm">
+                    {rule.description}
+                  </p>
+                  <div className="mt-2 flex items-center gap-4 text-gray-500 text-xs">
                     <span>When: {rule.trigger}</span>
                     <span>Then: {rule.action}</span>
                     {rule.lastRun && (
-                      <span>Last run: {new Date(rule.lastRun).toLocaleDateString()}</span>
+                      <span>
+                        Last run: {new Date(rule.lastRun).toLocaleDateString()}
+                      </span>
                     )}
                     <span>Runs: {rule.runCount}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 ml-4">
+                <div className="ml-4 flex items-center gap-2">
                   <button
                     onClick={() => onEdit?.(rule)}
-                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
                     aria-label="Edit rule"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => onDelete?.(rule.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
                     aria-label="Delete rule"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -118,6 +131,5 @@ export function AutomationRules({
         </div>
       )}
     </div>
-  )
+  );
 }
-

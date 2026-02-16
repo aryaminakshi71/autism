@@ -1,6 +1,6 @@
+import { neonConfig } from "@neondatabase/serverless";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
 import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
-import { neonConfig } from "@neondatabase/serverless";
 import postgres from "postgres";
 import * as schema from "./schema/index.js";
 
@@ -31,7 +31,8 @@ export function createDb(
   // Determine if we need SSL/Local check
   // Uses postgres.js for local/standard connections to support TCP
   // We check for localhost OR development environment
-  const isLocal = url.includes("localhost") ||
+  const isLocal =
+    url.includes("localhost") ||
     url.includes("127.0.0.1") ||
     process.env.NODE_ENV === "development";
 

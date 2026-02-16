@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import Redis from "ioredis";
 
 class RedisCache {
   private client: Redis | null = null;
@@ -7,26 +7,26 @@ class RedisCache {
   connect() {
     if (this.client) return this.client;
 
-    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-    
+    const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
+
     this.client = new Redis(redisUrl, {
       maxRetriesPerRequest: 3,
       retryDelayOnFailover: 100,
       enableReadyCheck: true,
-      lazyConnect: true
+      lazyConnect: true,
     });
 
-    this.client.on('connect', () => {
+    this.client.on("connect", () => {
       this.isConnected = true;
-      console.log('Redis connected');
+      console.log("Redis connected");
     });
 
-    this.client.on('error', (err) => {
-      console.error('Redis error:', err);
+    this.client.on("error", (err) => {
+      console.error("Redis error:", err);
       this.isConnected = false;
     });
 
-    this.client.on('close', () => {
+    this.client.on("close", () => {
       this.isConnected = false;
     });
 
@@ -39,7 +39,7 @@ class RedisCache {
       const data = await this.client!.get(key);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.error('Cache get error:', error);
+      console.error("Cache get error:", error);
       return null;
     }
   }
@@ -49,7 +49,7 @@ class RedisCache {
       if (!this.isConnected) this.connect();
       await this.client!.setex(key, ttlSeconds, JSON.stringify(value));
     } catch (error) {
-      console.error('Cache set error:', error);
+      console.error("Cache set error:", error);
     }
   }
 
@@ -58,7 +58,7 @@ class RedisCache {
       if (!this.isConnected) this.connect();
       await this.client!.del(key);
     } catch (error) {
-      console.error('Cache delete error:', error);
+      console.error("Cache delete error:", error);
     }
   }
 
@@ -70,7 +70,7 @@ class RedisCache {
         await this.client!.del(...keys);
       }
     } catch (error) {
-      console.error('Cache deletePattern error:', error);
+      console.error("Cache deletePattern error:", error);
     }
   }
 
@@ -81,7 +81,7 @@ class RedisCache {
   async getOrSet<T>(
     key: string,
     fetchFn: () => Promise<T>,
-    ttlSeconds: number = 300
+    ttlSeconds: number = 300,
   ): Promise<T> {
     const cached = await this.get<T>(key);
     if (cached) return cached;
@@ -102,21 +102,19 @@ class RedisCache {
 
 export const cache = new RedisCache();
 
-export function withCache<T>(
-  key: string,
-  ttlSeconds: number = 300
-) {
+export function withCache<T>(key: string, ttlSeconds: number = 300) {
   return function (
     target: any,
     propertyKey: string,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
-      const cacheKey = typeof key === 'function' 
-        ? key(...args) 
-        : `${propertyKey}:${args.join(':')}`;
+      const cacheKey =
+        typeof key === "function"
+          ? key(...args)
+          : `${propertyKey}:${args.join(":")}`;
 
       const cached = await cache.get<T>(cacheKey);
       if (cached) return cached;

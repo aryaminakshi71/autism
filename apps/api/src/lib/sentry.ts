@@ -1,6 +1,6 @@
 /**
  * Sentry Error Tracking
- * 
+ *
  * Provides error tracking and performance monitoring.
  * Gracefully degrades if SENTRY_DSN is not configured.
  */
@@ -18,7 +18,8 @@ export function initSentry() {
 
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
-    environment: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || "development",
+    environment:
+      process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || "development",
     tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
     profilesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
     integrations: [
@@ -27,7 +28,10 @@ export function initSentry() {
     ],
     beforeSend(event) {
       if (process.env.NODE_ENV === "development" && !process.env.SENTRY_DEBUG) {
-        console.log("[Sentry] Would send event:", event.message || event.exception);
+        console.log(
+          "[Sentry] Would send event:",
+          event.message || event.exception,
+        );
         return null;
       }
       return event;
@@ -51,10 +55,14 @@ export function captureException(
   Sentry.withScope((scope) => {
     if (context?.user) scope.setUser(context.user);
     if (context?.tags) {
-      Object.entries(context.tags).forEach(([key, value]) => scope.setTag(key, value));
+      Object.entries(context.tags).forEach(([key, value]) =>
+        scope.setTag(key, value),
+      );
     }
     if (context?.extra) {
-      Object.entries(context.extra).forEach(([key, value]) => scope.setExtra(key, value));
+      Object.entries(context.extra).forEach(([key, value]) =>
+        scope.setExtra(key, value),
+      );
     }
     Sentry.captureException(error);
   });
@@ -78,16 +86,22 @@ export function captureMessage(
     scope.setLevel(level);
     if (context?.user) scope.setUser(context.user);
     if (context?.tags) {
-      Object.entries(context.tags).forEach(([key, value]) => scope.setTag(key, value));
+      Object.entries(context.tags).forEach(([key, value]) =>
+        scope.setTag(key, value),
+      );
     }
     if (context?.extra) {
-      Object.entries(context.extra).forEach(([key, value]) => scope.setExtra(key, value));
+      Object.entries(context.extra).forEach(([key, value]) =>
+        scope.setExtra(key, value),
+      );
     }
     Sentry.captureMessage(message);
   });
 }
 
-export function setUser(user: { id: string; email?: string; name?: string } | null) {
+export function setUser(
+  user: { id: string; email?: string; name?: string } | null,
+) {
   if (!isConfigured) return;
   Sentry.setUser(user);
 }

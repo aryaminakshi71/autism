@@ -4,10 +4,23 @@
  * Main dashboard showing key metrics and recent activity.
  */
 
-import { createFileRoute } from "@tanstack/react-router";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  LoadingSkeleton,
+} from "@autism-legacy-20260205/ui";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle, Loading, LoadingSkeleton } from "@autism-legacy-20260205/ui";
-import { Users, Target, TrendingUp, Clock, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Clock,
+  Target,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { dashboardApi } from "../lib/api";
 
 export const Route = createFileRoute("/app/_index")({
@@ -15,7 +28,11 @@ export const Route = createFileRoute("/app/_index")({
 });
 
 function DashboardPage() {
-  const { data: statsData, isLoading, error } = useQuery({
+  const {
+    data: statsData,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: () => dashboardApi.getStats(),
   });
@@ -28,12 +45,16 @@ function DashboardPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-500">Welcome back! Here's a snapshot of care activity today.</p>
+          <h1 className="font-bold text-2xl text-gray-900">Dashboard</h1>
+          <p className="text-gray-500">
+            Welcome back! Here's a snapshot of care activity today.
+          </p>
         </div>
         <Card>
           <CardContent className="p-6">
-            <p className="text-red-600">Failed to load dashboard data. Please try again.</p>
+            <p className="text-red-600">
+              Failed to load dashboard data. Please try again.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -78,31 +99,41 @@ function DashboardPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500">Welcome back! Here's a snapshot of care activity today.</p>
+        <h1 className="font-bold text-2xl text-gray-900">Dashboard</h1>
+        <p className="text-gray-500">
+          Welcome back! Here's a snapshot of care activity today.
+        </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.name}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">{stat.name}</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                  <p className="font-medium text-gray-500 text-sm">
+                    {stat.name}
+                  </p>
+                  <p className="mt-1 font-bold text-2xl text-gray-900">
+                    {stat.value}
+                  </p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <stat.icon className="w-6 h-6 text-blue-600" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                  <stat.icon className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
-              <div className="flex items-center gap-1 mt-3">
+              <div className="mt-3 flex items-center gap-1">
                 {stat.trend === "up" ? (
-                  <ArrowUpRight className="w-4 h-4 text-green-500" />
+                  <ArrowUpRight className="h-4 w-4 text-green-500" />
                 ) : (
-                  <ArrowDownRight className="w-4 h-4 text-red-500" />
+                  <ArrowDownRight className="h-4 w-4 text-red-500" />
                 )}
-                <span className={stat.trend === "up" ? "text-green-500" : "text-red-500"}>
+                <span
+                  className={
+                    stat.trend === "up" ? "text-green-500" : "text-red-500"
+                  }
+                >
                   {stat.change}
                 </span>
                 <span className="text-gray-500 text-sm">vs last month</span>
@@ -112,7 +143,7 @@ function DashboardPage() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Recent Activity */}
         <Card>
           <CardHeader>
@@ -120,15 +151,19 @@ function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentActivities.map((activity: { id: string; message: string; time: string }) => (
-                <div key={activity.id} className="flex items-start gap-4">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900">{activity.message}</p>
-                    <p className="text-xs text-gray-500">{activity.time}</p>
+              {recentActivities.map(
+                (activity: { id: string; message: string; time: string }) => (
+                  <div key={activity.id} className="flex items-start gap-4">
+                    <div className="mt-2 h-2 w-2 rounded-full bg-blue-500" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-gray-900 text-sm">
+                        {activity.message}
+                      </p>
+                      <p className="text-gray-500 text-xs">{activity.time}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
           </CardContent>
         </Card>
@@ -141,29 +176,44 @@ function DashboardPage() {
           <CardContent>
             <div className="space-y-4">
               {pipeline.length > 0 ? (
-                pipeline.map((stage: { stage: string; value: number; count: number }) => {
-                  const totalValue = pipeline.reduce((sum: number, s: { value: number }) => sum + s.value, 0);
-                  const percentage = totalValue > 0 ? (stage.value / totalValue) * 100 : 0;
-                  return (
-                    <div key={stage.stage} className="flex items-center gap-4">
-                      <div className="w-24 text-sm font-medium text-gray-600 capitalize">
-                        {stage.stage}
+                pipeline.map(
+                  (stage: { stage: string; value: number; count: number }) => {
+                    const totalValue = pipeline.reduce(
+                      (sum: number, s: { value: number }) => sum + s.value,
+                      0,
+                    );
+                    const percentage =
+                      totalValue > 0 ? (stage.value / totalValue) * 100 : 0;
+                    return (
+                      <div
+                        key={stage.stage}
+                        className="flex items-center gap-4"
+                      >
+                        <div className="w-24 font-medium text-gray-600 text-sm capitalize">
+                          {stage.stage}
+                        </div>
+                        <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-100">
+                          <div
+                            className="h-full rounded-full bg-blue-500 transition-all"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium text-gray-900 text-sm">
+                            {stage.value.toLocaleString()} hours
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {stage.count} plans
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-blue-500 rounded-full transition-all"
-                          style={{ width: `${percentage}%` }}
-                        />
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">{stage.value.toLocaleString()} hours</p>
-                        <p className="text-xs text-gray-500">{stage.count} plans</p>
-                      </div>
-                    </div>
-                  );
-                })
+                    );
+                  },
+                )
               ) : (
-                <p className="text-gray-500 text-sm">No care plans in pathway</p>
+                <p className="text-gray-500 text-sm">
+                  No care plans in pathway
+                </p>
               )}
             </div>
           </CardContent>
@@ -177,10 +227,12 @@ function DashboardSkeleton() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500">Welcome back! Here's a snapshot of care activity today.</p>
+        <h1 className="font-bold text-2xl text-gray-900">Dashboard</h1>
+        <p className="text-gray-500">
+          Welcome back! Here's a snapshot of care activity today.
+        </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i}>
             <CardContent className="p-6">
@@ -189,7 +241,7 @@ function DashboardSkeleton() {
           </Card>
         ))}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>

@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useLocalStorage<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (value: T | ((val: T) => T)) => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === 'undefined') return initialValue;
+    if (typeof window === "undefined") return initialValue;
     try {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
@@ -16,17 +16,21 @@ export function useLocalStorage<T>(
     }
   });
 
-  const setValue = useCallback((value: T | ((val: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(key, JSON.stringify(valueToStore));
+  const setValue = useCallback(
+    (value: T | ((val: T) => T)) => {
+      try {
+        const valueToStore =
+          value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(key, JSON.stringify(valueToStore));
+        }
+      } catch (error) {
+        console.error("Error saving to localStorage:", error);
       }
-    } catch (error) {
-      console.error('Error saving to localStorage:', error);
-    }
-  }, [key, storedValue]);
+    },
+    [key, storedValue],
+  );
 
   return [storedValue, setValue];
 }
@@ -44,7 +48,7 @@ export function useDebounce<T>(value: T, delay: number): T {
 
 export function useDebouncedCallback<T extends (...args: any[]) => any>(
   callback: T,
-  delay: number
+  delay: number,
 ): T {
   const timeoutRef = useRef<NodeJS.Timeout>();
 
@@ -56,35 +60,41 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
     };
   }, []);
 
-  return useCallback((...args: Parameters<T>) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+  return useCallback(
+    (...args: Parameters<T>) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
 
-    timeoutRef.current = setTimeout(() => {
-      callback(...args);
-    }, delay);
-  }, [callback, delay]) as T;
+      timeoutRef.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    },
+    [callback, delay],
+  ) as T;
 }
 
 export function useThrottle<T extends (...args: any[]) => any>(
   callback: T,
-  limit: number
+  limit: number,
 ): T {
   const lastRan = useRef<number>(0);
 
-  return useCallback((...args: Parameters<T>) => {
-    const now = Date.now();
-    if (now - lastRan.current >= limit) {
-      callback(...args);
-      lastRan.current = now;
-    }
-  }, [callback, limit]) as T;
+  return useCallback(
+    (...args: Parameters<T>) => {
+      const now = Date.now();
+      if (now - lastRan.current >= limit) {
+        callback(...args);
+        lastRan.current = now;
+      }
+    },
+    [callback, limit],
+  ) as T;
 }
 
 export function useOnClickOutside(
   ref: React.RefObject<HTMLElement>,
-  handler: (event: MouseEvent | TouchEvent) => void
+  handler: (event: MouseEvent | TouchEvent) => void,
 ) {
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
@@ -94,12 +104,12 @@ export function useOnClickOutside(
       handler(event);
     };
 
-    document.addEventListener('mousedown', listener);
-    document.addEventListener('touchstart', listener);
+    document.addEventListener("mousedown", listener);
+    document.addEventListener("touchstart", listener);
 
     return () => {
-      document.removeEventListener('mousedown', listener);
-      document.removeEventListener('touchstart', listener);
+      document.removeEventListener("mousedown", listener);
+      document.removeEventListener("touchstart", listener);
     };
   }, [ref, handler]);
 }
@@ -112,8 +122,8 @@ export function useKeyPress(targetKey: string, handler: () => void) {
       }
     };
 
-    window.addEventListener('keydown', downHandler);
-    return () => window.removeEventListener('keydown', downHandler);
+    window.addEventListener("keydown", downHandler);
+    return () => window.removeEventListener("keydown", downHandler);
   }, [targetKey, handler]);
 }
 
@@ -127,15 +137,18 @@ export function useMediaQuery(query: string): boolean {
     }
 
     const listener = () => setMatches(media.matches);
-    media.addEventListener('change', listener);
+    media.addEventListener("change", listener);
 
-    return () => media.removeEventListener('change', listener);
+    return () => media.removeEventListener("change", listener);
   }, [matches, query]);
 
   return matches;
 }
 
-export function useCopyToClipboard(): [boolean, (text: string) => Promise<void>] {
+export function useCopyToClipboard(): [
+  boolean,
+  (text: string) => Promise<void>,
+] {
   const [copied, setCopied] = useState(false);
 
   const copy = async (text: string) => {
@@ -144,7 +157,7 @@ export function useCopyToClipboard(): [boolean, (text: string) => Promise<void>]
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      console.error("Failed to copy:", error);
     }
   };
 
@@ -168,10 +181,10 @@ export function useInterval(callback: () => void, delay: number | null) {
 
 export function usePrevious<T>(value: T): T | undefined {
   const ref = useRef<T>();
-  
+
   useEffect(() => {
     ref.current = value;
   }, [value]);
-  
+
   return ref.current;
 }

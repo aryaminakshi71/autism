@@ -1,32 +1,32 @@
-'use client'
+"use client";
 
 import {
-  BarChart as RechartsBarChart,
   Bar,
+  CartesianGrid,
+  Legend,
+  BarChart as RechartsBarChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts'
-import { ChartContainer } from './ChartContainer'
+} from "recharts";
+import { ChartContainer } from "./ChartContainer";
 
 interface BarChartProps {
-  data: Array<Record<string, any>>
-  dataKey: string
+  data: Array<Record<string, any>>;
+  dataKey: string;
   bars: Array<{
-    key: string
-    name: string
-    color?: string
-  }>
-  title?: string
-  description?: string
-  height?: number
-  loading?: boolean
-  error?: string | null
-  className?: string
-  layout?: 'horizontal' | 'vertical'
+    key: string;
+    name: string;
+    color?: string;
+  }>;
+  title?: string;
+  description?: string;
+  height?: number;
+  loading?: boolean;
+  error?: string | null;
+  className?: string;
+  layout?: "horizontal" | "vertical";
 }
 
 export function BarChart({
@@ -39,9 +39,10 @@ export function BarChart({
   loading = false,
   error = null,
   className,
-  layout = 'vertical',
+  layout = "vertical",
 }: BarChartProps) {
-  const ChartComponent = layout === 'horizontal' ? RechartsBarChart : RechartsBarChart
+  const ChartComponent =
+    layout === "horizontal" ? RechartsBarChart : RechartsBarChart;
 
   return (
     <ChartContainer
@@ -59,7 +60,7 @@ export function BarChart({
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          {layout === 'vertical' ? (
+          {layout === "vertical" ? (
             <>
               <XAxis
                 dataKey={dataKey}
@@ -68,11 +69,22 @@ export function BarChart({
                 tickLine={false}
                 axisLine={false}
               />
-              <YAxis stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis
+                stroke="#6b7280"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+              />
             </>
           ) : (
             <>
-              <XAxis type="number" stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
+              <XAxis
+                type="number"
+                stroke="#6b7280"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+              />
               <YAxis
                 type="category"
                 dataKey={dataKey}
@@ -85,10 +97,10 @@ export function BarChart({
           )}
           <Tooltip
             contentStyle={{
-              backgroundColor: '#fff',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              backgroundColor: "#fff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
             }}
           />
           <Legend />
@@ -97,13 +109,12 @@ export function BarChart({
               key={bar.key}
               dataKey={bar.key}
               name={bar.name}
-              fill={bar.color || '#3b82f6'}
+              fill={bar.color || "#3b82f6"}
               radius={[4, 4, 0, 0]}
             />
           ))}
         </ChartComponent>
       </ResponsiveContainer>
     </ChartContainer>
-  )
+  );
 }
-

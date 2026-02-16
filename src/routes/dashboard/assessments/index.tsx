@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   Calendar,
   ClipboardCheck,
-  Clock,
   Download,
   FileText,
   Plus,
@@ -165,7 +164,7 @@ function AssessmentsPage() {
         play: number;
       };
       return (
-        <div className="mt-3 pt-3 border-t border-gray-100">
+        <div className="mt-3 border-gray-100 border-t pt-3">
           <div className="grid grid-cols-4 gap-2 text-sm">
             <div className="text-center">
               <p className="text-gray-500">Overall</p>
@@ -202,12 +201,12 @@ function AssessmentsPage() {
         rating: string;
       };
       return (
-        <div className="mt-3 pt-3 border-t border-gray-100">
+        <div className="mt-3 border-gray-100 border-t pt-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500">
               Score: {results.overallScore}/60
             </span>
-            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+            <span className="rounded-full bg-purple-100 px-2 py-1 font-medium text-purple-700 text-xs">
               {results.rating}
             </span>
           </div>
@@ -226,11 +225,11 @@ function AssessmentsPage() {
         recommendation: string;
       };
       return (
-        <div className="mt-3 pt-3 border-t border-gray-100">
+        <div className="mt-3 border-gray-100 border-t pt-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500">Score: {results.score}/20</span>
             <span
-              className={`px-2 py-1 rounded-full text-xs font-medium ${results.riskLevel === "High Risk" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}`}
+              className={`rounded-full px-2 py-1 font-medium text-xs ${results.riskLevel === "High Risk" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}`}
             >
               {results.riskLevel}
             </span>
@@ -244,22 +243,22 @@ function AssessmentsPage() {
 
   return (
     <DashboardLayout title="Assessments & Screeners">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 transform text-gray-400" />
             <input
               type="text"
               placeholder="Search assessments..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-64"
+              className="w-64 rounded-xl border border-gray-200 py-2 pr-4 pl-10 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="rounded-xl border border-gray-200 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="all">All Status</option>
             <option value="scheduled">Scheduled</option>
@@ -268,64 +267,64 @@ function AssessmentsPage() {
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-        <button className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors">
-          <Plus className="w-5 h-5" />
+        <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+          <Plus className="h-5 w-5" />
           <span>Schedule Assessment</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredAssessments.map((assessment) => (
           <div
             key={assessment.id}
-            className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+            className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
           >
-            <div className="flex items-start justify-between mb-4">
+            <div className="mb-4 flex items-start justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
-                  <ClipboardCheck className="w-6 h-6" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+                  <ClipboardCheck className="h-6 w-6" />
                 </div>
                 <div>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(assessment.type)}`}
+                    className={`rounded-full px-2 py-1 font-medium text-xs ${getTypeColor(assessment.type)}`}
                   >
                     {assessment.type}
                   </span>
-                  <h3 className="font-semibold text-gray-900 mt-1">
+                  <h3 className="mt-1 font-semibold text-gray-900">
                     {assessment.name}
                   </h3>
                 </div>
               </div>
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(assessment.status)}`}
+                className={`rounded-full px-3 py-1 font-medium text-xs ${getStatusColor(assessment.status)}`}
               >
                 {assessment.status}
               </span>
             </div>
 
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <User className="w-4 h-4 text-gray-400" />
+            <div className="mb-4 space-y-2">
+              <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                <User className="h-4 w-4 text-gray-400" />
                 <span>
                   Patient: <strong>{assessment.patient}</strong>
                 </span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <User className="w-4 h-4 text-gray-400" />
+              <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                <User className="h-4 w-4 text-gray-400" />
                 <span>
                   Provider: <strong>{assessment.provider}</strong>
                 </span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <FileText className="w-4 h-4 text-gray-400" />
+              <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                <FileText className="h-4 w-4 text-gray-400" />
                 <span>Version: {assessment.version}</span>
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 text-sm text-gray-600 mb-3">
+            <div className="mb-3 flex items-center space-x-2 text-gray-600 text-sm">
               {assessment.status === "scheduled" ? (
                 <>
-                  <Calendar className="w-4 h-4 text-blue-500" />
+                  <Calendar className="h-4 w-4 text-blue-500" />
                   <span>
                     Scheduled:{" "}
                     <strong>{formatDate(assessment.scheduledDate)}</strong>
@@ -333,7 +332,7 @@ function AssessmentsPage() {
                 </>
               ) : assessment.status === "completed" ? (
                 <>
-                  <Calendar className="w-4 h-4 text-green-500" />
+                  <Calendar className="h-4 w-4 text-green-500" />
                   <span>
                     Completed:{" "}
                     <strong>{formatDate(assessment.completedDate)}</strong>
@@ -347,9 +346,9 @@ function AssessmentsPage() {
             {renderResults(assessment)}
 
             {assessment.status === "completed" && assessment.results && (
-              <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end">
-                <button className="flex items-center space-x-1 text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-                  <Download className="w-4 h-4" />
+              <div className="mt-4 flex justify-end border-gray-100 border-t pt-4">
+                <button className="flex items-center space-x-1 font-medium text-indigo-600 text-sm hover:text-indigo-800">
+                  <Download className="h-4 w-4" />
                   <span>Download Report</span>
                 </button>
               </div>

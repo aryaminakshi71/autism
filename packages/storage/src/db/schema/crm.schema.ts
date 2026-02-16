@@ -1,143 +1,201 @@
+import { relations } from "drizzle-orm";
 // CRM Schema - contacts, deals, leads, activities
 import {
+  index,
+  jsonb,
+  numeric,
   pgTable,
-  uuid,
   text,
   timestamp,
-  numeric,
-  jsonb,
+  uuid,
   varchar,
-  index,
-} from 'drizzle-orm/pg-core'
-import { relations } from 'drizzle-orm'
-import { organizations, users } from './auth.schema'
+} from "drizzle-orm/pg-core";
+import { organizations, users } from "./auth.schema";
 
 // Contacts table
-export const contacts = pgTable('contacts', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: text('organization_id')
-    .notNull()
-    .references(() => organizations.id, { onDelete: 'cascade' }),
-  firstName: varchar('first_name', { length: 100 }).notNull(),
-  lastName: varchar('last_name', { length: 100 }).notNull(),
-  email: varchar('email', { length: 255 }),
-  phone: varchar('phone', { length: 20 }),
-  companyName: varchar('company_name', { length: 255 }),
-  jobTitle: varchar('job_title', { length: 100 }),
-  notes: text('notes'),
-  tags: text('tags').array(),
-  metadata: jsonb('metadata').$type<{
-    linkedin?: string
-    twitter?: string
-    avatar?: string
-  }>(),
-  ownerId: text('owner_id').references(() => users.id, { onDelete: 'set null' }),
-  createdBy: text('created_by').notNull().references(() => users.id),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  organizationIdIdx: index('idx_contacts_organization_id').on(table.organizationId),
-  emailIdx: index('idx_contacts_email').on(table.email),
-  ownerIdIdx: index('idx_contacts_owner_id').on(table.ownerId),
-}))
+export const contacts = pgTable(
+  "contacts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    firstName: varchar("first_name", { length: 100 }).notNull(),
+    lastName: varchar("last_name", { length: 100 }).notNull(),
+    email: varchar("email", { length: 255 }),
+    phone: varchar("phone", { length: 20 }),
+    companyName: varchar("company_name", { length: 255 }),
+    jobTitle: varchar("job_title", { length: 100 }),
+    notes: text("notes"),
+    tags: text("tags").array(),
+    metadata: jsonb("metadata").$type<{
+      linkedin?: string;
+      twitter?: string;
+      avatar?: string;
+    }>(),
+    ownerId: text("owner_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    createdBy: text("created_by")
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    organizationIdIdx: index("idx_contacts_organization_id").on(
+      table.organizationId,
+    ),
+    emailIdx: index("idx_contacts_email").on(table.email),
+    ownerIdIdx: index("idx_contacts_owner_id").on(table.ownerId),
+  }),
+);
 
 // Deals table
-export const deals = pgTable('deals', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: text('organization_id')
-    .notNull()
-    .references(() => organizations.id, { onDelete: 'cascade' }),
-  name: varchar('name', { length: 255 }).notNull(),
-  value: numeric('value', { precision: 15, scale: 2 }).notNull(),
-  stage: varchar('stage', { length: 50 }).notNull().default('lead'),
-  probability: numeric('probability', { precision: 5, scale: 2 }).default('0'),
-  contactId: uuid('contact_id'),
-  expectedCloseDate: timestamp('expected_close_date', { withTimezone: true }),
-  notes: text('notes'),
-  ownerId: text('owner_id').references(() => users.id, { onDelete: 'set null' }),
-  createdBy: text('created_by').notNull().references(() => users.id),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  organizationIdIdx: index('idx_deals_organization_id').on(table.organizationId),
-  contactIdIdx: index('idx_deals_contact_id').on(table.contactId),
-  stageIdx: index('idx_deals_stage').on(table.stage),
-}))
+export const deals = pgTable(
+  "deals",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    name: varchar("name", { length: 255 }).notNull(),
+    value: numeric("value", { precision: 15, scale: 2 }).notNull(),
+    stage: varchar("stage", { length: 50 }).notNull().default("lead"),
+    probability: numeric("probability", { precision: 5, scale: 2 }).default(
+      "0",
+    ),
+    contactId: uuid("contact_id"),
+    expectedCloseDate: timestamp("expected_close_date", { withTimezone: true }),
+    notes: text("notes"),
+    ownerId: text("owner_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    createdBy: text("created_by")
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    organizationIdIdx: index("idx_deals_organization_id").on(
+      table.organizationId,
+    ),
+    contactIdIdx: index("idx_deals_contact_id").on(table.contactId),
+    stageIdx: index("idx_deals_stage").on(table.stage),
+  }),
+);
 
 // Leads table
-export const leads = pgTable('leads', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: text('organization_id')
-    .notNull()
-    .references(() => organizations.id, { onDelete: 'cascade' }),
-  email: varchar('email', { length: 255 }).notNull(),
-  firstName: varchar('first_name', { length: 100 }),
-  lastName: varchar('last_name', { length: 100 }),
-  companyName: varchar('company_name', { length: 255 }),
-  jobTitle: varchar('job_title', { length: 100 }),
-  phone: varchar('phone', { length: 20 }),
-  source: varchar('source', { length: 100 }).notNull().default('website'),
-  status: varchar('status', { length: 50 }).notNull().default('new'),
-  score: numeric('score', { precision: 5, scale: 2 }).default('0'),
-  notes: text('notes'),
-  convertedContactId: uuid('converted_contact_id'),
-  assignedToId: text('assigned_to_id').references(() => users.id, { onDelete: 'set null' }),
-  createdBy: text('created_by').notNull().references(() => users.id),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  organizationIdIdx: index('idx_leads_organization_id').on(table.organizationId),
-  emailIdx: index('idx_leads_email').on(table.email),
-  statusIdx: index('idx_leads_status').on(table.status),
-}))
+export const leads = pgTable(
+  "leads",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    email: varchar("email", { length: 255 }).notNull(),
+    firstName: varchar("first_name", { length: 100 }),
+    lastName: varchar("last_name", { length: 100 }),
+    companyName: varchar("company_name", { length: 255 }),
+    jobTitle: varchar("job_title", { length: 100 }),
+    phone: varchar("phone", { length: 20 }),
+    source: varchar("source", { length: 100 }).notNull().default("website"),
+    status: varchar("status", { length: 50 }).notNull().default("new"),
+    score: numeric("score", { precision: 5, scale: 2 }).default("0"),
+    notes: text("notes"),
+    convertedContactId: uuid("converted_contact_id"),
+    assignedToId: text("assigned_to_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    createdBy: text("created_by")
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    organizationIdIdx: index("idx_leads_organization_id").on(
+      table.organizationId,
+    ),
+    emailIdx: index("idx_leads_email").on(table.email),
+    statusIdx: index("idx_leads_status").on(table.status),
+  }),
+);
 
 // Activities table
-export const activities = pgTable('activities', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: text('organization_id')
-    .notNull()
-    .references(() => organizations.id, { onDelete: 'cascade' }),
-  type: varchar('type', { length: 50 }).notNull(),
-  subject: varchar('subject', { length: 255 }).notNull(),
-  description: text('description'),
-  contactId: uuid('contact_id'),
-  dealId: uuid('deal_id'),
-  leadId: uuid('lead_id'),
-  userId: text('user_id').notNull().references(() => users.id),
-  dueDate: timestamp('due_date', { withTimezone: true }),
-  completedAt: timestamp('completed_at', { withTimezone: true }),
-  metadata: jsonb('metadata').$type<{
-    duration?: number
-    attendees?: string[]
-    location?: string
-    meetingLink?: string
-  }>(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  organizationIdIdx: index('idx_activities_organization_id').on(table.organizationId),
-  contactIdIdx: index('idx_activities_contact_id').on(table.contactId),
-  dealIdIdx: index('idx_activities_deal_id').on(table.dealId),
-  typeIdx: index('idx_activities_type').on(table.type),
-}))
+export const activities = pgTable(
+  "activities",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    type: varchar("type", { length: 50 }).notNull(),
+    subject: varchar("subject", { length: 255 }).notNull(),
+    description: text("description"),
+    contactId: uuid("contact_id"),
+    dealId: uuid("deal_id"),
+    leadId: uuid("lead_id"),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id),
+    dueDate: timestamp("due_date", { withTimezone: true }),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    metadata: jsonb("metadata").$type<{
+      duration?: number;
+      attendees?: string[];
+      location?: string;
+      meetingLink?: string;
+    }>(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    organizationIdIdx: index("idx_activities_organization_id").on(
+      table.organizationId,
+    ),
+    contactIdIdx: index("idx_activities_contact_id").on(table.contactId),
+    dealIdIdx: index("idx_activities_deal_id").on(table.dealId),
+    typeIdx: index("idx_activities_type").on(table.type),
+  }),
+);
 
 // Files/Attachments table
-export const files = pgTable('files', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: text('organization_id')
+export const files = pgTable("files", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizationId: text("organization_id")
     .notNull()
-    .references(() => organizations.id, { onDelete: 'cascade' }),
-  name: varchar('name', { length: 255 }).notNull(),
-  originalName: varchar('original_name', { length: 255 }).notNull(),
-  mimeType: varchar('mime_type', { length: 100 }).notNull(),
-  size: varchar('size', { length: 50 }).notNull(),
-  r2Key: text('r2_key').notNull(),
-  contactId: uuid('contact_id'),
-  dealId: uuid('deal_id'),
-  leadId: uuid('lead_id'),
-  uploadedById: text('uploaded_by_id').references(() => users.id),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-})
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  name: varchar("name", { length: 255 }).notNull(),
+  originalName: varchar("original_name", { length: 255 }).notNull(),
+  mimeType: varchar("mime_type", { length: 100 }).notNull(),
+  size: varchar("size", { length: 50 }).notNull(),
+  r2Key: text("r2_key").notNull(),
+  contactId: uuid("contact_id"),
+  dealId: uuid("deal_id"),
+  leadId: uuid("lead_id"),
+  uploadedById: text("uploaded_by_id").references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
 
 // Relations
 export const contactsRelations = relations(contacts, ({ one, many }) => ({
@@ -156,7 +214,7 @@ export const contactsRelations = relations(contacts, ({ one, many }) => ({
   deals: many(deals),
   activities: many(activities),
   files: many(files),
-}))
+}));
 
 export const dealsRelations = relations(deals, ({ one, many }) => ({
   organization: one(organizations, {
@@ -177,7 +235,7 @@ export const dealsRelations = relations(deals, ({ one, many }) => ({
   }),
   activities: many(activities),
   files: many(files),
-}))
+}));
 
 export const leadsRelations = relations(leads, ({ one, many }) => ({
   organization: one(organizations, {
@@ -198,7 +256,7 @@ export const leadsRelations = relations(leads, ({ one, many }) => ({
   }),
   activities: many(activities),
   files: many(files),
-}))
+}));
 
 export const activitiesRelations = relations(activities, ({ one }) => ({
   organization: one(organizations, {
@@ -221,7 +279,7 @@ export const activitiesRelations = relations(activities, ({ one }) => ({
     fields: [activities.userId],
     references: [users.id],
   }),
-}))
+}));
 
 export const filesRelations = relations(files, ({ one }) => ({
   organization: one(organizations, {
@@ -244,7 +302,7 @@ export const filesRelations = relations(files, ({ one }) => ({
     fields: [files.uploadedById],
     references: [users.id],
   }),
-}))
+}));
 
 // Type exports
 export type Contact = typeof contacts.$inferSelect;

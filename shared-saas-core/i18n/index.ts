@@ -1,4 +1,4 @@
 // i18n Index
 
-export * from './config'
-export * from './dictionary'
+export * from "./config";
+export * from "./dictionary";

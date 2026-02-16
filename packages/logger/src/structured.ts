@@ -1,12 +1,12 @@
 /**
  * Structured JSON Logger with Aggregation Support
- * 
+ *
  * Provides JSON logging with support for log aggregation services
  * (Datadog, Logtail, CloudWatch, etc.)
  */
 
 import type { Logger } from "./index";
-import { createLogger, type CreateLoggerOptions } from "./index";
+import { type CreateLoggerOptions, createLogger } from "./index";
 
 export interface LogAggregationConfig {
   service?: "datadog" | "logtail" | "cloudwatch" | "custom";
@@ -35,7 +35,7 @@ async function flushLogs(config: LogAggregationConfig): Promise<void> {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${config.apiKey}`,
+        Authorization: `Bearer ${config.apiKey}`,
         "DD-API-KEY": config.apiKey,
       },
       body: JSON.stringify({
@@ -53,7 +53,7 @@ async function flushLogs(config: LogAggregationConfig): Promise<void> {
 }
 
 export function createStructuredLogger(
-  options: StructuredLoggerOptions
+  options: StructuredLoggerOptions,
 ): Logger {
   const {
     aggregation,
@@ -128,7 +128,7 @@ function addToBuffer(
   level: string,
   obj: object | string,
   msg: string | undefined,
-  options: CreateLoggerOptions
+  options: CreateLoggerOptions,
 ): void {
   const timestamp = new Date().toISOString();
   let logEntry: Record<string, unknown>;

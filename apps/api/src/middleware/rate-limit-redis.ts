@@ -1,13 +1,13 @@
 /**
  * Redis-based Rate Limiting Middleware
- * 
+ *
  * Uses Upstash Redis for distributed rate limiting.
  * Falls back to in-memory if Redis not configured.
  */
 
-import type { Context, Next } from "hono";
-import { Ratelimit } from "@upstash/ratelimit";
 import { redis } from "@autism-legacy-20260205/storage/redis";
+import { Ratelimit } from "@upstash/ratelimit";
+import type { Context, Next } from "hono";
 import { RateLimitError } from "../lib/errors";
 
 interface RateLimitOptions {
@@ -30,7 +30,10 @@ const createRateLimiter = (type: "api" | "auth" | "strict") => {
   const config = defaultLimiters[type];
   return new Ratelimit({
     redis: redisClient as any,
-    limiter: Ratelimit.slidingWindow(config.maxRequests, `${config.windowSeconds} s`),
+    limiter: Ratelimit.slidingWindow(
+      config.maxRequests,
+      `${config.windowSeconds} s`,
+    ),
     analytics: true,
     prefix: `ratelimit:${type}`,
   });
@@ -49,7 +52,10 @@ export function rateLimitRedis(options: Partial<RateLimitOptions> = {}) {
     windowSeconds: 60,
     maxRequests: 100,
     keyGenerator: (c) => {
-      const ip = c.req.header("x-forwarded-for") || c.req.header("x-real-ip") || "unknown";
+      const ip =
+        c.req.header("x-forwarded-for") ||
+        c.req.header("x-real-ip") ||
+        "unknown";
       const userId = c.get("user")?.id;
       return userId ? `user:${userId}` : `ip:${ip}`;
     },

@@ -1,29 +1,27 @@
-import React from 'react'
-
-type ChartPoint = { name: string; value: number }
+type ChartPoint = { name: string; value: number };
 
 export function AnalyticsChart({ data }: { data: ChartPoint[] }) {
-  const maxValue = Math.max(...data.map((d) => d.value), 1)
+  const maxValue = Math.max(...data.map((d) => d.value), 1);
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-lg font-semibold mb-4">Activity This Week</h2>
-      <div className="flex items-end gap-4 h-64">
+    <div className="rounded-lg bg-white p-6 shadow">
+      <h2 className="mb-4 font-semibold text-lg">Activity This Week</h2>
+      <div className="flex h-64 items-end gap-4">
         {data.map((day) => (
-          <div key={day.name} className="flex-1 flex flex-col items-center">
-            <div className="w-full flex flex-col items-center">
+          <div key={day.name} className="flex flex-1 flex-col items-center">
+            <div className="flex w-full flex-col items-center">
               <div
-                className="w-full bg-indigo-600 rounded-t"
+                className="w-full rounded-t bg-indigo-600"
                 style={{ height: `${(day.value / maxValue) * 200}px` }}
               />
-              <span className="text-xs text-gray-600 mt-2">{day.value}</span>
+              <span className="mt-2 text-gray-600 text-xs">{day.value}</span>
             </div>
-            <span className="text-xs text-gray-500 mt-2">{day.name}</span>
+            <span className="mt-2 text-gray-500 text-xs">{day.name}</span>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default AnalyticsChart
+export default AnalyticsChart;

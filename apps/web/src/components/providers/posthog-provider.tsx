@@ -1,9 +1,7 @@
 "use client";
-
-import { env } from "@autism-legacy-20260205/env";
 // import posthog from "posthog-js";
 // import { PostHogProvider as PHProvider } from "posthog-js/react";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 export function PostHogProvider({ children }: { children: ReactNode }) {
   // useEffect(() => {
@@ -29,7 +27,7 @@ export function identifyUser(
     name?: string;
     createdAt?: Date | string;
     [key: string]: unknown;
-  }
+  },
 ) {
   // Stub
 }
@@ -41,7 +39,7 @@ export function setOrganization(
     slug?: string;
     createdAt?: Date | string;
     [key: string]: unknown;
-  }
+  },
 ) {
   // Stub
 }

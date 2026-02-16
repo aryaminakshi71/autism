@@ -1,10 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { api } from '~/server/api/app'
+import { createFileRoute } from "@tanstack/react-router";
+import { api } from "~/server/api/app";
 
-export const Route = createFileRoute('/api/openapi/$')({
+export const Route = createFileRoute("/api/openapi/$")({
   server: {
     handlers: {
       ANY: async ({ request }) => api.fetch(request),
     },
   },
-})
+});

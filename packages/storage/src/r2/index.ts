@@ -142,11 +142,18 @@ export function createR2Client(config: R2Config) {
 export function createR2ClientFromEnv() {
   // Check if we're in a Cloudflare Workers environment
   const getEnvVar = (key: string): string | undefined => {
-    if (typeof process !== 'undefined' && process.env && process.env[key as string]) {
+    if (
+      typeof process !== "undefined" &&
+      process.env &&
+      process.env[key as string]
+    ) {
       return process.env[key as string];
     }
     // In Cloudflare Workers, use global env (available at runtime, not during typecheck)
-    if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>)[key]) {
+    if (
+      typeof globalThis !== "undefined" &&
+      (globalThis as Record<string, unknown>)[key]
+    ) {
       return String((globalThis as Record<string, unknown>)[key]);
     }
     return undefined;

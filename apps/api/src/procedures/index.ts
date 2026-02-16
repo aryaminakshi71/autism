@@ -10,11 +10,11 @@
  */
 
 import { os, ORPCError } from "@orpc/server";
-import { eq, and } from "drizzle-orm";
-import { getDb, schema } from "../lib/db";
+import { and, eq } from "drizzle-orm";
+import type { AuthContext, InitialContext, OrgContext } from "../context";
 import { createAuthFromEnv } from "../lib/create-auth-from-env";
+import { getDb, schema } from "../lib/db";
 import { isDemoRequest } from "../lib/demo";
-import type { InitialContext, AuthContext, OrgContext } from "../context";
 
 /**
  * Base procedure with initial context (env, headers, requestId, logger)
@@ -131,7 +131,8 @@ export const orgAuthed = authed.use<OrgContext>(async ({ context, next }) => {
 
   if (!orgSlug && !orgId) {
     throw new ORPCError("BAD_REQUEST", {
-      message: "Organization identifier required (x-organization-slug or x-organization-id header)",
+      message:
+        "Organization identifier required (x-organization-slug or x-organization-id header)",
     });
   }
 
@@ -173,7 +174,7 @@ export const orgAuthed = authed.use<OrgContext>(async ({ context, next }) => {
 
   // Cast role to proper type and add default plan
   const role = result[0].member.role as "owner" | "admin" | "member";
-  
+
   return next({
     context: {
       ...context,

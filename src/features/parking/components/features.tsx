@@ -1,4 +1,11 @@
-import { Clock, CreditCard, MapPin, Shield, Smartphone, Zap } from "lucide-react";
+import {
+  Clock,
+  CreditCard,
+  MapPin,
+  Shield,
+  Smartphone,
+  Zap,
+} from "lucide-react";
 
 const features = [
   {
@@ -16,8 +23,7 @@ const features = [
   {
     icon: CreditCard,
     title: "Seamless Payments",
-    description:
-      "Pay securely with Apple Pay, Google Pay, or any credit card.",
+    description: "Pay securely with Apple Pay, Google Pay, or any credit card.",
   },
   {
     icon: Clock,
@@ -41,13 +47,13 @@ const features = [
 
 export function Features() {
   return (
-    <section className="py-20 bg-background">
+    <section className="bg-background py-20">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl text-balance">
+        <div className="mb-12 text-center">
+          <h2 className="text-balance font-bold text-3xl text-foreground tracking-tight sm:text-4xl">
             Parking made simple
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
+          <p className="mx-auto mt-4 max-w-2xl text-pretty text-lg text-muted-foreground">
             Everything you need for stress-free parking, all in one place.
           </p>
         </div>
@@ -56,15 +62,15 @@ export function Features() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group relative rounded-2xl border border-border bg-card p-6 hover:border-primary/20 hover:shadow-md transition-all"
+              className="group relative rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/20 hover:shadow-md"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-secondary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                 <feature.icon className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-2">
+              <h3 className="mb-2 font-semibold text-card-foreground text-lg">
                 {feature.title}
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 {feature.description}
               </p>
             </div>

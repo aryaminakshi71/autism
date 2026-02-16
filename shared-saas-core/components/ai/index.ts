@@ -1,3 +1,2 @@
 // AI-powered features
-export { AIInsights } from './AIInsights'
-
+export { AIInsights } from "./AIInsights";

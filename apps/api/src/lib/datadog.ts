@@ -1,6 +1,6 @@
 /**
  * Datadog APM Integration
- * 
+ *
  * Provides application performance monitoring with Datadog.
  * Gracefully degrades if DATADOG_API_KEY is not configured.
  */
@@ -52,7 +52,7 @@ export async function initDatadog() {
 export function createSpan<T>(
   name: string,
   operation: string,
-  callback: () => T | Promise<T>
+  callback: () => T | Promise<T>,
 ): T | Promise<T> {
   if (!isConfigured || !tracer) {
     return callback();

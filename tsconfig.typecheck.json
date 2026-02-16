@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/__tests__/smoke.test.ts"],
+  "compilerOptions": {
+    "types": ["vitest/globals", "vite/client"],
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules"]
+}

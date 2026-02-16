@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import { cn } from '../../lib/index'
+import { cn } from "../../lib/index";
 
 export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'text' | 'circular' | 'rectangular'
-  width?: string | number
-  height?: string | number
-  animation?: 'pulse' | 'wave' | 'none'
+  variant?: "text" | "circular" | "rectangular";
+  width?: string | number;
+  height?: string | number;
+  animation?: "pulse" | "wave" | "none";
 }
 
 /**
@@ -15,34 +15,42 @@ export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export function LoadingSkeleton({
   className,
-  variant = 'rectangular',
+  variant = "rectangular",
   width,
   height,
-  animation = 'pulse',
+  animation = "pulse",
   style,
   ...props
 }: SkeletonProps) {
   const baseStyles = {
-    width: width ? (typeof width === 'number' ? `${width}px` : width) : undefined,
-    height: height ? (typeof height === 'number' ? `${height}px` : height) : undefined,
+    width: width
+      ? typeof width === "number"
+        ? `${width}px`
+        : width
+      : undefined,
+    height: height
+      ? typeof height === "number"
+        ? `${height}px`
+        : height
+      : undefined,
     ...style,
-  }
+  };
 
   return (
     <div
       className={cn(
-        'bg-muted',
-        variant === 'circular' && 'rounded-full',
-        variant === 'text' && 'rounded',
-        variant === 'rectangular' && 'rounded-lg',
-        animation === 'pulse' && 'animate-pulse',
-        animation === 'wave' && 'animate-shimmer',
-        className
+        "bg-muted",
+        variant === "circular" && "rounded-full",
+        variant === "text" && "rounded",
+        variant === "rectangular" && "rounded-lg",
+        animation === "pulse" && "animate-pulse",
+        animation === "wave" && "animate-shimmer",
+        className,
       )}
       style={baseStyles}
       {...props}
     />
-  )
+  );
 }
 
 /**
@@ -53,21 +61,21 @@ export function SkeletonText({
   className,
   ...props
 }: {
-  lines?: number
-  className?: string
+  lines?: number;
+  className?: string;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('space-y-2', className)} {...props}>
+    <div className={cn("space-y-2", className)} {...props}>
       {Array.from({ length: lines }).map((_, i) => (
         <LoadingSkeleton
           key={i}
           variant="text"
           height={16}
-          width={i === lines - 1 ? '75%' : '100%'}
+          width={i === lines - 1 ? "75%" : "100%"}
         />
       ))}
     </div>
-  )
+  );
 }
 
 /**
@@ -80,8 +88,8 @@ export function SkeletonCard({
   return (
     <div
       className={cn(
-        'rounded-lg border border-border bg-card p-6 space-y-4',
-        className
+        "space-y-4 rounded-lg border border-border bg-card p-6",
+        className,
       )}
       {...props}
     >
@@ -92,7 +100,7 @@ export function SkeletonCard({
         <LoadingSkeleton variant="rectangular" height={36} width={100} />
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -104,16 +112,21 @@ export function SkeletonTable({
   className,
   ...props
 }: {
-  rows?: number
-  columns?: number
-  className?: string
+  rows?: number;
+  columns?: number;
+  className?: string;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('space-y-2', className)} {...props}>
+    <div className={cn("space-y-2", className)} {...props}>
       {/* Header */}
-      <div className="flex gap-4 pb-2 border-b border-border">
+      <div className="flex gap-4 border-border border-b pb-2">
         {Array.from({ length: columns }).map((_, i) => (
-          <LoadingSkeleton key={i} variant="rectangular" height={20} width="100%" />
+          <LoadingSkeleton
+            key={i}
+            variant="rectangular"
+            height={20}
+            width="100%"
+          />
         ))}
       </div>
       {/* Rows */}
@@ -130,5 +143,5 @@ export function SkeletonTable({
         </div>
       ))}
     </div>
-  )
+  );
 }

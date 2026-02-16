@@ -6,12 +6,10 @@ import {
   Car,
   ClipboardCheck,
   Clock,
-  DollarSign,
   LayoutDashboard,
   LogOut,
   Menu,
   MessageSquare,
-  ParkingCircle,
   Settings,
   Target,
   Users,
@@ -44,47 +42,47 @@ const navItems = [
   {
     label: "Dashboard",
     href: "/dashboard",
-    icon: <LayoutDashboard className="w-5 h-5" />,
+    icon: <LayoutDashboard className="h-5 w-5" />,
   },
   {
     label: "Patients",
     href: "/dashboard/patients",
-    icon: <Users className="w-5 h-5" />,
+    icon: <Users className="h-5 w-5" />,
   },
   {
     label: "Goals",
     href: "/dashboard/goals",
-    icon: <Target className="w-5 h-5" />,
+    icon: <Target className="h-5 w-5" />,
   },
   {
     label: "Sessions",
     href: "/dashboard/sessions",
-    icon: <Calendar className="w-5 h-5" />,
+    icon: <Calendar className="h-5 w-5" />,
   },
   {
     label: "Visual Schedules",
     href: "/dashboard/schedules",
-    icon: <Clock className="w-5 h-5" />,
+    icon: <Clock className="h-5 w-5" />,
   },
   {
     label: "Communication",
     href: "/dashboard/communication",
-    icon: <MessageSquare className="w-5 h-5" />,
+    icon: <MessageSquare className="h-5 w-5" />,
   },
   {
     label: "Assessments",
     href: "/dashboard/assessments",
-    icon: <ClipboardCheck className="w-5 h-5" />,
+    icon: <ClipboardCheck className="h-5 w-5" />,
   },
   {
     label: "Analytics",
     href: "/dashboard/analytics",
-    icon: <BarChart3 className="w-5 h-5" />,
+    icon: <BarChart3 className="h-5 w-5" />,
   },
   {
     label: "Settings",
     href: "/dashboard/settings",
-    icon: <Settings className="w-5 h-5" />,
+    icon: <Settings className="h-5 w-5" />,
   },
 ];
 
@@ -133,54 +131,54 @@ export function DashboardLayout({
 
   if (pending || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-gray-200 border-t-indigo-600 rounded-full animate-spin" />
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="flex min-h-screen bg-gray-50">
       {sidebarOpen ? (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       ) : null}
 
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gray-900 transform transition-transform duration-200 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-gray-900 transition-transform duration-200 ease-in-out lg:static ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-4 border-b border-gray-800">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-gray-800 border-b p-4">
             <Link to="/" className="flex items-center space-x-2 no-underline">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Car className="w-6 h-6 text-white" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
+                <Car className="h-6 w-6 text-white" />
               </div>
-              <span className="text-lg font-bold text-white">ParkingPro</span>
+              <span className="font-bold text-lg text-white">ParkingPro</span>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-gray-400 hover:text-white"
+              className="text-gray-400 hover:text-white lg:hidden"
               aria-label="Close navigation menu"
             >
-              <X className="w-6 h-6" />
+              <X className="h-6 w-6" />
             </button>
           </div>
 
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 space-y-1 overflow-y-auto p-4">
             {navItems.map((item) => {
               const isActive = location.pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-colors no-underline ${
+                  className={`flex items-center space-x-3 rounded-xl px-4 py-3 font-medium no-underline transition-colors ${
                     isActive
                       ? "bg-indigo-600 text-white"
-                      : "text-gray-400 hover:text-white hover:bg-gray-800"
+                      : "text-gray-400 hover:bg-gray-800 hover:text-white"
                   }`}
                 >
                   {item.icon}
@@ -190,48 +188,48 @@ export function DashboardLayout({
             })}
           </nav>
 
-          <div className="p-4 border-t border-gray-800">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium bg-indigo-600">
+          <div className="border-gray-800 border-t p-4">
+            <div className="mb-4 flex items-center space-x-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 font-medium text-white">
                 {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-white font-medium truncate">
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium text-white">
                   {user.name || user.email?.split("@")[0] || "User"}
                 </p>
-                <p className="text-gray-400 text-sm truncate">
+                <p className="truncate text-gray-400 text-sm">
                   {user.email ?? ""}
                 </p>
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center space-x-2 px-4 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors"
+              className="flex w-full items-center justify-center space-x-2 rounded-xl px-4 py-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="h-5 w-5" />
               <span>Sign Out</span>
             </button>
           </div>
         </div>
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-30 border-gray-200 border-b bg-white">
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-gray-600 hover:text-gray-900"
+                className="text-gray-600 hover:text-gray-900 lg:hidden"
                 aria-label="Open navigation menu"
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="h-6 w-6" />
               </button>
-              <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+              <h1 className="font-semibold text-gray-900 text-xl">{title}</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="text-gray-600 hover:text-gray-900 relative">
-                <Bell className="w-6 h-6" />
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-indigo-600 rounded-full" />
+              <button className="relative text-gray-600 hover:text-gray-900">
+                <Bell className="h-6 w-6" />
+                <span className="-top-1 -right-1 absolute h-2 w-2 rounded-full bg-indigo-600" />
               </button>
             </div>
           </div>
@@ -248,24 +246,24 @@ export const dashboardStats = [
     label: "Active Patients",
     value: "24",
     change: "+3 this month",
-    icon: <Users className="w-6 h-6" />,
+    icon: <Users className="h-6 w-6" />,
   },
   {
     label: "Goals in Progress",
     value: "156",
     change: "78% on track",
-    icon: <Target className="w-6 h-6" />,
+    icon: <Target className="h-6 w-6" />,
   },
   {
     label: "Sessions This Week",
     value: "48",
     change: "12 remaining",
-    icon: <Calendar className="w-6 h-6" />,
+    icon: <Calendar className="h-6 w-6" />,
   },
   {
     label: "Assessments Due",
     value: "8",
     change: "3 pending",
-    icon: <ClipboardCheck className="w-6 h-6" />,
+    icon: <ClipboardCheck className="h-6 w-6" />,
   },
 ];

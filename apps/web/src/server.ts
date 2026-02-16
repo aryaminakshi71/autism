@@ -1,8 +1,8 @@
-import handler from "@tanstack/react-start/server-entry";
 // const handler = { fetch: async () => new Response("Mock Handler Works (Node)") };
 import { api } from "@autism-legacy-20260205/api/app";
-import type { getRouter } from "./router";
 import type { Env } from "@autism-legacy-20260205/env/cloudflare";
+import handler from "@tanstack/react-start/server-entry";
+import type { getRouter } from "./router";
 
 export interface CloudflareRequestContext {
   cloudflare: {
@@ -25,7 +25,7 @@ export default {
   async fetch(
     request: Request,
     env: Env,
-    ctx: ExecutionContext
+    ctx: ExecutionContext,
   ): Promise<Response> {
     const url = new URL(request.url);
 

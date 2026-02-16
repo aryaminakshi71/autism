@@ -5,12 +5,12 @@
  * Split into separate files to avoid TypeScript TS7056 limits.
  */
 
-import { healthRouter } from "./health";
-import { contactsRouter } from "./contacts";
-import { dealsRouter } from "./deals";
-import { leadsRouter } from "./leads";
 import { activitiesRouter } from "./activities";
+import { contactsRouter } from "./contacts";
 import { dashboardRouter } from "./dashboard";
+import { dealsRouter } from "./deals";
+import { healthRouter } from "./health";
+import { leadsRouter } from "./leads";
 
 import { assetsRouter } from "./assets";
 

@@ -2,7 +2,7 @@
  * E2E Tests for API Validation
  */
 
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("API Validation E2E", () => {
   test("health endpoint responds with ok", async ({ request }) => {

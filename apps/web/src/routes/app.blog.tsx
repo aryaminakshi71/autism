@@ -4,23 +4,27 @@
  * Company news, updates, and announcements.
  */
 
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Calendar, MessageSquare, ThumbsUp, MoreHorizontal, Image as ImageIcon, Plus } from "lucide-react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import {
+  Badge,
+  Button,
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
-  Button,
-  Avatar,
-  Badge,
-  FormModal,
   FormField,
+  FormModal,
   Input,
   Textarea,
 } from "@autism-legacy-20260205/ui";
-import { OptimizedImage } from "@/components/ui/optimized-image";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  Calendar,
+  Image as ImageIcon,
+  MessageSquare,
+  MoreHorizontal,
+  Plus,
+  ThumbsUp,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/blog")({
@@ -81,7 +85,14 @@ const INITIAL_POSTS = [
   },
 ];
 
-const TAGS = ["Clinical Update", "Product Update", "Culture", "Operations", "Family Support", "Training"];
+const TAGS = [
+  "Clinical Update",
+  "Product Update",
+  "Culture",
+  "Operations",
+  "Family Support",
+  "Training",
+];
 
 function BlogPage() {
   const [posts, setPosts] = useState(INITIAL_POSTS);
@@ -112,7 +123,11 @@ function BlogPage() {
         role: "Author",
         avatar: "YO",
       },
-      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      date: new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
       likes: 0,
       comments: 0,
       tag: newPost.tag,
@@ -126,18 +141,26 @@ function BlogPage() {
   };
 
   const handleLike = (postId: number) => {
-    setPosts(posts.map((post) => (post.id === postId ? { ...post, likes: post.likes + 1 } : post)));
+    setPosts(
+      posts.map((post) =>
+        post.id === postId ? { ...post, likes: post.likes + 1 } : post,
+      ),
+    );
     toast.success("Post liked!");
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Company Blog</h1>
+          <h1 className="font-bold text-2xl text-gray-900">Company Blog</h1>
           <p className="text-gray-500">News, updates, and announcements</p>
         </div>
-        <Button variant="primary" leftIcon={<Plus className="w-4 h-4" />} onClick={() => setIsModalOpen(true)}>
+        <Button
+          variant="primary"
+          leftIcon={<Plus className="h-4 w-4" />}
+          onClick={() => setIsModalOpen(true)}
+        >
           Create Post
         </Button>
       </div>
@@ -145,48 +168,54 @@ function BlogPage() {
       <div className="space-y-8">
         {posts.map((post) => (
           <Card key={post.id} className="overflow-hidden">
-            <div className="h-48 w-full bg-gray-100 relative">
+            <div className="relative h-48 w-full bg-gray-100">
               {post.image ? (
                 <OptimizedImage
                   src={post.image}
                   alt={post.title}
                   width={800}
                   height={192}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                   quality={85}
                   format="webp"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100">
-                  <ImageIcon className="w-12 h-12 text-gray-300" />
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100">
+                  <ImageIcon className="h-12 w-12 text-gray-300" />
                 </div>
               )}
               <div className="absolute top-4 left-4">
-                <Badge className="bg-white/90 text-gray-900 hover:bg-white">{post.tag}</Badge>
+                <Badge className="bg-white/90 text-gray-900 hover:bg-white">
+                  {post.tag}
+                </Badge>
               </div>
             </div>
 
             <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-sm">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-700 text-sm">
                   {post.author.avatar}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{post.author.name}</p>
-                  <p className="text-xs text-gray-500">{post.author.role}</p>
+                  <p className="font-medium text-gray-900 text-sm">
+                    {post.author.name}
+                  </p>
+                  <p className="text-gray-500 text-xs">{post.author.role}</p>
                 </div>
                 <div className="ml-auto flex items-center text-gray-500 text-sm">
-                  <Calendar className="w-4 h-4 mr-1" />
+                  <Calendar className="mr-1 h-4 w-4" />
                   {post.date}
                 </div>
               </div>
 
-              <h2 className="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 cursor-pointer transition-colors">
+              <h2 className="mb-2 cursor-pointer font-bold text-gray-900 text-xl transition-colors hover:text-blue-600">
                 {post.title}
               </h2>
-              <p className="text-gray-600 mb-6 leading-relaxed">{post.excerpt}</p>
+              <p className="mb-6 text-gray-600 leading-relaxed">
+                {post.excerpt}
+              </p>
 
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between border-gray-100 border-t pt-4">
                 <div className="flex gap-4">
                   <Button
                     variant="ghost"
@@ -194,7 +223,7 @@ function BlogPage() {
                     className="text-gray-500 hover:text-blue-600"
                     onClick={() => handleLike(post.id)}
                   >
-                    <ThumbsUp className="w-4 h-4 mr-2" />
+                    <ThumbsUp className="mr-2 h-4 w-4" />
                     {post.likes} Likes
                   </Button>
                   <Button
@@ -203,12 +232,16 @@ function BlogPage() {
                     className="text-gray-500 hover:text-blue-600"
                     onClick={() => toast.info("Comments coming soon!")}
                   >
-                    <MessageSquare className="w-4 h-4 mr-2" />
+                    <MessageSquare className="mr-2 h-4 w-4" />
                     {post.comments} Comments
                   </Button>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => toast.info("More options coming soon!")}>
-                  <MoreHorizontal className="w-4 h-4" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toast.info("More options coming soon!")}
+                >
+                  <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </div>
             </CardContent>
@@ -228,7 +261,9 @@ function BlogPage() {
           <FormField label="Title" required>
             <Input
               value={newPost.title}
-              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+              onChange={(e) =>
+                setNewPost({ ...newPost, title: e.target.value })
+              }
               placeholder="Enter post title"
               required
             />
@@ -249,7 +284,9 @@ function BlogPage() {
           <FormField label="Excerpt" required>
             <Textarea
               value={newPost.excerpt}
-              onChange={(e) => setNewPost({ ...newPost, excerpt: e.target.value })}
+              onChange={(e) =>
+                setNewPost({ ...newPost, excerpt: e.target.value })
+              }
               placeholder="Brief summary of your post..."
               rows={2}
               required
@@ -258,7 +295,9 @@ function BlogPage() {
           <FormField label="Content" required>
             <Textarea
               value={newPost.content}
-              onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
+              onChange={(e) =>
+                setNewPost({ ...newPost, content: e.target.value })
+              }
               placeholder="Write your post content here..."
               rows={8}
               required

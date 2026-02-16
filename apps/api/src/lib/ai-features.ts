@@ -1,6 +1,6 @@
 /**
  * Autism Platform AI Features
- * 
+ *
  * AI-powered features for Autism Platform:
  * - Lead scoring
  * - Email content suggestions
@@ -8,7 +8,12 @@
  * - Contact enrichment
  */
 
-import { createAIClient, analyzeText, generateSuggestions, predictScore } from "./ai";
+import {
+  analyzeText,
+  createAIClient,
+  generateSuggestions,
+  predictScore,
+} from "./ai";
 
 const ai = createAIClient({ provider: "openai" });
 
@@ -36,7 +41,12 @@ export async function scoreLead(contactData: {
   `;
 
   const prediction = await predictScore(ai, context, "value");
-  const suggestions = await generateSuggestions(ai, "Autism Platform", context, "insights");
+  const suggestions = await generateSuggestions(
+    ai,
+    "Autism Platform",
+    context,
+    "insights",
+  );
 
   return {
     score: prediction.score,
@@ -50,7 +60,7 @@ export async function scoreLead(contactData: {
  */
 export async function suggestEmailContent(
   recipient: string,
-  purpose: "follow-up" | "introduction" | "proposal" | "meeting-request"
+  purpose: "follow-up" | "introduction" | "proposal" | "meeting-request",
 ): Promise<string[]> {
   if (!ai) {
     return [];
@@ -89,7 +99,12 @@ export async function enrichContact(contactData: {
   }
 
   const context = `Contact: ${contactData.name}, Company: ${contactData.companyName || "N/A"}, Email: ${contactData.email || "N/A"}`;
-  const insights = await generateSuggestions(ai, "Autism Platform", context, "insights");
+  const insights = await generateSuggestions(
+    ai,
+    "Autism Platform",
+    context,
+    "insights",
+  );
 
   return {
     additionalInfo: insights.join("; "),

@@ -5,9 +5,7 @@ test.describe("Autism Platform Smoke", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     await expect(page.locator("nav")).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: /Try Demo/i }),
-    ).toBeVisible();
+    await expect(page.getByRole("link", { name: /Try Demo/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /Sign In/i })).toBeVisible();
   });
 

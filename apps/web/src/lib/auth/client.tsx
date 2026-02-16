@@ -4,22 +4,20 @@
  * Better Auth client setup for TanStack Start.
  */
 
-'use client';
+"use client";
 
-import { createAuthClient } from 'better-auth/react';
-import { organizationClient } from 'better-auth/client/plugins';
+import { organizationClient } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/react";
 
 /**
  * Create auth client for the web app
  */
 export function createAuthClientForWeb() {
   return createAuthClient({
-    baseURL: typeof window !== 'undefined' ? window.location.origin : '',
-    plugins: [
-      organizationClient(),
-    ],
+    baseURL: typeof window !== "undefined" ? window.location.origin : "",
+    plugins: [organizationClient()],
     fetchOptions: {
-      credentials: 'include',
+      credentials: "include",
     },
   });
 }

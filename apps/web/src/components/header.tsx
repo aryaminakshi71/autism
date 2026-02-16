@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@autism-legacy-20260205/ui";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 interface HeaderProps {
   showTryDemo?: boolean;
@@ -30,15 +30,15 @@ export function Header({ showTryDemo = true }: HeaderProps) {
 
   return (
     <nav className="border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link to="/" className="text-2xl font-bold text-blue-600">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link to="/" className="font-bold text-2xl text-blue-600">
             Autism Platform
           </Link>
           <div className="flex items-center gap-3">
             <Link
               to="/login"
-              className="text-gray-600 hover:text-gray-900 font-medium"
+              className="font-medium text-gray-600 hover:text-gray-900"
             >
               Sign In
             </Link>
@@ -46,13 +46,16 @@ export function Header({ showTryDemo = true }: HeaderProps) {
               <Link
                 to="/app"
                 onClick={handleTryDemo}
-                className="inline-flex items-center justify-center border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium"
+                className="inline-flex items-center justify-center rounded-md border border-gray-300 px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50"
               >
                 Try Demo
               </Link>
             )}
             <Link to="/register">
-              <Button variant="primary" className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button
+                variant="primary"
+                className="bg-blue-600 text-white hover:bg-blue-700"
+              >
                 Start Free Trial
               </Button>
             </Link>

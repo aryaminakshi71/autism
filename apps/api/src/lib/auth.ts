@@ -1,9 +1,9 @@
 import { env } from "@autism-legacy-20260205/env/server";
 import { logger } from "@autism-legacy-20260205/logger";
+import { createDb, schema } from "@autism-legacy-20260205/storage";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
-import { schema, createDb } from "@autism-legacy-20260205/storage";
 
 // Create scoped logger for auth module
 const log = logger.child({ module: "auth" });
@@ -36,26 +36,33 @@ export function createAuth(connectionString: string) {
       },
     },
     socialProviders: {
-      google: env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? {
-        clientId: env.GOOGLE_CLIENT_ID,
-        clientSecret: env.GOOGLE_CLIENT_SECRET,
-      } : undefined,
-      github: env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
-        ? {
-            clientId: env.GITHUB_CLIENT_ID,
-            clientSecret: env.GITHUB_CLIENT_SECRET,
-          }
-        : undefined,
+      google:
+        env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+          ? {
+              clientId: env.GOOGLE_CLIENT_ID,
+              clientSecret: env.GOOGLE_CLIENT_SECRET,
+            }
+          : undefined,
+      github:
+        env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
+          ? {
+              clientId: env.GITHUB_CLIENT_ID,
+              clientSecret: env.GITHUB_CLIENT_SECRET,
+            }
+          : undefined,
     },
     plugins: [
       organization({
         allowUserToCreateOrganization: true,
         organizationCreation: {
-          afterCreate: async ({ organization, user }: { organization: any; user: any }) => {
-            log.info(
-              "organization:created",
-              { organizationId: organization.id, userId: user.id }
-            );
+          afterCreate: async ({
+            organization,
+            user,
+          }: { organization: any; user: any }) => {
+            log.info("organization:created", {
+              organizationId: organization.id,
+              userId: user.id,
+            });
           },
         },
       }),

@@ -1,46 +1,46 @@
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from "@sentry/nextjs";
 
 const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN || process.env.SENTRY_DSN;
-const SENTRY_ENVIRONMENT = process.env.SENTRY_ENVIRONMENT || 'development';
+const SENTRY_ENVIRONMENT = process.env.SENTRY_ENVIRONMENT || "development";
 
 export function initializeSentry() {
   if (!SENTRY_DSN) {
-    console.warn('Sentry DSN not configured');
+    console.warn("Sentry DSN not configured");
     return;
   }
 
   Sentry.init({
     dsn: SENTRY_DSN,
     environment: SENTRY_ENVIRONMENT,
-    
+
     tracesSampleRate: 1.0,
-    
+
     profilesSampleRate: 1.0,
-    
+
     replaysOnErrorSampleRate: 1.0,
     replaysSessionSampleRate: 0.1,
-    
+
     integrations: [
       Sentry.replayIntegration({
         maskAllText: true,
         blockAllMedia: true,
       }),
     ],
-    
+
     beforeSend(event, hint) {
       const error = hint.originalException;
-      
+
       if (error instanceof Error) {
-        if (error.message.includes('ResizeObserver')) {
+        if (error.message.includes("ResizeObserver")) {
           return null;
         }
       }
-      
+
       return event;
     },
-    
+
     beforeBreadcrumb(breadcrumb) {
-      if (breadcrumb.category === 'ui.click') {
+      if (breadcrumb.category === "ui.click") {
         return null;
       }
       return breadcrumb;
@@ -50,7 +50,7 @@ export function initializeSentry() {
 
 export function captureError(error: Error, context?: Record<string, any>) {
   if (!SENTRY_DSN) {
-    console.error('Error:', error, context);
+    console.error("Error:", error, context);
     return;
   }
 
@@ -64,7 +64,10 @@ export function captureError(error: Error, context?: Record<string, any>) {
   });
 }
 
-export function captureMessage(message: string, level: 'info' | 'warning' | 'error' = 'info') {
+export function captureMessage(
+  message: string,
+  level: "info" | "warning" | "error" = "info",
+) {
   if (!SENTRY_DSN) {
     console.log(level, message);
     return;
@@ -73,7 +76,9 @@ export function captureMessage(message: string, level: 'info' | 'warning' | 'err
   Sentry.captureMessage(message, level as any);
 }
 
-export function setUserContext(user: { id: string; email?: string; name?: string } | null) {
+export function setUserContext(
+  user: { id: string; email?: string; name?: string } | null,
+) {
   if (!SENTRY_DSN) return;
 
   if (user) {
@@ -90,7 +95,7 @@ export function setUserContext(user: { id: string; email?: string; name?: string
 export function addBreadcrumb(
   category: string,
   message: string,
-  data?: Record<string, any>
+  data?: Record<string, any>,
 ) {
   if (!SENTRY_DSN) return;
 
@@ -98,7 +103,7 @@ export function addBreadcrumb(
     category,
     message,
     data,
-    level: 'info',
+    level: "info",
   });
 }
 

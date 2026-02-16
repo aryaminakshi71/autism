@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -7,14 +7,23 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": [
-      "**",
-      "!node_modules",
-      "!.output",
-      "!dist",
-      "!build",
-      "!**/sst-env.d.ts",
-      "!**/worker-configuration.d.ts"
+    "include": ["**"],
+    "ignore": [
+      "node_modules",
+      ".output",
+      "dist",
+      "build",
+      ".next",
+      ".wrangler",
+      ".turbo",
+      "coverage",
+      "playwright-report",
+      "test-results",
+      "test-results.json",
+      "**/*.webm",
+      "shared-saas-core/shared-templates/**",
+      "**/sst-env.d.ts",
+      "**/worker-configuration.d.ts"
     ]
   },
   "formatter": {
@@ -27,11 +36,7 @@
       "trailingCommas": "all"
     }
   },
-  "css": {
-    "parser": {
-      "tailwindDirectives": true
-    }
-  },
+  "css": {},
   "linter": {
     "enabled": true,
     "rules": {
@@ -43,18 +48,7 @@
         "noUnusedImports": "warn"
       },
       "suspicious": {
-        "noUnknownAtRules": "off",
         "noArrayIndexKey": "off"
-      }
-    },
-    "domains": {
-      "react": "recommended"
-    }
-  },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "on"
       }
     }
   }

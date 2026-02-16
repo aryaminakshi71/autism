@@ -1,5 +1,17 @@
-import { initializeSentry, captureError, captureMessage, setUserContext, addBreadcrumb } from './sentry-client';
+import {
+  addBreadcrumb,
+  captureError,
+  captureMessage,
+  initializeSentry,
+  setUserContext,
+} from "./sentry-client";
 
-export { initializeSentry, captureError, captureMessage, setUserContext, addBreadcrumb };
+export {
+  initializeSentry,
+  captureError,
+  captureMessage,
+  setUserContext,
+  addBreadcrumb,
+};
 
-export { Sentry } from './sentry-client';
+export { Sentry } from "./sentry-client";

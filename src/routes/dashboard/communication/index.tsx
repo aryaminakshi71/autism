@@ -1,13 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Copy,
-  Edit,
-  MessageSquare,
-  Plus,
-  Search,
-  Trash,
-  Volume2,
-} from "lucide-react";
+import { Copy, Edit, MessageSquare, Plus, Search, Trash } from "lucide-react";
 import { useState } from "react";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
 
@@ -86,35 +78,35 @@ function CommunicationPage() {
 
   return (
     <DashboardLayout title="Communication Boards">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 transform text-gray-400" />
             <input
               type="text"
               placeholder="Search communication boards..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-80"
+              className="w-80 rounded-xl border border-gray-200 py-2 pr-4 pl-10 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
-        <button className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors">
-          <Plus className="w-5 h-5" />
+        <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+          <Plus className="h-5 w-5" />
           <span>Create Board</span>
         </button>
       </div>
 
       <div className="mb-6">
-        <h2 className="text-sm font-semibold text-gray-600 mb-3">Categories</h2>
+        <h2 className="mb-3 font-semibold text-gray-600 text-sm">Categories</h2>
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
             <button
               key={category.id}
-              className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+              className="flex items-center space-x-2 rounded-xl border border-gray-200 bg-white px-4 py-2 transition-colors hover:bg-gray-50"
             >
               <span>{category.icon}</span>
-              <span className="text-sm font-medium text-gray-700">
+              <span className="font-medium text-gray-700 text-sm">
                 {category.name}
               </span>
             </button>
@@ -122,33 +114,33 @@ function CommunicationPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredSets.map((set) => (
           <div
             key={set.id}
-            className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer group"
+            className="group cursor-pointer rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
           >
-            <div className="flex items-start justify-between mb-4">
+            <div className="mb-4 flex items-start justify-between">
               <div className="flex items-center space-x-3">
                 <div
-                  className={`w-12 h-12 ${getCategoryColor(set.category)} rounded-xl flex items-center justify-center text-white text-xl`}
+                  className={`h-12 w-12 ${getCategoryColor(set.category)} flex items-center justify-center rounded-xl text-white text-xl`}
                 >
                   {getCategoryIcon(set.category)}
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">{set.name}</h3>
-                  <p className="text-sm text-gray-500">{set.patient}</p>
+                  <p className="text-gray-500 text-sm">{set.patient}</p>
                 </div>
               </div>
               {set.isTemplate && (
-                <span className="px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
+                <span className="rounded-full bg-indigo-100 px-2 py-1 font-medium text-indigo-700 text-xs">
                   Template
                 </span>
               )}
             </div>
 
             <div className="mb-4">
-              <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+              <div className="mb-2 flex items-center justify-between text-gray-600 text-sm">
                 <span>{set.category}</span>
                 <span>{set.gridSize}</span>
               </div>
@@ -157,7 +149,7 @@ function CommunicationPage() {
                   (_, i) => (
                     <div
                       key={i}
-                      className={`aspect-square rounded-lg ${i < 8 ? getCategoryColor(set.category) : "bg-gray-200"} flex items-center justify-center text-white text-xs font-medium`}
+                      className={`aspect-square rounded-lg ${i < 8 ? getCategoryColor(set.category) : "bg-gray-200"} flex items-center justify-center font-medium text-white text-xs`}
                     >
                       {i < 8 ? "★" : ""}
                     </div>
@@ -166,17 +158,17 @@ function CommunicationPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button className="flex items-center space-x-1 px-3 py-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                <Copy className="w-4 h-4" />
+            <div className="flex items-center justify-between border-gray-100 border-t pt-4 opacity-0 transition-opacity group-hover:opacity-100">
+              <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700">
+                <Copy className="h-4 w-4" />
                 <span className="text-sm">Duplicate</span>
               </button>
-              <button className="flex items-center space-x-1 px-3 py-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                <Edit className="w-4 h-4" />
+              <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700">
+                <Edit className="h-4 w-4" />
                 <span className="text-sm">Edit</span>
               </button>
-              <button className="flex items-center space-x-1 px-3 py-2 text-red-500 hover:text-red-700 rounded-lg hover:bg-red-50 transition-colors">
-                <Trash className="w-4 h-4" />
+              <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700">
+                <Trash className="h-4 w-4" />
                 <span className="text-sm">Delete</span>
               </button>
             </div>
@@ -184,12 +176,12 @@ function CommunicationPage() {
         ))}
       </div>
 
-      <div className="mt-8 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <h3 className="font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-          <MessageSquare className="w-5 h-5 text-indigo-600" />
+      <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 flex items-center space-x-2 font-semibold text-gray-900">
+          <MessageSquare className="h-5 w-5 text-indigo-600" />
           <span>Quick Access Symbols</span>
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
           {[
             { label: "Yes", icon: "👍", color: "bg-green-100" },
             { label: "No", icon: "👎", color: "bg-red-100" },
@@ -206,14 +198,14 @@ function CommunicationPage() {
           ].map((symbol) => (
             <button
               key={symbol.label}
-              className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-colors"
+              className="flex flex-col items-center justify-center rounded-xl border border-gray-200 p-4 transition-colors hover:border-indigo-300 hover:bg-indigo-50"
             >
               <div
-                className={`w-12 h-12 ${symbol.color} rounded-xl flex items-center justify-center text-2xl mb-2`}
+                className={`h-12 w-12 ${symbol.color} mb-2 flex items-center justify-center rounded-xl text-2xl`}
               >
                 {symbol.icon}
               </div>
-              <span className="text-sm font-medium text-gray-700">
+              <span className="font-medium text-gray-700 text-sm">
                 {symbol.label}
               </span>
             </button>

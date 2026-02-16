@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 interface Column<T> {
   key: string;
@@ -27,7 +27,10 @@ export function DataTable<T extends { id: string | number }>({
         <thead>
           <tr className="bg-gray-100">
             {columns.map((col) => (
-              <th key={col.key} className="px-4 py-3 text-left font-semibold text-gray-700 border-b">
+              <th
+                key={col.key}
+                className="border-b px-4 py-3 text-left font-semibold text-gray-700"
+              >
                 {col.header}
               </th>
             ))}
@@ -38,10 +41,10 @@ export function DataTable<T extends { id: string | number }>({
             <tr
               key={keyExtractor(item)}
               onClick={() => onRowClick?.(item)}
-              className="hover:bg-gray-50 cursor-pointer"
+              className="cursor-pointer hover:bg-gray-50"
             >
               {columns.map((col) => (
-                <td key={col.key} className="px-4 py-3 border-b text-gray-700">
+                <td key={col.key} className="border-b px-4 py-3 text-gray-700">
                   {col.render ? col.render(item) : (item as any)[col.key]}
                 </td>
               ))}
@@ -50,9 +53,7 @@ export function DataTable<T extends { id: string | number }>({
         </tbody>
       </table>
       {data.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
-          No data available
-        </div>
+        <div className="py-8 text-center text-gray-500">No data available</div>
       )}
     </div>
   );

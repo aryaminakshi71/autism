@@ -32,25 +32,26 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8 lg:py-16">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="mb-4 flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-background">
                 <Car className="h-4 w-4 text-foreground" />
               </div>
-              <span className="text-lg font-semibold">ParkSpot</span>
+              <span className="font-semibold text-lg">ParkSpot</span>
             </div>
-            <p className="text-sm text-background/70 max-w-[200px]">
-              Smart parking for the modern driver. Find, book, and pay in seconds.
+            <p className="max-w-[200px] text-background/70 text-sm">
+              Smart parking for the modern driver. Find, book, and pay in
+              seconds.
             </p>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-4">Product</h3>
+            <h3 className="mb-4 font-semibold text-sm">Product</h3>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-sm text-background/70 hover:text-background transition-colors"
+                    className="text-background/70 text-sm transition-colors hover:text-background"
                   >
                     {link.name}
                   </a>
@@ -60,13 +61,13 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-4">Company</h3>
+            <h3 className="mb-4 font-semibold text-sm">Company</h3>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-sm text-background/70 hover:text-background transition-colors"
+                    className="text-background/70 text-sm transition-colors hover:text-background"
                   >
                     {link.name}
                   </a>
@@ -76,13 +77,13 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-4">Support</h3>
+            <h3 className="mb-4 font-semibold text-sm">Support</h3>
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-sm text-background/70 hover:text-background transition-colors"
+                    className="text-background/70 text-sm transition-colors hover:text-background"
                   >
                     {link.name}
                   </a>
@@ -92,13 +93,13 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-4">Legal</h3>
+            <h3 className="mb-4 font-semibold text-sm">Legal</h3>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-sm text-background/70 hover:text-background transition-colors"
+                    className="text-background/70 text-sm transition-colors hover:text-background"
                   >
                     {link.name}
                   </a>
@@ -108,8 +109,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-background/20">
-          <p className="text-sm text-background/50 text-center">
+        <div className="mt-12 border-background/20 border-t pt-8">
+          <p className="text-center text-background/50 text-sm">
             © 2026 ParkSpot. All rights reserved.
           </p>
         </div>

@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, ArrowRight } from "lucide-react";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { ArrowRight, Check } from "lucide-react";
 
 export const Route = createFileRoute("/demo")({
   component: DemoPage,
@@ -35,34 +35,36 @@ function DemoPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-2xl">
+        <div className="rounded-2xl bg-white p-8 shadow-xl md:p-12">
+          <div className="mb-8 text-center">
+            <h1 className="mb-4 font-bold text-4xl text-gray-900">
               Try Autism Platform Demo
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-gray-600 text-xl">
               Experience the full power of our platform with sample data
             </p>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+            <h2 className="mb-4 font-semibold text-2xl text-gray-900">
               What You'll Get
             </h2>
             <ul className="space-y-3">
               {features.map((feature, idx) => (
                 <li key={idx} className="flex items-center gap-3">
-                  <Check className="w-6 h-6 text-green-500 flex-shrink-0" />
+                  <Check className="h-6 w-6 flex-shrink-0 text-green-500" />
                   <span className="text-gray-700">{feature}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-            <h3 className="font-semibold text-gray-900 mb-2">Demo Account Includes:</h3>
+          <div className="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-6">
+            <h3 className="mb-2 font-semibold text-gray-900">
+              Demo Account Includes:
+            </h3>
             <ul className="space-y-2 text-gray-700">
               <li>• Sample learners, care teams, and families</li>
               <li>• Pre-configured schedules and goal plans</li>
@@ -71,18 +73,18 @@ function DemoPage() {
             </ul>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <Link
               to="/app"
               onClick={handleStartDemo}
-              className="flex-1 bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 font-semibold text-lg flex items-center justify-center gap-2 transition-colors"
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-lg text-white transition-colors hover:bg-blue-700"
             >
               Start Demo
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="h-5 w-5" />
             </Link>
             <Link
               to="/register"
-              className="flex-1 border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg hover:border-gray-400 font-semibold text-lg text-center transition-colors"
+              className="flex-1 rounded-lg border-2 border-gray-300 px-8 py-4 text-center font-semibold text-gray-700 text-lg transition-colors hover:border-gray-400"
             >
               Create Account
             </Link>
@@ -91,7 +93,7 @@ function DemoPage() {
           <div className="mt-6 text-center">
             <Link
               to="/login"
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="font-medium text-blue-600 hover:text-blue-700"
             >
               Already have an account? Sign in
             </Link>

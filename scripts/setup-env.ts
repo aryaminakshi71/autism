@@ -361,7 +361,9 @@ async function validateEnvFiles() {
   console.log("Validating env files...\n");
 
   try {
-    const { env: serverEnv } = await import("@autism-legacy-20260205/env/server");
+    const { env: serverEnv } = await import(
+      "@autism-legacy-20260205/env/server"
+    );
 
     console.log("Server env schema loaded successfully");
     console.log(
@@ -379,7 +381,9 @@ async function validateEnvFiles() {
   }
 
   try {
-    const { env: clientEnv } = await import("@autism-legacy-20260205/env/client");
+    const { env: clientEnv } = await import(
+      "@autism-legacy-20260205/env/client"
+    );
 
     console.log("\nClient env schema loaded successfully");
     console.log(

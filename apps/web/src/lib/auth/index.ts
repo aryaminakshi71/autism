@@ -4,4 +4,10 @@
  * Re-exports for auth functionality.
  */
 
-export { authClient, createAuthClientForWeb, useSession, signIn, signOut } from './client';
+export {
+  authClient,
+  createAuthClientForWeb,
+  useSession,
+  signIn,
+  signOut,
+} from "./client";

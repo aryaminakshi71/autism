@@ -16,10 +16,19 @@ export interface CalendarEvent {
 }
 
 export interface CalendarService {
-  createEvent(event: CalendarEvent): Promise<{ success: boolean; eventId?: string }>;
-  updateEvent(eventId: string, event: Partial<CalendarEvent>): Promise<{ success: boolean }>;
+  createEvent(
+    event: CalendarEvent,
+  ): Promise<{ success: boolean; eventId?: string }>;
+  updateEvent(
+    eventId: string,
+    event: Partial<CalendarEvent>,
+  ): Promise<{ success: boolean }>;
   deleteEvent(eventId: string): Promise<{ success: boolean }>;
-  getAvailability(startTime: string, endTime: string, attendees: string[]): Promise<{
+  getAvailability(
+    startTime: string,
+    endTime: string,
+    attendees: string[],
+  ): Promise<{
     available: boolean;
     slots?: { start: string; end: string }[];
   }>;
@@ -55,7 +64,11 @@ export const calendarService: CalendarService = {
     return { success: true };
   },
 
-  async getAvailability(startTime: string, endTime: string, attendees: string[]) {
+  async getAvailability(
+    startTime: string,
+    endTime: string,
+    attendees: string[],
+  ) {
     console.log("[Calendar Stub] Checking availability:", {
       start: startTime,
       end: endTime,
@@ -82,14 +95,19 @@ export const calendarHelpers = {
     userEmail: string;
   }) => {
     const startTime = new Date(activity.dueDate);
-    const endTime = new Date(startTime.getTime() + activity.durationMinutes * 60 * 1000);
+    const endTime = new Date(
+      startTime.getTime() + activity.durationMinutes * 60 * 1000,
+    );
 
     const event: CalendarEvent = {
       title: activity.subject,
       description: activity.description,
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
-      attendees: [activity.userEmail, ...(activity.contactEmail ? [activity.contactEmail] : [])],
+      attendees: [
+        activity.userEmail,
+        ...(activity.contactEmail ? [activity.contactEmail] : []),
+      ],
     };
 
     return calendarService.createEvent(event);
@@ -98,7 +116,11 @@ export const calendarHelpers = {
   /**
    * Reschedule a meeting
    */
-  rescheduleMeeting: async (eventId: string, newDueDate: string, durationMinutes: number) => {
+  rescheduleMeeting: async (
+    eventId: string,
+    newDueDate: string,
+    durationMinutes: number,
+  ) => {
     const startTime = new Date(newDueDate);
     const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
 

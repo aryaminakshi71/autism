@@ -1,7 +1,7 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Mail, Lock, User, LogIn } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Lock, LogIn, Mail, User } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
@@ -10,7 +10,9 @@ export const Route = createFileRoute("/register")({
 function RegisterPage() {
   const navigate = useNavigate();
   const searchParams =
-    typeof window === "undefined" ? new URLSearchParams() : new URLSearchParams(window.location.search);
+    typeof window === "undefined"
+      ? new URLSearchParams()
+      : new URLSearchParams(window.location.search);
   const redirect = searchParams.get("redirect") || undefined;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -48,23 +50,29 @@ function RegisterPage() {
       navigate({ to: redirectPath });
     } catch (err) {
       console.error("Registration error:", err);
-      setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-8">
         <div>
           <Link to="/" className="flex justify-center">
-            <h1 className="text-3xl font-bold text-blue-600">Autism Platform</h1>
+            <h1 className="font-bold text-3xl text-blue-600">
+              Autism Platform
+            </h1>
           </Link>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center font-extrabold text-3xl text-gray-900">
             Create your account
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-gray-600 text-sm">
             Already have an account?{" "}
             <Link
               to="/login"
@@ -76,17 +84,20 @@ function RegisterPage() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            <div className="rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
               {error}
             </div>
           )}
           <div className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block font-medium text-gray-700 text-sm"
+              >
                 Full Name
               </label>
-              <div className="mt-1 relative">
-                <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <div className="relative mt-1">
+                <User className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
                 <input
                   id="name"
                   name="name"
@@ -95,17 +106,20 @@ function RegisterPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full appearance-none rounded-lg border border-gray-300 py-2 pr-3 pl-10 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                   placeholder="John Doe"
                 />
               </div>
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block font-medium text-gray-700 text-sm"
+              >
                 Email address
               </label>
-              <div className="mt-1 relative">
-                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <div className="relative mt-1">
+                <Mail className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
                 <input
                   id="email"
                   name="email"
@@ -114,17 +128,20 @@ function RegisterPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full appearance-none rounded-lg border border-gray-300 py-2 pr-3 pl-10 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block font-medium text-gray-700 text-sm"
+              >
                 Password
               </label>
-              <div className="mt-1 relative">
-                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <div className="relative mt-1">
+                <Lock className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
                 <input
                   id="password"
                   name="password"
@@ -133,7 +150,7 @@ function RegisterPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full appearance-none rounded-lg border border-gray-300 py-2 pr-3 pl-10 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                   placeholder="••••••••"
                 />
               </div>
@@ -144,16 +161,16 @@ function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-transparent bg-blue-600 px-4 py-3 font-medium text-sm text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
               {isLoading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
                   Creating account...
                 </>
               ) : (
                 <>
-                  <LogIn className="w-5 h-5" />
+                  <LogIn className="h-5 w-5" />
                   Create Account
                 </>
               )}
@@ -162,17 +179,17 @@ function RegisterPage() {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <div className="w-full border-gray-300 border-t" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">Or</span>
+              <span className="bg-gray-50 px-2 text-gray-500">Or</span>
             </div>
           </div>
 
           <div>
             <Link
               to="/demo"
-              className="w-full flex justify-center py-3 px-4 border-2 border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              className="flex w-full justify-center rounded-lg border-2 border-gray-300 bg-white px-4 py-3 font-medium text-gray-700 text-sm shadow-sm hover:bg-gray-50"
             >
               Try Demo Instead
             </Link>
