@@ -14,9 +14,6 @@
     "build:analyze": "ANALYZE=true vite build"
   },
   "dependencies": {
-    "@autism-legacy-20260205/api": "workspace:*",
-    "@autism-legacy-20260205/env": "workspace:*",
-    "@autism-legacy-20260205/ui": "workspace:*",
     "@orpc/client": "^1.13.4",
     "@orpc/tanstack-query": "^1.13.4",
     "@radix-ui/react-alert-dialog": "^1.1.5",
@@ -52,7 +49,6 @@
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.22.1",
     "@cloudflare/workers-types": "^4.20250109.0",
-    "@autism-legacy-20260205/tsconfig": "workspace:*",
     "@tailwindcss/vite": "^4.1.8",
     "@tanstack/devtools-vite": "^0.3.11",
     "@tanstack/react-query-devtools": "^5.91.1",

@@ -14,6 +14,12 @@ import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
 // import { captureException as sentryCaptureException } from "./lib/sentry";
 import type { AppEnv, InitialContext } from "./context";
+import {
+  enrichContact,
+  generateMeetingSummary,
+  scoreLead,
+  suggestEmailContent,
+} from "./lib/ai-features";
 import { createAuthFromEnv } from "./lib/create-auth-from-env";
 import { APIError } from "./lib/errors";
 import { loggerMiddleware } from "./middleware/logger";
@@ -47,6 +53,82 @@ export function createApp() {
       timestamp: new Date().toISOString(),
       version: "1.0.0",
     });
+  });
+
+  // AI assistant routes
+  app.post("/api/ai/lead/score", async (c: any) => {
+    try {
+      const body = (await c.req.json()) as {
+        email?: string;
+        companyName?: string;
+        jobTitle?: string;
+        notes?: string;
+        tags?: string[];
+      };
+
+      const result = await scoreLead(body || {});
+      return c.json({ result });
+    } catch (error) {
+      console.error("Error in /api/ai/lead/score:", error);
+      return c.json({ error: "AI lead scoring failed" }, 500);
+    }
+  });
+
+  app.post("/api/ai/email/suggest", async (c: any) => {
+    try {
+      const body = (await c.req.json()) as {
+        recipient?: string;
+        purpose?: "follow-up" | "introduction" | "proposal" | "meeting-request";
+      };
+
+      if (!body?.recipient || !body?.purpose) {
+        return c.json({ error: "recipient and purpose are required" }, 400);
+      }
+
+      const suggestions = await suggestEmailContent(body.recipient, body.purpose);
+      return c.json({ suggestions });
+    } catch (error) {
+      console.error("Error in /api/ai/email/suggest:", error);
+      return c.json({ error: "AI email suggestion failed" }, 500);
+    }
+  });
+
+  app.post("/api/ai/meeting/summarize", async (c: any) => {
+    try {
+      const body = (await c.req.json()) as { notes?: string };
+      if (!body?.notes) {
+        return c.json({ error: "notes is required" }, 400);
+      }
+
+      const summary = await generateMeetingSummary(body.notes);
+      return c.json({ summary });
+    } catch (error) {
+      console.error("Error in /api/ai/meeting/summarize:", error);
+      return c.json({ error: "AI meeting summary failed" }, 500);
+    }
+  });
+
+  app.post("/api/ai/contact/enrich", async (c: any) => {
+    try {
+      const body = (await c.req.json()) as {
+        email?: string;
+        companyName?: string;
+        name?: string;
+      };
+      if (!body?.name) {
+        return c.json({ error: "name is required" }, 400);
+      }
+
+      const enrichment = await enrichContact({
+        name: body.name,
+        email: body.email,
+        companyName: body.companyName,
+      });
+      return c.json({ enrichment });
+    } catch (error) {
+      console.error("Error in /api/ai/contact/enrich:", error);
+      return c.json({ error: "AI contact enrichment failed" }, 500);
+    }
   });
 
   // Rate limiting middleware

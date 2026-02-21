@@ -1,0 +1,41 @@
+{
+  "appId": "autism",
+  "version": "1.0.0",
+  "capabilities": [
+    "autism.contacts.manage",
+    "autism.engagement.track",
+    "autism.outreach.optimize",
+    "autism.ai.assist"
+  ],
+  "api": {
+    "basePath": "/api",
+    "openApiUrl": "/api/openapi.json"
+  },
+  "events": {
+    "published": [
+      "autism.contact.created",
+      "autism.engagement.updated",
+      "autism.ai.lead_scored"
+    ],
+    "subscribed": [
+      "campaign.sequence.started",
+      "billing.subscription.updated"
+    ]
+  },
+  "ai": {
+    "assistant": {
+      "enabled": true,
+      "entrypoint": "/api/ai/lead/score"
+    },
+    "automationAgents": [
+      "autism-outreach-automation-agent",
+      "autism-lead-nurture-agent"
+    ],
+    "analyticsAgent": [
+      "autism-pipeline-insights-agent"
+    ],
+    "guardrails": {
+      "dataClass": "pii"
+    }
+  }
+}

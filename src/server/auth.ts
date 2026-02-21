@@ -12,22 +12,23 @@ const baseURL =
 const appName =
   process.env.APP_NAME ?? process.env.VITE_PUBLIC_APP_NAME ?? "App";
 
-const socialProviders = [];
+const socialProviders: {
+  google?: { clientId: string; clientSecret: string };
+  github?: { clientId: string; clientSecret: string };
+} = {};
 
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-  socialProviders.push({
-    provider: "google",
+  socialProviders.google = {
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  });
+  };
 }
 
 if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
-  socialProviders.push({
-    provider: "github",
+  socialProviders.github = {
     clientId: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  });
+  };
 }
 
 export const auth = betterAuth({
@@ -41,7 +42,8 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  socialProviders: socialProviders.length > 0 ? socialProviders : undefined,
+  socialProviders:
+    Object.keys(socialProviders).length > 0 ? socialProviders : undefined,
   plugins: [
     organization({
       allowUserToCreateOrganization: true,
