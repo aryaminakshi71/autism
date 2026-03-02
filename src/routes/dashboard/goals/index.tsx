@@ -7,84 +7,115 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
+import { loadEntityList, saveEntityList } from "~/lib/dashboard-local-store";
+import { isDemoModeEnabled } from "~/lib/demo-mode";
 
 export const Route = createFileRoute("/dashboard/goals/")({
   component: GoalsPage,
 });
 
+const DEFAULT_GOALS = [
+  {
+    id: "1",
+    name: "Increase eye contact",
+    category: "Social Skills",
+    patient: "Emma Johnson",
+    targetValue: 80,
+    currentValue: 65,
+    unit: "%",
+    status: "active",
+    masteryCriteria: 80,
+    domain: "Social",
+    priority: "high",
+  },
+  {
+    id: "2",
+    name: "Following 2-step directions",
+    category: "Communication",
+    patient: "Liam Williams",
+    targetValue: 90,
+    currentValue: 72,
+    unit: "%",
+    status: "active",
+    masteryCriteria: 90,
+    domain: "Communication",
+    priority: "high",
+  },
+  {
+    id: "3",
+    name: "Reduce hand flapping",
+    category: "Behavior",
+    patient: "Olivia Davis",
+    targetValue: 10,
+    currentValue: 35,
+    unit: "%",
+    status: "active",
+    masteryCriteria: 10,
+    domain: "Behavior",
+    priority: "medium",
+  },
+  {
+    id: "4",
+    name: "Picture exchange communication",
+    category: "AAC",
+    patient: "Noah Martinez",
+    targetValue: 5,
+    currentValue: 5,
+    unit: " exchanges/min",
+    status: "mastered",
+    masteryCriteria: 5,
+    domain: "Communication",
+    priority: "low",
+  },
+  {
+    id: "5",
+    name: "Turn-taking in games",
+    category: "Social Skills",
+    patient: "Emma Johnson",
+    targetValue: 4,
+    currentValue: 2,
+    unit: " turns",
+    status: "active",
+    masteryCriteria: 4,
+    domain: "Social",
+    priority: "medium",
+  },
+];
+
 function GoalsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const isDemoMode = isDemoModeEnabled();
 
-  const goals = [
-    {
-      id: "1",
-      name: "Increase eye contact",
-      category: "Social Skills",
-      patient: "Emma Johnson",
-      targetValue: 80,
-      currentValue: 65,
-      unit: "%",
-      status: "active",
-      masteryCriteria: 80,
-      domain: "Social",
-      priority: "high",
-    },
-    {
-      id: "2",
-      name: "Following 2-step directions",
-      category: "Communication",
-      patient: "Liam Williams",
-      targetValue: 90,
-      currentValue: 72,
-      unit: "%",
-      status: "active",
-      masteryCriteria: 90,
-      domain: "Communication",
-      priority: "high",
-    },
-    {
-      id: "3",
-      name: "Reduce hand flapping",
-      category: "Behavior",
-      patient: "Olivia Davis",
-      targetValue: 10,
-      currentValue: 35,
-      unit: "%",
-      status: "active",
-      masteryCriteria: 10,
-      domain: "Behavior",
-      priority: "medium",
-    },
-    {
-      id: "4",
-      name: "Picture exchange communication",
-      category: "AAC",
-      patient: "Noah Martinez",
-      targetValue: 5,
-      currentValue: 5,
-      unit: " exchanges/min",
-      status: "mastered",
-      masteryCriteria: 5,
-      domain: "Communication",
-      priority: "low",
-    },
-    {
-      id: "5",
-      name: "Turn-taking in games",
-      category: "Social Skills",
-      patient: "Emma Johnson",
-      targetValue: 4,
-      currentValue: 2,
-      unit: " turns",
-      status: "active",
-      masteryCriteria: 4,
-      domain: "Social",
-      priority: "medium",
-    },
-  ];
+  const [goals, setGoals] = useState(() =>
+    loadEntityList("autism_goals", DEFAULT_GOALS),
+  );
+
+  useEffect(() => {
+    saveEntityList("autism_goals", goals);
+  }, [goals]);
+
+  const handleAddGoal = () => {
+    const nextId = String(goals.length + 1);
+    setGoals((prev) => [
+      {
+        id: nextId,
+        name: `New Goal ${nextId}`,
+        category: "Communication",
+        patient: "New Patient",
+        targetValue: 10,
+        currentValue: 0,
+        unit: " tasks",
+        status: "active",
+        masteryCriteria: 10,
+        domain: "Communication",
+        priority: "medium",
+      },
+      ...prev,
+    ]);
+  };
 
   const filteredGoals = goals.filter((goal) => {
     const matchesSearch =
@@ -142,11 +173,20 @@ function GoalsPage() {
             <option value="inactive">Inactive</option>
           </select>
         </div>
-        <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+        <button
+          onClick={handleAddGoal}
+          title={isDemoMode ? "Demo: goal will be added locally." : ""}
+          className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700"
+        >
           <Plus className="h-5 w-5" />
           <span>Add Goal</span>
         </button>
       </div>
+      {isDemoMode ? (
+        <p className="mb-4 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-indigo-800 text-sm">
+          Demo mode: new goals are saved locally for this session.
+        </p>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredGoals.map((goal) => {

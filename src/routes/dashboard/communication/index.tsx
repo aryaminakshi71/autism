@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Copy, Edit, MessageSquare, Plus, Search, Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
+import { loadEntityList, saveEntityList } from "~/lib/dashboard-local-store";
+import { isDemoModeEnabled } from "~/lib/demo-mode";
 
 export const Route = createFileRoute("/dashboard/communication/")({
   component: CommunicationPage,
@@ -9,6 +11,7 @@ export const Route = createFileRoute("/dashboard/communication/")({
 
 function CommunicationPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const isDemoMode = isDemoModeEnabled();
 
   const categories = [
     { id: "core", name: "Core Words", color: "bg-red-500", icon: "🔴" },
@@ -19,7 +22,7 @@ function CommunicationPage() {
     { id: "social", name: "Social", color: "bg-pink-500", icon: "🌸" },
   ];
 
-  const cardSets = [
+  const defaultCardSets = [
     {
       id: "1",
       name: "Basic Communication",
@@ -58,6 +61,30 @@ function CommunicationPage() {
     },
   ];
 
+  const [cardSets, setCardSets] = useState(() =>
+    loadEntityList("autism_communication_boards", defaultCardSets),
+  );
+
+  useEffect(() => {
+    saveEntityList("autism_communication_boards", cardSets);
+  }, [cardSets]);
+
+  const handleCreateBoard = () => {
+    const nextId = String(cardSets.length + 1);
+    setCardSets((prev) => [
+      {
+        id: nextId,
+        name: `Custom Board ${nextId}`,
+        category: "core",
+        patient: "New Patient",
+        gridSize: "3x3",
+        cardsCount: 9,
+        isTemplate: false,
+      },
+      ...prev,
+    ]);
+  };
+
   const filteredSets = cardSets.filter(
     (set) =>
       set.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -91,11 +118,20 @@ function CommunicationPage() {
             />
           </div>
         </div>
-        <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+        <button
+          onClick={handleCreateBoard}
+          title={isDemoMode ? "Demo: board will be added locally." : ""}
+          className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700"
+        >
           <Plus className="h-5 w-5" />
           <span>Create Board</span>
         </button>
       </div>
+      {isDemoMode ? (
+        <p className="mb-4 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-indigo-800 text-sm">
+          Demo mode: new boards are saved locally for this session.
+        </p>
+      ) : null}
 
       <div className="mb-6">
         <h2 className="mb-3 font-semibold text-gray-600 text-sm">Categories</h2>

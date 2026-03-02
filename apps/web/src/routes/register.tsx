@@ -3,6 +3,32 @@ import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Lock, LogIn, Mail, User } from "lucide-react";
 import { useState } from "react";
 
+async function notifyWeavebridgeOfSignup(data: {
+  email: string;
+  name?: string;
+  sourceApp: string;
+}) {
+  try {
+    const webhookUrl =
+      import.meta.env.VITE_WEBHOOK_URL || "http://localhost:8787";
+    await fetch(`${webhookUrl}/api/webhooks/ingest`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        source: data.sourceApp,
+        type: "user.signup",
+        data: {
+          email: data.email,
+          name: data.name,
+          signedUpAt: new Date().toISOString(),
+        },
+      }),
+    });
+  } catch (e) {
+    console.error("Webhook notification failed:", e);
+  }
+}
+
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
 });
@@ -44,6 +70,13 @@ function RegisterPage() {
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("companyId");
+
+      // Notify Weavebridge of new signup
+      await notifyWeavebridgeOfSignup({
+        email,
+        name,
+        sourceApp: "autism",
+      });
 
       // Successful registration - redirect to dashboard or specified path
       const redirectPath = redirect || "/app";

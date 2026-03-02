@@ -8,8 +8,10 @@ import {
   Search,
   User,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
+import { loadEntityList, saveEntityList } from "~/lib/dashboard-local-store";
+import { isDemoModeEnabled } from "~/lib/demo-mode";
 
 export const Route = createFileRoute("/dashboard/assessments/")({
   component: AssessmentsPage,
@@ -18,8 +20,9 @@ export const Route = createFileRoute("/dashboard/assessments/")({
 function AssessmentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const isDemoMode = isDemoModeEnabled();
 
-  const assessments = [
+  const defaultAssessments = [
     {
       id: "1",
       patient: "Emma Johnson",
@@ -99,6 +102,32 @@ function AssessmentsPage() {
       results: null,
     },
   ];
+
+  const [assessments, setAssessments] = useState(() =>
+    loadEntityList("autism_assessments", defaultAssessments),
+  );
+
+  useEffect(() => {
+    saveEntityList("autism_assessments", assessments);
+  }, [assessments]);
+
+  const handleScheduleAssessment = () => {
+    const nextId = String(assessments.length + 1);
+    setAssessments((prev) => [
+      {
+        id: nextId,
+        patient: "New Patient",
+        type: "ADOS-2",
+        name: "Autism Diagnostic Observation Schedule",
+        provider: "Assigned Clinician",
+        version: "Module 1",
+        scheduledDate: new Date(Date.now() + 86400000).toISOString(),
+        status: "scheduled",
+        results: null,
+      },
+      ...prev,
+    ]);
+  };
 
   const filteredAssessments = assessments.filter((assessment) => {
     const matchesSearch =
@@ -267,11 +296,20 @@ function AssessmentsPage() {
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-        <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+        <button
+          onClick={handleScheduleAssessment}
+          title={isDemoMode ? "Demo: assessment will be added locally." : ""}
+          className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700"
+        >
           <Plus className="h-5 w-5" />
           <span>Schedule Assessment</span>
         </button>
       </div>
+      {isDemoMode ? (
+        <p className="mb-4 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-indigo-800 text-sm">
+          Demo mode: scheduled assessments are saved locally for this session.
+        </p>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredAssessments.map((assessment) => (

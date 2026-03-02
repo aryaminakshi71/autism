@@ -14,10 +14,10 @@
     "./router": "./src/routers/index.ts"
   },
   "dependencies": {
-    "@autism-legacy-20260205/auth": "workspace:*",
-    "@autism-legacy-20260205/env": "workspace:*",
-    "@autism-legacy-20260205/logger": "workspace:*",
-    "@autism-legacy-20260205/storage": "workspace:*",
+    "@autism-legacy-20260205/auth": "file:../../packages/auth",
+    "@autism-legacy-20260205/env": "file:../../packages/env",
+    "@autism-legacy-20260205/logger": "file:../../packages/logger",
+    "@autism-legacy-20260205/storage": "file:../../packages/storage",
     "@orpc/openapi": "^1.13.4",
     "@orpc/server": "^1.13.4",
     "@orpc/zod": "^1.13.4",
@@ -31,10 +31,10 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@autism-legacy-20260205/tsconfig": "workspace:*",
+    "@autism-legacy-20260205/tsconfig": "file:../../packages/tsconfig",
     "@cloudflare/workers-types": "^4.20250109.0",
     "@types/node": "^22.19.2",
     "typescript": "^5.9.3",
-    "wrangler": "^3.97.0"
+    "wrangler": "^4.63.0"
   }
 }

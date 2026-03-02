@@ -18,6 +18,7 @@ import {
   TabsTrigger,
 } from "@autism-legacy-20260205/ui";
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import {
   Bell,
   Building,
@@ -514,22 +515,16 @@ function SettingsPage() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() =>
-                    toast.info("Payment method update coming soon!")
-                  }
-                >
-                  Update Payment Method
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => toast.info("Billing history coming soon!")}
-                >
-                  View Billing History
-                </Button>
+                <Link to="/app/billing" className="block">
+                  <Button variant="outline" className="w-full">
+                    Update Payment Method
+                  </Button>
+                </Link>
+                <Link to="/app/billing" className="block">
+                  <Button variant="outline" className="w-full">
+                    View Billing History
+                  </Button>
+                </Link>
                 <Button
                   variant="outline"
                   className="w-full text-red-600 hover:bg-red-50 hover:text-red-700"

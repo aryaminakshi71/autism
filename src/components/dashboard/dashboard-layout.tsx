@@ -3,9 +3,9 @@ import {
   BarChart3,
   Bell,
   Calendar,
-  Car,
   ClipboardCheck,
   Clock,
+  Heart,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -17,31 +17,12 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { authClient } from "~/lib/auth/client";
-
-type DemoUser = {
-  name?: string;
-  email?: string;
-};
-
-function readDemoUserFromStorage(): DemoUser {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = window.localStorage.getItem("user");
-    if (!raw) return {};
-    const parsed = JSON.parse(raw) as Record<string, unknown>;
-    return {
-      name: typeof parsed.name === "string" ? parsed.name : undefined,
-      email: typeof parsed.email === "string" ? parsed.email : undefined,
-    };
-  } catch {
-    return {};
-  }
-}
+import { isDemoModeEnabled, readDemoUserProfile } from "~/lib/demo-mode";
 
 const navItems = [
   {
     label: "Dashboard",
-    href: "/dashboard",
+    href: "/dashboard/",
     icon: <LayoutDashboard className="h-5 w-5" />,
   },
   {
@@ -100,11 +81,8 @@ export function DashboardLayout({
 
   // "Demo mode" is used for local testing / previews when auth isn't configured.
   // It is enabled by the `/demo` route, which sets localStorage flags.
-  const isDemoMode =
-    typeof window !== "undefined" &&
-    (window.localStorage.getItem("demo_mode") === "true" ||
-      window.localStorage.getItem("isDemo") === "true");
-  const demoUser = isDemoMode ? readDemoUserFromStorage() : {};
+  const isDemoMode = isDemoModeEnabled();
+  const demoUser = isDemoMode ? readDemoUserProfile() : {};
 
   const user =
     isDemoMode && (demoUser.email || demoUser.name) ? demoUser : session?.user;
@@ -155,9 +133,9 @@ export function DashboardLayout({
           <div className="flex items-center justify-between border-gray-800 border-b p-4">
             <Link to="/" className="flex items-center space-x-2 no-underline">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
-                <Car className="h-6 w-6 text-white" />
+                <Heart className="h-6 w-6 text-white" />
               </div>
-              <span className="font-bold text-lg text-white">ParkingPro</span>
+              <span className="font-bold text-lg text-white">AutismCare</span>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
@@ -233,6 +211,12 @@ export function DashboardLayout({
               </button>
             </div>
           </div>
+          {isDemoMode ? (
+            <div className="bg-amber-50 px-4 py-2 text-amber-800 text-sm">
+              Demo mode is read-only. Sign in with a real account to create and
+              save data.
+            </div>
+          ) : null}
         </header>
 
         <main className="flex-1 p-6">{children}</main>

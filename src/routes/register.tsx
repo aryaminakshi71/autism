@@ -1,5 +1,5 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Car, Lock, Mail, User, UserPlus } from "lucide-react";
+import { ArrowLeft, Heart, Lock, Mail, User, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 import { signUp } from "~/lib/auth/client";
@@ -33,7 +33,7 @@ function RegisterPage() {
         name: `${firstName} ${lastName}`.trim(),
         email,
         password,
-        callbackURL: redirect ?? "/dashboard",
+        callbackURL: redirect ?? "/dashboard/",
       });
 
       if (result?.error) {
@@ -43,7 +43,7 @@ function RegisterPage() {
         return;
       }
 
-      navigate({ to: redirect ?? "/dashboard", replace: true });
+      navigate({ to: redirect ?? "/dashboard/", replace: true });
     } catch (err) {
       console.error("Registration error:", err);
       setError("Registration failed. Please try again.");
@@ -59,10 +59,10 @@ function RegisterPage() {
           <div className="flex h-16 items-center justify-between">
             <Link to="/" className="flex items-center space-x-2 no-underline">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
-                <Car className="h-6 w-6 text-white" />
+                <Heart className="h-6 w-6 text-white" />
               </div>
               <span className="font-bold text-gray-900 text-xl">
-                ParkingPro
+                AutismCare
               </span>
             </Link>
             <Link

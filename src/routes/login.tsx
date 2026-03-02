@@ -1,5 +1,5 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { AlertCircle, ArrowLeft, Car, Lock, LogIn, Mail } from "lucide-react";
+import { AlertCircle, ArrowLeft, Heart, Lock, LogIn, Mail } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 import { signIn as _signIn } from "~/lib/auth/client";
@@ -74,7 +74,7 @@ function LoginPage() {
     try {
       const result = await signIn.oauth({
         provider: providerId as "google" | "github",
-        callbackURL: redirect ?? "/dashboard",
+        callbackURL: redirect ?? "/dashboard/",
       });
       if (result?.error) {
         setError(result.error.message || "OAuth sign in failed");
@@ -102,7 +102,7 @@ function LoginPage() {
       const result = await signIn.email({
         email,
         password,
-        callbackURL: redirect ?? "/dashboard",
+        callbackURL: redirect ?? "/dashboard/",
       });
 
       if (result?.error) {
@@ -113,7 +113,7 @@ function LoginPage() {
         return;
       }
 
-      navigate({ to: redirect ?? "/dashboard", replace: true });
+      navigate({ to: redirect ?? "/dashboard/", replace: true });
     } catch (err) {
       console.error("Login error:", err);
       setError("An unexpected error occurred. Please try again.");
@@ -129,10 +129,10 @@ function LoginPage() {
           <div className="flex h-16 items-center justify-between">
             <Link to="/" className="flex items-center space-x-2 no-underline">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
-                <Car className="h-6 w-6 text-white" />
+                <Heart className="h-6 w-6 text-white" />
               </div>
               <span className="font-bold text-gray-900 text-xl">
-                ParkingPro
+                AutismCare
               </span>
             </Link>
             <Link
@@ -157,7 +157,7 @@ function LoginPage() {
               Welcome Back
             </h1>
             <p className="mb-8 text-center text-gray-600">
-              Sign in to your ParkingPro account
+              Sign in to your AutismCare account
             </p>
 
             {error ? (

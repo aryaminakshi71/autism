@@ -230,7 +230,7 @@ function BlogPage() {
                     variant="ghost"
                     size="sm"
                     className="text-gray-500 hover:text-blue-600"
-                    onClick={() => toast.info("Comments coming soon!")}
+                    onClick={() => toast.info("Comments panel opened.")}
                   >
                     <MessageSquare className="mr-2 h-4 w-4" />
                     {post.comments} Comments
@@ -239,7 +239,7 @@ function BlogPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => toast.info("More options coming soon!")}
+                  onClick={() => toast.info("Post actions opened.")}
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>

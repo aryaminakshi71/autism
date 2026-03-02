@@ -18,7 +18,7 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@autism-legacy-20260205/tsconfig": "workspace:*",
+    "@autism-legacy-20260205/tsconfig": "file:../tsconfig",
     "typescript": "^5.9.3"
   }
 }

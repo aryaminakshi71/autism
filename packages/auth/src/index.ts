@@ -9,6 +9,7 @@
  */
 
 import type { Database } from "@autism-legacy-20260205/storage";
+import * as authSchema from "@autism-legacy-20260205/storage/schema";
 import type { KVNamespace } from "@cloudflare/workers-types";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -99,6 +100,7 @@ export function createAuth(config: AuthConfig) {
   return betterAuth({
     database: drizzleAdapter(db, {
       provider: "pg",
+      schema: authSchema,
       usePlural: true,
     }),
     ...(kv ? { secondaryStorage: createKVStorage(kv) } : {}),

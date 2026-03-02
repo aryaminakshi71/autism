@@ -1,6 +1,12 @@
 import { useDarkMode } from "@shared/saas-core/components/ui";
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
+import {
+  isDemoModeEnabled,
+  readDemoUserProfile,
+  writeDemoUserProfile,
+} from "~/lib/demo-mode";
 
 export const Route = createFileRoute("/dashboard/settings")({
   component: SettingsPage,
@@ -8,20 +14,47 @@ export const Route = createFileRoute("/dashboard/settings")({
 
 function SettingsPage() {
   const { darkMode, toggleDarkMode } = useDarkMode();
+  const isDemoMode = isDemoModeEnabled();
+  const [email, setEmail] = useState("user@example.com");
+  const [fullName, setFullName] = useState("John Doe");
+  const [saveStatus, setSaveStatus] = useState("");
+
+  useEffect(() => {
+    const demoUser = readDemoUserProfile();
+    if (demoUser.email) setEmail(demoUser.email);
+    if (demoUser.name) setFullName(demoUser.name);
+  }, []);
+
+  const handleSaveChanges = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const nextEmail = email.trim();
+    const nextName = fullName.trim();
+
+    if (!nextEmail || !nextName) {
+      setSaveStatus("Email and full name are required.");
+      return;
+    }
+
+    writeDemoUserProfile({ email: nextEmail, name: nextName });
+    setSaveStatus(
+      isDemoMode ? "Profile saved for demo mode." : "Profile updated locally.",
+    );
+  };
 
   return (
     <DashboardLayout title="Settings">
       <div className="space-y-6">
         <div className="rounded-lg bg-white p-6 shadow">
           <h2 className="mb-4 font-semibold text-lg">Account Settings</h2>
-          <div className="space-y-4">
+          <form onSubmit={handleSaveChanges} className="space-y-4">
             <div>
               <label className="mb-1 block font-medium text-gray-700 text-sm">
                 Email
               </label>
               <input
                 type="email"
-                defaultValue="user@example.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2"
               />
             </div>
@@ -31,14 +64,23 @@ function SettingsPage() {
               </label>
               <input
                 type="text"
-                defaultValue="John Doe"
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2"
               />
             </div>
-            <button className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
+            {saveStatus ? (
+              <p className="rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-indigo-700 text-sm">
+                {saveStatus}
+              </p>
+            ) : null}
+            <button
+              type="submit"
+              className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+            >
               Save Changes
             </button>
-          </div>
+          </form>
         </div>
 
         <div className="rounded-lg bg-white p-6 shadow">

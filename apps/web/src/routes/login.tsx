@@ -2,6 +2,7 @@ import { authClient } from "@/lib/auth-client";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Lock, LogIn, Mail } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -65,6 +66,32 @@ function LoginPage() {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSocialLogin = async (provider: "google" | "github") => {
+    try {
+      await authClient.signIn.social({
+        provider,
+        callbackURL: `${window.location.origin}/app`,
+      });
+    } catch {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("demo_mode", "true");
+        localStorage.setItem("isDemo", "true");
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: `autism-${provider}-demo`,
+            name: "Demo User",
+            email: "demo@autism.local",
+          }),
+        );
+      }
+      toast.success(
+        `${provider === "github" ? "GitHub" : "Google"} login unavailable. Continuing in demo mode.`,
+      );
+      navigate({ to: "/app" });
     }
   };
 
@@ -205,8 +232,7 @@ function LoginPage() {
             <button
               type="button"
               className="inline-flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-500 text-sm shadow-sm hover:bg-gray-50"
-              onClick={() => authClient.signIn.social({ provider: "google" })}
-              // // onClick={() => authClient.signIn.social({ provider: "google" })}
+              onClick={() => void handleSocialLogin("google")}
             >
               <span className="sr-only">Sign in with Google</span>
               <svg className="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
@@ -220,8 +246,7 @@ function LoginPage() {
             <button
               type="button"
               className="inline-flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-500 text-sm shadow-sm hover:bg-gray-50"
-              onClick={() => authClient.signIn.social({ provider: "github" })}
-              // // onClick={() => authClient.signIn.social({ provider: "github" })}
+              onClick={() => void handleSocialLogin("github")}
             >
               <span className="sr-only">Sign in with GitHub</span>
               <svg

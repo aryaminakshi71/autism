@@ -11,64 +11,34 @@ import { z } from "zod";
 import { clientSchema } from "./client.js";
 
 const serverSchema = clientSchema.extend({
-  // ============================================================================
-  // OPERATIONAL CONFIG
-  // ============================================================================
-
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
-
-  // ============================================================================
-  // AUTH (Better Auth)
-  // ============================================================================
 
   BETTER_AUTH_SECRET: z
     .string()
     .min(32, "BETTER_AUTH_SECRET must be at least 32 characters")
     .optional(),
 
-  // OAuth Providers
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   GITHUB_CLIENT_ID: z.string().optional(),
   GITHUB_CLIENT_SECRET: z.string().optional(),
 
-  // ============================================================================
-  // REDIS (Upstash)
-  // Uses REST API naming convention expected by @upstash/redis fromEnv()
-  // ============================================================================
-
   UPSTASH_REDIS_REST_URL: z.string().url().or(z.literal("")).optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
 
-  // ============================================================================
-  // STRIPE BILLING
-  // ============================================================================
-
   STRIPE_SECRET_KEY: z.string().startsWith("sk_").optional(),
   STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional(),
-
-  // ============================================================================
-  // MONITORING (Sentry)
-  // ============================================================================
 
   SENTRY_DSN: z.string().url().or(z.literal("")).optional(),
   SENTRY_ENVIRONMENT: z.string().optional(),
   SENTRY_DEBUG: z.string().optional(),
 
-  // ============================================================================
-  // APM (Datadog)
-  // ============================================================================
-
   DATADOG_API_KEY: z.string().optional(),
   DATADOG_SERVICE_NAME: z.string().optional(),
   DATADOG_ENV: z.string().optional(),
   DATADOG_VERSION: z.string().optional(),
-
-  // ============================================================================
-  // LOG AGGREGATION
-  // ============================================================================
 
   LOG_AGGREGATION_ENDPOINT: z.string().url().or(z.literal("")).optional(),
   LOG_AGGREGATION_API_KEY: z.string().optional(),
@@ -79,41 +49,53 @@ const serverSchema = clientSchema.extend({
 
 export type ServerEnv = z.infer<typeof serverSchema>;
 
-/**
- * Validated server environment variables
- *
- * Includes all environment variables (client + server-only).
- * Validation happens once at module load time.
- *
- * Note: Cloudflare bindings (KV, R2, Hyperdrive) are accessed separately
- * via Hono context (c.env.*), not through this module.
- */
-let runtimeEnv: Record<string, string | undefined> = {};
+function getRuntimeEnv(): Record<string, any> {
+  const env: Record<string, any> = {};
 
-if (typeof process !== "undefined" && process.env) {
-  runtimeEnv = process.env as Record<string, string | undefined>;
-} else {
-  try {
-    const mod = await import("cloudflare:workers");
-    runtimeEnv = (mod as { env?: Record<string, string> }).env || {};
-  } catch {
-    runtimeEnv = {};
+  if (typeof process !== "undefined" && process.env) {
+    Object.assign(env, process.env);
   }
+
+  if (typeof globalThis !== "undefined" && (globalThis as any).env) {
+    Object.assign(env, (globalThis as any).env);
+  }
+
+  return env;
 }
 
-const parsedEnv = serverSchema.parse(runtimeEnv);
+let cachedEnv: ServerEnv | null = null;
 
-const resolvedAuthSecret =
-  parsedEnv.BETTER_AUTH_SECRET ||
-  (parsedEnv.NODE_ENV === "production"
-    ? undefined
-    : "dev-only-secret-dev-only-secret-dev");
+export function getServerEnv(throwOnMissing = false): ServerEnv {
+  if (cachedEnv) return cachedEnv;
 
-if (!resolvedAuthSecret) {
-  throw new Error("BETTER_AUTH_SECRET is required in production environments.");
+  const runtimeEnv = getRuntimeEnv();
+  const parsedEnv = serverSchema.parse(runtimeEnv);
+
+  const resolvedAuthSecret =
+    parsedEnv.BETTER_AUTH_SECRET ||
+    (parsedEnv.NODE_ENV === "production"
+      ? undefined
+      : "dev-only-secret-dev-only-secret-dev");
+
+  if (!resolvedAuthSecret && throwOnMissing) {
+    throw new Error(
+      "BETTER_AUTH_SECRET is required in production environments.",
+    );
+  }
+
+  cachedEnv = {
+    ...parsedEnv,
+    BETTER_AUTH_SECRET: resolvedAuthSecret,
+  };
+
+  return cachedEnv;
 }
 
-export const env: ServerEnv = {
-  ...parsedEnv,
-  BETTER_AUTH_SECRET: resolvedAuthSecret,
-};
+export const env = new Proxy({} as ServerEnv, {
+  get(_target, prop) {
+    return getServerEnv()[prop as keyof ServerEnv];
+  },
+  has(_target, _prop) {
+    return true;
+  },
+});

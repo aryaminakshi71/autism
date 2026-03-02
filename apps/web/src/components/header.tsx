@@ -10,7 +10,7 @@ export function Header({ showTryDemo = true }: HeaderProps) {
 
   const handleTryDemo = () => {
     const demoUserData = {
-      id: "demo-user-" + Date.now(),
+      id: `demo-user-${Date.now()}`,
       email: "demo@autism.app",
       name: "Demo Clinician",
       firstName: "Demo",
@@ -28,17 +28,38 @@ export function Header({ showTryDemo = true }: HeaderProps) {
     navigate({ to: "/app" });
   };
 
+  const navLinks = [
+    { to: "/pricing", label: "Pricing" },
+    { to: "/blog", label: "Blog" },
+    { to: "/docs", label: "Docs" },
+    { to: "/about", label: "About" },
+  ] as const;
+
   return (
-    <nav className="border-b">
+    <nav className="border-gray-200 border-b bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <Link to="/" className="font-bold text-2xl text-blue-600">
-            Autism Platform
-          </Link>
-          <div className="flex items-center gap-3">
+        <div className="flex min-h-16 items-center justify-between gap-4 py-2">
+          <div className="flex items-center gap-8">
+            <Link to="/" className="font-bold text-2xl text-blue-600">
+              Autism Platform
+            </Link>
+            <div className="hidden items-center gap-5 md:flex">
+              {navLinks.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="font-medium text-gray-600 text-sm hover:text-gray-900"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link
               to="/login"
-              className="font-medium text-gray-600 hover:text-gray-900"
+              className="font-medium text-gray-600 text-sm hover:text-gray-900"
             >
               Sign In
             </Link>
@@ -46,7 +67,7 @@ export function Header({ showTryDemo = true }: HeaderProps) {
               <Link
                 to="/app"
                 onClick={handleTryDemo}
-                className="inline-flex items-center justify-center rounded-md border border-gray-300 px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50"
+                className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2.5 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 sm:px-3"
               >
                 Try Demo
               </Link>

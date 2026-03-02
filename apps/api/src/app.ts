@@ -9,6 +9,7 @@ import { OpenAPIGenerator } from "@orpc/openapi";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod";
+import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
@@ -21,6 +22,7 @@ import {
   suggestEmailContent,
 } from "./lib/ai-features";
 import { createAuthFromEnv } from "./lib/create-auth-from-env";
+import { getDb, schema } from "./lib/db";
 import { APIError } from "./lib/errors";
 import { loggerMiddleware } from "./middleware/logger";
 // Monitoring imports disabled for Cloudflare Workers compatibility
@@ -85,7 +87,10 @@ export function createApp() {
         return c.json({ error: "recipient and purpose are required" }, 400);
       }
 
-      const suggestions = await suggestEmailContent(body.recipient, body.purpose);
+      const suggestions = await suggestEmailContent(
+        body.recipient,
+        body.purpose,
+      );
       return c.json({ suggestions });
     } catch (error) {
       console.error("Error in /api/ai/email/suggest:", error);
@@ -129,6 +134,315 @@ export function createApp() {
       console.error("Error in /api/ai/contact/enrich:", error);
       return c.json({ error: "AI contact enrichment failed" }, 500);
     }
+  });
+
+  // REST CRUD endpoints for autism app
+  // Contacts
+  app.get("/api/v1/contacts", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const db = getDb({ env: c.env });
+    const { contacts } = schema;
+    const { contacts: contactsTable } = db._.schema;
+    const allContacts = await db
+      .select()
+      .from(contacts)
+      .where(eq(contacts.organizationId, orgId));
+    return c.json({ data: allContacts, total: allContacts.length });
+  });
+
+  app.post("/api/v1/contacts", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const body = await c.req.json().catch(() => null);
+    if (!body?.firstName || !body?.lastName) {
+      return c.json({ error: "First and last name are required" }, 400);
+    }
+    const db = getDb({ env: c.env });
+    const { contacts } = schema;
+    const [contact] = await db
+      .insert(contacts)
+      .values({
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email?.toLowerCase() || null,
+        phone: body.phone || null,
+        companyName: body.companyName || null,
+        organizationId: orgId,
+        createdBy: "demo-user-001",
+      })
+      .returning();
+    return c.json(contact);
+  });
+
+  app.get("/api/v1/contacts/:id", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const contactId = c.req.param("id");
+    const db = getDb({ env: c.env });
+    const { contacts } = schema;
+    const [contact] = await db
+      .select()
+      .from(contacts)
+      .where(eq(contacts.id, contactId))
+      .limit(1);
+    if (!contact || contact.organizationId !== orgId) {
+      return c.json({ error: "Contact not found" }, 404);
+    }
+    return c.json(contact);
+  });
+
+  app.patch("/api/v1/contacts/:id", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const contactId = c.req.param("id");
+    const body = await c.req.json().catch(() => null);
+    const db = getDb({ env: c.env });
+    const { contacts } = schema;
+    const [existing] = await db
+      .select()
+      .from(contacts)
+      .where(eq(contacts.id, contactId))
+      .limit(1);
+    if (!existing || existing.organizationId !== orgId) {
+      return c.json({ error: "Contact not found" }, 404);
+    }
+    const [contact] = await db
+      .update(contacts)
+      .set({
+        ...(body.firstName && { firstName: body.firstName }),
+        ...(body.lastName && { lastName: body.lastName }),
+        ...(body.email !== undefined && {
+          email: body.email?.toLowerCase() || null,
+        }),
+        ...(body.phone !== undefined && { phone: body.phone }),
+        ...(body.companyName !== undefined && {
+          companyName: body.companyName,
+        }),
+      })
+      .where(eq(contacts.id, contactId))
+      .returning();
+    return c.json(contact);
+  });
+
+  app.delete("/api/v1/contacts/:id", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const contactId = c.req.param("id");
+    const db = getDb({ env: c.env });
+    const { contacts } = schema;
+    const [existing] = await db
+      .select()
+      .from(contacts)
+      .where(eq(contacts.id, contactId))
+      .limit(1);
+    if (!existing || existing.organizationId !== orgId) {
+      return c.json({ error: "Contact not found" }, 404);
+    }
+    await db.delete(contacts).where(eq(contacts.id, contactId));
+    return c.json({ success: true });
+  });
+
+  // Deals
+  app.get("/api/v1/deals", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const db = getDb({ env: c.env });
+    const { deals } = schema;
+    const allDeals = await db
+      .select()
+      .from(deals)
+      .where(eq(deals.organizationId, orgId));
+    return c.json({ data: allDeals, total: allDeals.length });
+  });
+
+  app.post("/api/v1/deals", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const body = await c.req.json().catch(() => null);
+    if (!body?.name || !body?.value) {
+      return c.json({ error: "Name and value are required" }, 400);
+    }
+    const db = getDb({ env: c.env });
+    const { deals } = schema;
+    const [deal] = await db
+      .insert(deals)
+      .values({
+        name: body.name,
+        value: String(body.value),
+        stage: body.stage || "lead",
+        notes: body.notes || null,
+        organizationId: orgId,
+        createdBy: "demo-user-001",
+      })
+      .returning();
+    return c.json(deal);
+  });
+
+  app.get("/api/v1/deals/:id", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const dealId = c.req.param("id");
+    const db = getDb({ env: c.env });
+    const { deals } = schema;
+    const [deal] = await db
+      .select()
+      .from(deals)
+      .where(eq(deals.id, dealId))
+      .limit(1);
+    if (!deal || deal.organizationId !== orgId) {
+      return c.json({ error: "Deal not found" }, 404);
+    }
+    return c.json(deal);
+  });
+
+  app.patch("/api/v1/deals/:id", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const dealId = c.req.param("id");
+    const body = await c.req.json().catch(() => null);
+    const db = getDb({ env: c.env });
+    const { deals } = schema;
+    const [existing] = await db
+      .select()
+      .from(deals)
+      .where(eq(deals.id, dealId))
+      .limit(1);
+    if (!existing || existing.organizationId !== orgId) {
+      return c.json({ error: "Deal not found" }, 404);
+    }
+    const [deal] = await db
+      .update(deals)
+      .set({
+        ...(body.name && { name: body.name }),
+        ...(body.value !== undefined && { value: String(body.value) }),
+        ...(body.stage && { stage: body.stage }),
+        ...(body.notes !== undefined && { notes: body.notes }),
+      })
+      .where(eq(deals.id, dealId))
+      .returning();
+    return c.json(deal);
+  });
+
+  app.delete("/api/v1/deals/:id", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const dealId = c.req.param("id");
+    const db = getDb({ env: c.env });
+    const { deals } = schema;
+    const [existing] = await db
+      .select()
+      .from(deals)
+      .where(eq(deals.id, dealId))
+      .limit(1);
+    if (!existing || existing.organizationId !== orgId) {
+      return c.json({ error: "Deal not found" }, 404);
+    }
+    await db.delete(deals).where(eq(deals.id, dealId));
+    return c.json({ success: true });
+  });
+
+  // Leads
+  app.get("/api/v1/leads", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const db = getDb({ env: c.env });
+    const { leads } = schema;
+    const allLeads = await db
+      .select()
+      .from(leads)
+      .where(eq(leads.organizationId, orgId));
+    return c.json({ data: allLeads, total: allLeads.length });
+  });
+
+  app.post("/api/v1/leads", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const body = await c.req.json().catch(() => null);
+    if (!body?.email) {
+      return c.json({ error: "Email is required" }, 400);
+    }
+    const db = getDb({ env: c.env });
+    const { leads } = schema;
+    const [lead] = await db
+      .insert(leads)
+      .values({
+        firstName: body.firstName || "",
+        lastName: body.lastName || "",
+        email: body.email.toLowerCase(),
+        phone: body.phone || null,
+        companyName: body.companyName || null,
+        source: body.source || "website",
+        status: body.status || "new",
+        organizationId: orgId,
+        createdBy: "demo-user-001",
+      })
+      .returning();
+    return c.json(lead);
+  });
+
+  // Activities
+  app.get("/api/v1/activities", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const db = getDb({ env: c.env });
+    const { activities } = schema;
+    const allActivities = await db
+      .select()
+      .from(activities)
+      .where(eq(activities.organizationId, orgId));
+    return c.json({ data: allActivities, total: allActivities.length });
+  });
+
+  app.post("/api/v1/activities", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const body = await c.req.json().catch(() => null);
+    if (!body?.type) {
+      return c.json({ error: "Activity type is required" }, 400);
+    }
+    const db = getDb({ env: c.env });
+    const { activities } = schema;
+    const [activity] = await db
+      .insert(activities)
+      .values({
+        type: body.type,
+        title: body.title || "",
+        description: body.description || null,
+        organizationId: orgId,
+        createdBy: "demo-user-001",
+      })
+      .returning();
+    return c.json(activity);
+  });
+
+  // Dashboard stats
+  app.get("/api/v1/dashboard/stats", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const db = getDb({ env: c.env });
+    const { contacts, deals, leads, activities } = schema;
+
+    const allContacts = await db
+      .select()
+      .from(contacts)
+      .where(eq(contacts.organizationId, orgId));
+    const allDeals = await db
+      .select()
+      .from(deals)
+      .where(eq(deals.organizationId, orgId));
+    const allLeads = await db
+      .select()
+      .from(leads)
+      .where(eq(leads.organizationId, orgId));
+    const allActivities = await db
+      .select()
+      .from(activities)
+      .where(eq(activities.organizationId, orgId));
+
+    const totalDealsValue = allDeals.reduce(
+      (sum: number, deal: any) => sum + Number(deal.value || 0),
+      0,
+    );
+
+    return c.json({
+      totalContacts: allContacts.length,
+      activeDeals: allDeals.filter(
+        (d: any) => !["won", "lost"].includes(d.stage),
+      ).length,
+      conversionRate:
+        allLeads.length > 0
+          ? (allLeads.filter((l: any) => l.status === "converted").length /
+              allLeads.length) *
+            100
+          : 0,
+      revenue: totalDealsValue,
+    });
   });
 
   // Rate limiting middleware

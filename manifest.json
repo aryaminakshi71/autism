@@ -17,10 +17,7 @@
       "autism.engagement.updated",
       "autism.ai.lead_scored"
     ],
-    "subscribed": [
-      "campaign.sequence.started",
-      "billing.subscription.updated"
-    ]
+    "subscribed": ["campaign.sequence.started", "billing.subscription.updated"]
   },
   "ai": {
     "assistant": {
@@ -31,9 +28,7 @@
       "autism-outreach-automation-agent",
       "autism-lead-nurture-agent"
     ],
-    "analyticsAgent": [
-      "autism-pipeline-insights-agent"
-    ],
+    "analyticsAgent": ["autism-pipeline-insights-agent"],
     "guardrails": {
       "dataClass": "pii"
     }

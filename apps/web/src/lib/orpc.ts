@@ -10,6 +10,7 @@ import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import type { RouterClient } from "@orpc/server";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
+import { platformFetch } from "./platform-api-client";
 
 /**
  * Create the RPC link with fetch
@@ -25,7 +26,7 @@ const rpcLink = new RPCLink({
       typeof window !== "undefined" &&
       localStorage.getItem("demo_mode") === "true";
 
-    return fetch(input, {
+    return platformFetch(input, {
       ...init,
       credentials: "include",
       headers: {

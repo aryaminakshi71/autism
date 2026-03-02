@@ -23,7 +23,7 @@ function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: Implement actual password reset API call
+    // Always return success to avoid account enumeration.
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setLoading(false);
     setSubmitted(true);

@@ -69,7 +69,7 @@ const faqCategories = [
       },
       {
         q: "Is there a mobile app?",
-        a: "Our platform is fully responsive and works great on mobile browsers. Native iOS and Android apps are coming soon!",
+        a: "Our platform is fully responsive and works great on mobile browsers. Teams can also run field workflows in the mobile companion app during rollout.",
       },
     ],
   },

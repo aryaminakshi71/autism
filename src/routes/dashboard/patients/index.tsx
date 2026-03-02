@@ -1,57 +1,85 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Calendar, Filter, Plus, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
+import { loadEntityList, saveEntityList } from "~/lib/dashboard-local-store";
+import { isDemoModeEnabled } from "~/lib/demo-mode";
 
 export const Route = createFileRoute("/dashboard/patients/")({
   component: PatientsPage,
 });
 
+const DEFAULT_PATIENTS = [
+  {
+    id: "1",
+    firstName: "Emma",
+    lastName: "Johnson",
+    dateOfBirth: "2018-05-15",
+    diagnosis: "Autism Spectrum Disorder - Level 1",
+    status: "active",
+    assignedTherapist: "Sarah Smith",
+    lastSession: "2024-01-15",
+  },
+  {
+    id: "2",
+    firstName: "Liam",
+    lastName: "Williams",
+    dateOfBirth: "2019-08-22",
+    diagnosis: "Autism Spectrum Disorder - Level 2",
+    status: "active",
+    assignedTherapist: "Michael Brown",
+    lastSession: "2024-01-14",
+  },
+  {
+    id: "3",
+    firstName: "Olivia",
+    lastName: "Davis",
+    dateOfBirth: "2020-02-10",
+    diagnosis: "Autism Spectrum Disorder - Level 1",
+    status: "active",
+    assignedTherapist: "Sarah Smith",
+    lastSession: "2024-01-15",
+  },
+  {
+    id: "4",
+    firstName: "Noah",
+    lastName: "Martinez",
+    dateOfBirth: "2017-11-28",
+    diagnosis: "Autism Spectrum Disorder - Level 3",
+    status: "inactive",
+    assignedTherapist: "Michael Brown",
+    lastSession: "2024-01-10",
+  },
+];
+
 function PatientsPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const isDemoMode = isDemoModeEnabled();
+  const [patients, setPatients] = useState(() =>
+    loadEntityList("autism_patients", DEFAULT_PATIENTS),
+  );
 
-  const patients = [
-    {
-      id: "1",
-      firstName: "Emma",
-      lastName: "Johnson",
-      dateOfBirth: "2018-05-15",
-      diagnosis: "Autism Spectrum Disorder - Level 1",
-      status: "active",
-      assignedTherapist: "Sarah Smith",
-      lastSession: "2024-01-15",
-    },
-    {
-      id: "2",
-      firstName: "Liam",
-      lastName: "Williams",
-      dateOfBirth: "2019-08-22",
-      diagnosis: "Autism Spectrum Disorder - Level 2",
-      status: "active",
-      assignedTherapist: "Michael Brown",
-      lastSession: "2024-01-14",
-    },
-    {
-      id: "3",
-      firstName: "Olivia",
-      lastName: "Davis",
-      dateOfBirth: "2020-02-10",
-      diagnosis: "Autism Spectrum Disorder - Level 1",
-      status: "active",
-      assignedTherapist: "Sarah Smith",
-      lastSession: "2024-01-15",
-    },
-    {
-      id: "4",
-      firstName: "Noah",
-      lastName: "Martinez",
-      dateOfBirth: "2017-11-28",
-      diagnosis: "Autism Spectrum Disorder - Level 3",
-      status: "inactive",
-      assignedTherapist: "Michael Brown",
-      lastSession: "2024-01-10",
-    },
-  ];
+  useEffect(() => {
+    saveEntityList("autism_patients", patients);
+  }, [patients]);
+
+  const handleAddPatient = () => {
+    const nextId = String(patients.length + 1);
+    const now = new Date().toISOString().slice(0, 10);
+    setPatients((prev) => [
+      {
+        id: nextId,
+        firstName: "New",
+        lastName: `Patient ${nextId}`,
+        dateOfBirth: "2020-01-01",
+        diagnosis: "Autism Spectrum Disorder - Pending Review",
+        status: "active",
+        assignedTherapist: "Unassigned",
+        lastSession: now,
+      },
+      ...prev,
+    ]);
+  };
 
   const filteredPatients = patients.filter(
     (patient) =>
@@ -79,11 +107,20 @@ function PatientsPage() {
             <span>Filter</span>
           </button>
         </div>
-        <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+        <button
+          onClick={handleAddPatient}
+          title={isDemoMode ? "Demo: patient will be added locally." : ""}
+          className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700"
+        >
           <Plus className="h-5 w-5" />
           <span>Add Patient</span>
         </button>
       </div>
+      {isDemoMode ? (
+        <p className="mb-4 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-indigo-800 text-sm">
+          Demo mode: new patients are saved locally for this session.
+        </p>
+      ) : null}
 
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <table className="w-full">

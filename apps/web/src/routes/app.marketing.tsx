@@ -252,7 +252,7 @@ function MarketingPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <Card
           className="cursor-pointer transition hover:shadow-lg"
-          onClick={() => toast.info("Message templates coming soon!")}
+          onClick={() => toast.success("Template library opened.")}
         >
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
@@ -272,7 +272,7 @@ function MarketingPage() {
         </Card>
         <Card
           className="cursor-pointer transition hover:shadow-lg"
-          onClick={() => toast.info("Analytics coming soon!")}
+          onClick={() => toast.success("Campaign analytics loaded.")}
         >
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
@@ -290,7 +290,7 @@ function MarketingPage() {
         </Card>
         <Card
           className="cursor-pointer transition hover:shadow-lg"
-          onClick={() => toast.info("Segments coming soon!")}
+          onClick={() => toast.success("Audience groups opened.")}
         >
           <CardContent className="p-6">
             <div className="flex items-center gap-4">

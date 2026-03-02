@@ -1,5 +1,5 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Car, Play, Sparkles } from "lucide-react";
+import { ArrowLeft, Brain, Play, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/demo")({
@@ -8,7 +8,7 @@ export const Route = createFileRoute("/demo")({
 
 const features = [
   "Full access to all features",
-  "Sample parking lot data pre-loaded",
+  "Sample patient and therapy data pre-loaded",
   "No credit card required",
   "Demo resets after 24 hours",
 ];
@@ -22,9 +22,10 @@ function DemoPage() {
 
     const demoUser = {
       id: `demo-user-${Date.now()}`,
-      email: "demo@parkingpro.com",
+      email: "demo@autismcare.app",
       firstName: "Demo",
       lastName: "User",
+      name: "Demo User",
       role: "admin",
       isDemo: true,
       createdAt: new Date().toISOString(),
@@ -35,7 +36,7 @@ function DemoPage() {
     localStorage.setItem("demo_mode", "true");
 
     setTimeout(() => {
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/dashboard/" });
     }, 500);
   };
 
@@ -46,10 +47,10 @@ function DemoPage() {
           <div className="flex h-16 items-center justify-between">
             <Link to="/" className="flex items-center space-x-2 no-underline">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
-                <Car className="h-6 w-6 text-white" />
+                <Brain className="h-6 w-6 text-white" />
               </div>
               <span className="font-bold text-gray-900 text-xl">
-                ParkingPro
+                AutismCare
               </span>
             </Link>
             <Link
@@ -71,10 +72,10 @@ function DemoPage() {
             </div>
 
             <h1 className="mb-2 text-center font-bold text-2xl text-gray-900">
-              Try ParkingPro Demo
+              Try AutismCare Demo
             </h1>
             <p className="mb-8 text-center text-gray-600">
-              Experience smart parking management
+              Experience autism support workflows in a guided demo
             </p>
 
             <div className="mb-8 space-y-3">

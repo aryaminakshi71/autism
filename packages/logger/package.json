@@ -6,7 +6,7 @@
     ".": "./src/index.ts"
   },
   "devDependencies": {
-    "@autism-legacy-20260205/tsconfig": "workspace:*",
+    "@autism-legacy-20260205/tsconfig": "file:../tsconfig",
     "@types/node": "^22.19.2",
     "typescript": "^5.9.3"
   }

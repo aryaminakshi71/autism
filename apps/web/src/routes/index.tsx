@@ -1,4 +1,5 @@
 import { Header } from "@/components/header";
+import { pricingPlans } from "@/lib/marketing-content";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -28,86 +29,56 @@ const features = [
     icon: BarChart3,
     title: "Therapy Analytics",
     description:
-      "Track progress with data collection, graphs, and outcomes-focused Analytics.",
+      "Track progress with data collection, graphs, and outcomes-focused analytics.",
   },
   {
     icon: Mail,
-    title: "Multi-Language Family Portal",
+    title: "Family Portal",
     description:
-      "Keep caregivers in the loop with a Multi-Language portal for updates and resources.",
+      "Keep caregivers informed with multilingual updates, templates, and follow-up guidance.",
   },
   {
     icon: Handshake,
     title: "Goal Tracking",
     description:
-      "Create measurable goals and align interventions across settings and teams.",
+      "Create measurable goals and align interventions across settings and care teams.",
   },
   {
     icon: Zap,
     title: "Security & Compliance",
     description:
-      "HIPAA-ready workflows, role-based access, and strong Security controls.",
-  },
-];
-
-const pricingPlans = [
-  {
-    name: "Free",
-    price: 0,
-    features: [
-      "1 clinic",
-      "Basic schedules",
-      "Limited AAC boards",
-      "Community support",
-    ],
-    popular: false,
-  },
-  {
-    name: "Starter",
-    price: 19,
-    features: [
-      "3 clinics",
-      "Care team collaboration",
-      "Family portal",
-      "Email support",
-    ],
-    popular: false,
-  },
-  {
-    name: "Professional",
-    price: 59,
-    features: [
-      "Unlimited clinics",
-      "Therapy Analytics",
-      "Advanced goal tracking",
-      "Priority support",
-      "API access",
-    ],
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    price: 149,
-    features: [
-      "Custom integrations",
-      "Dedicated success manager",
-      "Security reviews",
-      "SLA",
-    ],
-    popular: false,
+      "HIPAA-ready workflows, role-based access, and audit-friendly controls.",
   },
 ];
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Autism Platform | Care Coordination and Outcomes" },
+      {
+        name: "description",
+        content:
+          "Coordinate autism care across clinics, schools, and families with care plans, schedules, communication tools, and outcomes dashboards.",
+      },
+      {
+        property: "og:title",
+        content: "Autism Platform | Care Coordination and Outcomes",
+      },
+      {
+        property: "og:description",
+        content:
+          "A unified autism care platform for clinicians, therapists, and family collaboration.",
+      },
+    ],
+  }),
   component: LandingPage,
 });
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-white" style={{ minHeight: "100vh" }}>
+    <div className="min-h-screen bg-white">
       <Header />
 
-      {/* Hero */}
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-6 font-bold text-5xl text-gray-900">
@@ -116,35 +87,38 @@ function LandingPage() {
             <span className="text-blue-600">With Clarity and Confidence</span>
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-gray-600 text-xl">
-            A unified platform for clinics, therapists, schools, families, and
-            insurers to streamline schedules, communication, and outcomes.
+            A unified platform for clinics, therapists, schools, and families to
+            streamline sessions, communication, and measurable progress.
           </p>
+          <div className="flex flex-col justify-center gap-3 sm:flex-row">
+            <Link
+              to="/register"
+              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+            >
+              Start Free Trial
+            </Link>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-6 py-3 font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              View Pricing
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="bg-gray-50 px-4 py-20 sm:px-6 lg:px-8">
+      <section id="features" className="bg-gray-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <h2 className="mb-12 text-center font-bold text-4xl text-gray-900">
             Everything You Need to Support Every Learner
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, idx) => {
+            {features.map((feature) => {
               const Icon = feature.icon;
-              const featureRoutes: Record<string, string> = {
-                "Visual Schedules": "/demo",
-                "AAC Communication": "/demo",
-                "Therapy Analytics": "/demo",
-                "Multi-Language Family Portal": "/demo",
-                "Goal Tracking": "/demo",
-                "Security & Compliance": "/demo",
-              };
-              const route = featureRoutes[feature.title] || "/demo";
-
               return (
                 <Link
-                  key={idx}
-                  to={route}
+                  key={feature.title}
+                  to="/demo"
                   className="cursor-pointer rounded-lg bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
                 >
                   <Icon className="mb-4 h-8 w-8 text-blue-600" />
@@ -159,24 +133,26 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
+      <section id="pricing" className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <h2 className="mb-4 text-center font-bold text-4xl text-gray-900">
             Simple Pricing
           </h2>
           <p className="mb-12 text-center text-gray-600">
-            Choose the plan that fits your organization
+            Choose a plan that fits your organization today and scales tomorrow.
           </p>
-          <div className="grid gap-6 md:grid-cols-4">
-            {pricingPlans.map((plan, idx) => (
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {pricingPlans.map((plan) => (
               <div
-                key={idx}
+                key={plan.id}
                 className={`rounded-lg border-2 bg-white p-6 ${
-                  plan.popular ? "border-blue-600 shadow-lg" : "border-gray-200"
+                  plan.featured
+                    ? "border-blue-600 shadow-lg"
+                    : "border-gray-200"
                 }`}
               >
-                {plan.popular && (
+                {plan.featured && (
                   <div className="mb-4 inline-block rounded-full bg-blue-600 px-3 py-1 font-semibold text-white text-xs">
                     Most Popular
                   </div>
@@ -184,16 +160,17 @@ function LandingPage() {
                 <h3 className="mb-2 font-bold text-2xl text-gray-900">
                   {plan.name}
                 </h3>
+                <p className="mb-3 text-gray-600 text-sm">{plan.description}</p>
                 <div className="mb-4">
                   <span className="font-bold text-4xl text-gray-900">
-                    ${plan.price}
+                    ${plan.monthlyPrice}
                   </span>
                   <span className="text-gray-600">/month</span>
                 </div>
                 <ul className="mb-6 space-y-2">
-                  {plan.features.map((feature, fIdx) => (
+                  {plan.features.slice(0, 4).map((feature) => (
                     <li
-                      key={fIdx}
+                      key={feature}
                       className="flex items-center gap-2 text-gray-600"
                     >
                       <Check className="h-5 w-5 text-green-500" />
@@ -202,22 +179,30 @@ function LandingPage() {
                   ))}
                 </ul>
                 <Link
-                  to="/register"
+                  to={plan.id === "enterprise" ? "/contact" : "/register"}
                   className={`block w-full rounded-lg py-2 text-center font-semibold ${
-                    plan.popular
+                    plan.featured
                       ? "bg-blue-600 text-white hover:bg-blue-700"
                       : "bg-gray-100 text-gray-900 hover:bg-gray-200"
                   }`}
                 >
-                  Start Free Trial
+                  {plan.ctaLabel}
                 </Link>
               </div>
             ))}
           </div>
+
+          <div className="mt-8 text-center">
+            <Link
+              to="/pricing"
+              className="font-semibold text-blue-600 hover:text-blue-700"
+            >
+              Compare all plan details
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
       <section className="bg-blue-600 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="mb-4 font-bold text-4xl text-white">
@@ -225,11 +210,11 @@ function LandingPage() {
           </h2>
           <p className="mb-8 text-blue-100 text-xl">
             Join care teams using Autism Platform to coordinate services and
-            progress
+            progress.
           </p>
           <Link
             to="/register"
-            className="mx-auto inline-block flex items-center gap-2 rounded-lg bg-white px-8 py-3 font-semibold text-blue-600 hover:bg-gray-100"
+            className="mx-auto inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3 font-semibold text-blue-600 hover:bg-gray-100"
           >
             Start Free Trial
             <ArrowRight className="h-5 w-5" />
@@ -237,7 +222,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-gray-900 px-4 py-12 text-gray-400 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 md:grid-cols-4">
@@ -245,13 +229,13 @@ function LandingPage() {
               <h3 className="mb-4 font-semibold text-white">Product</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/app/marketing" className="hover:text-white">
-                    Family Outreach
+                  <Link to="/pricing" className="hover:text-white">
+                    Pricing
                   </Link>
                 </li>
                 <li>
-                  <Link to="/docs" className="hover:text-white">
-                    Resources
+                  <Link to="/demo" className="hover:text-white">
+                    Try Demo
                   </Link>
                 </li>
               </ul>
@@ -274,6 +258,11 @@ function LandingPage() {
             <div>
               <h3 className="mb-4 font-semibold text-white">Resources</h3>
               <ul className="space-y-2">
+                <li>
+                  <Link to="/blog" className="hover:text-white">
+                    Blog
+                  </Link>
+                </li>
                 <li>
                   <Link to="/docs" className="hover:text-white">
                     Documentation

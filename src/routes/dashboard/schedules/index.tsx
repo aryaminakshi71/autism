@@ -10,118 +10,158 @@ import {
   Search,
   Trash,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
+import { loadEntityList, saveEntityList } from "~/lib/dashboard-local-store";
+import { isDemoModeEnabled } from "~/lib/demo-mode";
 
 export const Route = createFileRoute("/dashboard/schedules/")({
   component: SchedulesPage,
 });
 
+const DEFAULT_SCHEDULES = [
+  {
+    id: "1",
+    name: "Morning Routine",
+    patient: "Emma Johnson",
+    type: "daily",
+    items: [
+      { time: "7:00 AM", activity: "Wake up", icon: "🌅", completed: true },
+      {
+        time: "7:15 AM",
+        activity: "Brush teeth",
+        icon: "🪥",
+        completed: true,
+      },
+      {
+        time: "7:30 AM",
+        activity: "Get dressed",
+        icon: "👕",
+        completed: false,
+      },
+      {
+        time: "7:45 AM",
+        activity: "Breakfast",
+        icon: "🍳",
+        completed: false,
+      },
+      {
+        time: "8:00 AM",
+        activity: "School bus",
+        icon: "🚌",
+        completed: false,
+      },
+    ],
+    isDefault: true,
+  },
+  {
+    id: "2",
+    name: "Therapy Session",
+    patient: "Liam Williams",
+    type: "therapy",
+    items: [
+      { activity: "Arrival & Greeting", icon: "👋", isFirstThen: true },
+      {
+        activity: "Sensory activity",
+        icon: "🎨",
+        isChoice: true,
+        choices: ["Play-doh", "Sand table", "Fidget toys"],
+      },
+      { activity: "ABA work", icon: "📝", completed: false },
+      { activity: "Break", icon: "☕", completed: false },
+      { activity: "Social skills game", icon: "🎮", completed: false },
+    ],
+    isDefault: false,
+  },
+  {
+    id: "3",
+    name: "After School",
+    patient: "Olivia Davis",
+    type: "daily",
+    items: [
+      { time: "3:00 PM", activity: "Snack", icon: "🍎", completed: false },
+      { time: "3:30 PM", activity: "Homework", icon: "📚", completed: false },
+      {
+        time: "4:00 PM",
+        activity: "Outdoor play",
+        icon: "⚽",
+        completed: false,
+      },
+      {
+        time: "5:00 PM",
+        activity: "Screen time",
+        icon: "📺",
+        completed: false,
+      },
+    ],
+    isDefault: false,
+  },
+  {
+    id: "4",
+    name: "Bedtime Routine",
+    patient: "Noah Martinez",
+    type: "bedtime",
+    items: [
+      { time: "7:30 PM", activity: "Bath", icon: "🛁", completed: false },
+      { time: "7:45 PM", activity: "Pajamas", icon: "🌙", completed: false },
+      {
+        time: "8:00 PM",
+        activity: "Story time",
+        icon: "📖",
+        completed: false,
+      },
+      {
+        time: "8:15 PM",
+        activity: "Lights out",
+        icon: "💤",
+        completed: false,
+      },
+    ],
+    isDefault: true,
+  },
+];
+
 function SchedulesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const isDemoMode = isDemoModeEnabled();
 
-  const schedules = [
-    {
-      id: "1",
-      name: "Morning Routine",
-      patient: "Emma Johnson",
-      type: "daily",
-      items: [
-        { time: "7:00 AM", activity: "Wake up", icon: "🌅", completed: true },
-        {
-          time: "7:15 AM",
-          activity: "Brush teeth",
-          icon: "🪥",
-          completed: true,
-        },
-        {
-          time: "7:30 AM",
-          activity: "Get dressed",
-          icon: "👕",
-          completed: false,
-        },
-        {
-          time: "7:45 AM",
-          activity: "Breakfast",
-          icon: "🍳",
-          completed: false,
-        },
-        {
-          time: "8:00 AM",
-          activity: "School bus",
-          icon: "🚌",
-          completed: false,
-        },
-      ],
-      isDefault: true,
-    },
-    {
-      id: "2",
-      name: "Therapy Session",
-      patient: "Liam Williams",
-      type: "therapy",
-      items: [
-        { activity: "Arrival & Greeting", icon: "👋", isFirstThen: true },
-        {
-          activity: "Sensory activity",
-          icon: "🎨",
-          isChoice: true,
-          choices: ["Play-doh", "Sand table", "Fidget toys"],
-        },
-        { activity: "ABA work", icon: "📝", completed: false },
-        { activity: "Break", icon: "☕", completed: false },
-        { activity: "Social skills game", icon: "🎮", completed: false },
-      ],
-      isDefault: false,
-    },
-    {
-      id: "3",
-      name: "After School",
-      patient: "Olivia Davis",
-      type: "daily",
-      items: [
-        { time: "3:00 PM", activity: "Snack", icon: "🍎", completed: false },
-        { time: "3:30 PM", activity: "Homework", icon: "📚", completed: false },
-        {
-          time: "4:00 PM",
-          activity: "Outdoor play",
-          icon: "⚽",
-          completed: false,
-        },
-        {
-          time: "5:00 PM",
-          activity: "Screen time",
-          icon: "📺",
-          completed: false,
-        },
-      ],
-      isDefault: false,
-    },
-    {
-      id: "4",
-      name: "Bedtime Routine",
-      patient: "Noah Martinez",
-      type: "bedtime",
-      items: [
-        { time: "7:30 PM", activity: "Bath", icon: "🛁", completed: false },
-        { time: "7:45 PM", activity: "Pajamas", icon: "🌙", completed: false },
-        {
-          time: "8:00 PM",
-          activity: "Story time",
-          icon: "📖",
-          completed: false,
-        },
-        {
-          time: "8:15 PM",
-          activity: "Lights out",
-          icon: "💤",
-          completed: false,
-        },
-      ],
-      isDefault: true,
-    },
-  ];
+  const [schedules, setSchedules] = useState(() =>
+    loadEntityList("autism_schedules", DEFAULT_SCHEDULES),
+  );
+
+  useEffect(() => {
+    saveEntityList("autism_schedules", schedules);
+  }, [schedules]);
+
+  const handleCreateSchedule = () => {
+    const nextId = String(schedules.length + 1);
+    setSchedules((prev) => [
+      {
+        id: nextId,
+        name: `New Schedule ${nextId}`,
+        patient: "New Patient",
+        type: "daily",
+        items: [
+          {
+            time: "9:00 AM",
+            activity: "Check in",
+            icon: "✅",
+            completed: false,
+          },
+          {
+            time: "9:30 AM",
+            activity: "Structured activity",
+            icon: "🧩",
+            completed: false,
+          },
+          { time: "10:00 AM", activity: "Break", icon: "☕", completed: false },
+        ],
+        isDefault: false,
+      },
+      ...prev,
+    ]);
+  };
 
   const filteredSchedules = schedules.filter(
     (schedule) =>
@@ -175,12 +215,21 @@ function SchedulesPage() {
               <Grid className="h-5 w-5" />
             </button>
           </div>
-          <button className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
+          <button
+            onClick={handleCreateSchedule}
+            title={isDemoMode ? "Demo: schedule will be added locally." : ""}
+            className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700"
+          >
             <Plus className="h-5 w-5" />
             <span>Create Schedule</span>
           </button>
         </div>
       </div>
+      {isDemoMode ? (
+        <p className="mb-4 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-indigo-800 text-sm">
+          Demo mode: new schedules are saved locally for this session.
+        </p>
+      ) : null}
 
       {viewMode === "list" ? (
         <div className="space-y-4">

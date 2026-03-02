@@ -71,6 +71,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <a
+          href="/dashboard"
+          className="fixed right-4 bottom-4 z-50 rounded-md border border-border bg-card px-3 py-2 font-medium text-foreground text-sm shadow hover:bg-muted"
+        >
+          Dashboard
+        </a>
         {children}
         {process.env.NODE_ENV === "production" ? null : (
           <>
