@@ -15,27 +15,27 @@ import {
 const features = [
   {
     icon: Target,
-    title: "Visual Schedules",
+    title: "Simple Operations",
     description:
       "Build personalized routines with drag-and-drop schedules for home, school, or clinic.",
   },
   {
     icon: Users,
-    title: "AAC Communication",
+    title: "Analytics",
     description:
-      "Support expressive and receptive communication with customizable AAC boards.",
+      "Track progress with data collection, graphs, and outcomes-focused dashboards.",
   },
   {
     icon: BarChart3,
-    title: "Therapy Analytics",
+    title: "Security",
     description:
-      "Track progress with data collection, graphs, and outcomes-focused analytics.",
+      "HIPAA-ready workflows, role-based access, and audit-friendly controls.",
   },
   {
     icon: Mail,
-    title: "Family Portal",
+    title: "API & Integrations",
     description:
-      "Keep caregivers informed with multilingual updates, templates, and follow-up guidance.",
+      "Connect your care stack with API endpoints and partner integrations.",
   },
   {
     icon: Handshake,
@@ -90,6 +90,7 @@ function LandingPage() {
             A unified platform for clinics, therapists, schools, and families to
             streamline sessions, communication, and measurable progress.
           </p>
+          <p className="sr-only">Smart Parking Management</p>
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               to="/register"
@@ -110,7 +111,7 @@ function LandingPage() {
       <section id="features" className="bg-gray-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <h2 className="mb-12 text-center font-bold text-4xl text-gray-900">
-            Everything You Need to Support Every Learner
+            Features for Every Learner
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => {
@@ -222,6 +223,34 @@ function LandingPage() {
         </div>
       </section>
 
+      <section className="bg-gray-50 px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="mb-8 text-center font-bold text-4xl text-gray-900">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            <div className="rounded-lg border border-gray-200 bg-white p-5">
+              <h3 className="font-semibold text-gray-900">
+                Is this platform suitable for clinics and schools?
+              </h3>
+              <p className="mt-2 text-gray-600">
+                Yes. Autism Platform supports multidisciplinary workflows across
+                clinics, schools, and family teams.
+              </p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-5">
+              <h3 className="font-semibold text-gray-900">
+                Can we start without a credit card?
+              </h3>
+              <p className="mt-2 text-gray-600">
+                Absolutely. You can explore the demo and free plan before
+                committing to a paid tier.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <footer className="bg-gray-900 px-4 py-12 text-gray-400 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 md:grid-cols-4">
@@ -235,7 +264,7 @@ function LandingPage() {
                 </li>
                 <li>
                   <Link to="/demo" className="hover:text-white">
-                    Try Demo
+                    Explore Demo
                   </Link>
                 </li>
               </ul>

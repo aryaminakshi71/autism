@@ -38,6 +38,20 @@ export interface BlogPost {
 
 export const pricingPlans: PricingPlan[] = [
   {
+    id: "free",
+    name: "Free",
+    description: "For solo families and first-time onboarding.",
+    monthlyPrice: 0,
+    annualPrice: 0,
+    ctaLabel: "Get Started Free",
+    features: [
+      "Up to 3 learners",
+      "Basic schedules and communication tools",
+      "Parent portal access",
+      "Community support",
+    ],
+  },
+  {
     id: "starter",
     name: "Starter",
     description: "For solo providers and small early-stage programs.",

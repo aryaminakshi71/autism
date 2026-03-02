@@ -1,6 +1,6 @@
 import { authClient } from "@/lib/auth-client";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Lock, LogIn, Mail } from "lucide-react";
+import { ArrowLeft, Lock, LogIn, Mail } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -104,16 +104,28 @@ function LoginPage() {
               Autism Platform
             </h1>
           </Link>
+          <div className="mt-4 text-center">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 font-medium text-gray-600 hover:text-gray-900"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Link>
+          </div>
           <h2 className="mt-6 text-center font-extrabold text-3xl text-gray-900">
-            Sign in to your account
+            Welcome Back
           </h2>
-          <p className="mt-2 text-center text-gray-600 text-sm">
+          <p className="mt-1 text-center text-gray-600 text-sm">
+            Sign in to your account
+          </p>
+          <p className="mt-1 text-center text-gray-600 text-sm">
             Or{" "}
             <Link
               to="/register"
               className="font-medium text-blue-600 hover:text-blue-500"
             >
-              create a new account
+              Sign Up
             </Link>
           </p>
         </div>

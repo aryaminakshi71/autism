@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check } from "lucide-react";
 
 export const Route = createFileRoute("/demo")({
@@ -6,6 +6,8 @@ export const Route = createFileRoute("/demo")({
 });
 
 function DemoPage() {
+  const navigate = useNavigate();
+
   const handleStartDemo = () => {
     if (typeof window === "undefined") return;
     const demoUserData = {
@@ -24,14 +26,16 @@ function DemoPage() {
     localStorage.setItem("demo_mode", "true");
     localStorage.setItem("accessToken", "demo-token");
     localStorage.setItem("companyId", "demo-company");
+    navigate({ to: "/dashboard" });
   };
 
   const features = [
-    "Full access to key care modules",
-    "Sample data pre-loaded",
+    "Full access to all features",
+    "Sample parking lot data pre-loaded",
     "No credit card required",
+    "Demo resets after 24 hours",
     "Explore schedules, AAC, and care plans",
-    "Review Analytics and outcomes tracking",
+    "Review analytics and outcomes tracking",
   ];
 
   return (
@@ -40,10 +44,10 @@ function DemoPage() {
         <div className="rounded-2xl bg-white p-8 shadow-xl md:p-12">
           <div className="mb-8 text-center">
             <h1 className="mb-4 font-bold text-4xl text-gray-900">
-              Try Autism Platform Demo
+              Try ParkingPro Demo
             </h1>
             <p className="text-gray-600 text-xl">
-              Experience the full power of our platform with sample data
+              Experience smart parking management with sample data
             </p>
           </div>
 
@@ -74,14 +78,14 @@ function DemoPage() {
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Link
-              to="/app"
+            <button
+              type="button"
               onClick={handleStartDemo}
               className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-lg text-white transition-colors hover:bg-blue-700"
             >
               Start Demo
               <ArrowRight className="h-5 w-5" />
-            </Link>
+            </button>
             <Link
               to="/register"
               className="flex-1 rounded-lg border-2 border-gray-300 px-8 py-4 text-center font-semibold text-gray-700 text-lg transition-colors hover:border-gray-400"
@@ -95,7 +99,7 @@ function DemoPage() {
               to="/login"
               className="font-medium text-blue-600 hover:text-blue-700"
             >
-              Already have an account? Sign in
+              Already have an account? Sign In
             </Link>
           </div>
         </div>

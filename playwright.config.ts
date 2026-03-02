@@ -1,16 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const port = Number(process.env.PORT ?? "3000");
+const port = Number(process.env.PORT ?? "3020");
 const host = process.env.HOST ?? "127.0.0.1";
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://${host}:${port}`;
 
 export default defineConfig({
   timeout: 60_000,
   testDir: "./e2e",
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 4,
   expect: {
     timeout: 10_000,
   },
@@ -49,10 +49,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    // Ensure Playwright can bring up the app in environments where :3000 is busy.
-    command: `SKIP_CLOUDFLARE=true HOST=${host} PORT=${port} bun run dev`,
+    // Start only the web app; it already serves /api/* via integrated server routes.
+    command: `SKIP_CLOUDFLARE=true DISABLE_TANSTACK_DEVTOOLS=true HOST=${host} PORT=${port} bun run dev:web`,
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    reuseExistingServer: false,
+    timeout: 180000,
   },
 });

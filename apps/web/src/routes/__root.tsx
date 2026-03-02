@@ -70,6 +70,7 @@ export const Route = createRootRoute({
         },
         { rel: "dns-prefetch", href: "https://api.your-domain.com" },
         { rel: "stylesheet", href: appCss },
+        { rel: "manifest", href: "/manifest.json" },
         { rel: "icon", href: "/favicon.ico" },
       ],
       scripts: [

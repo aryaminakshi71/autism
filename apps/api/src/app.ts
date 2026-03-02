@@ -51,6 +51,7 @@ export function createApp() {
   // Health check (non-RPC) - must be before rate limiting
   app.get("/api/health", (c: any) => {
     return c.json({
+      ok: true,
       status: "ok",
       timestamp: new Date().toISOString(),
       version: "1.0.0",
@@ -568,6 +569,45 @@ export function createApp() {
 
   // OpenAPI spec
   app.get("/api/openapi.json", async (c: any) => {
+    const generator = new OpenAPIGenerator({
+      schemaConverters: [new ZodToJsonSchemaConverter()],
+    });
+
+    const spec = await generator.generate(appRouter, {
+      info: {
+        title: "Autism API",
+        version: "1.0.0",
+        description: "Customer Relationship Management API",
+      },
+      servers: [
+        {
+          url: c.env?.VITE_PUBLIC_SITE_URL || "http://localhost:5173",
+          description: "Current",
+        },
+      ],
+      security: [{ bearerAuth: [] }],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+            description: "JWT token from Better Auth",
+          },
+        },
+      },
+      tags: [
+        { name: "Contacts", description: "Contact management operations" },
+        { name: "Organizations", description: "Organization management" },
+        { name: "System", description: "System endpoints" },
+      ],
+    });
+
+    return c.json(spec);
+  });
+
+  // Compatibility alias used by browser e2e checks.
+  app.get("/api/openapi/spec.json", async (c: any) => {
     const generator = new OpenAPIGenerator({
       schemaConverters: [new ZodToJsonSchemaConverter()],
     });

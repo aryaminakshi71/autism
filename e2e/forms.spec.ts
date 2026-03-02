@@ -20,14 +20,17 @@ test.describe("Form Interactions E2E", () => {
     await page.goto("/dashboard/patients");
     await page.waitForLoadState("networkidle");
 
-    await expect(page.getByText("Emma Johnson")).toBeVisible();
+    const tbody = page.locator("tbody");
+    await expect(tbody).toContainText("Emma Johnson");
 
     const search = page.getByPlaceholder("Search patients...");
     await expect(search).toBeVisible();
+    await search.click();
     await search.fill("Noah");
+    await expect(search).toHaveValue("Noah");
 
-    await expect(page.getByText("Noah Martinez")).toBeVisible();
-    await expect(page.getByText("Emma Johnson")).toHaveCount(0);
+    await expect(tbody).toContainText("Noah Martinez");
+    await expect(tbody).not.toContainText("Emma Johnson");
   });
 
   test("goals status filter shows mastered goals", async ({ page }) => {
@@ -53,7 +56,7 @@ test.describe("Form Interactions E2E", () => {
     await statusFilter.selectOption("completed");
 
     const tbody = page.locator("tbody");
-    await expect(tbody.getByText("completed")).toBeVisible();
-    await expect(tbody.getByText("scheduled")).toHaveCount(0);
+    await expect(tbody.locator('td:has-text("completed")')).toBeVisible();
+    await expect(tbody.locator('td:has-text("scheduled")')).toHaveCount(0);
   });
 });
