@@ -7,6 +7,7 @@ node_modules/
 coverage/
 .nyc_output
 test-results/
+test-results.json
 playwright-report/
 
 # Production
