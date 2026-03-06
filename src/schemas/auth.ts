@@ -20,7 +20,7 @@ JSON_SCHEMA_REGISTRY.add(UserSchema, {
     {
       id: "usr_123",
       name: "Jordan Lee",
-      email: "jordan@parkingpro.com",
+      email: "jordan@autismcare.app",
       image: null,
     },
   ],
@@ -30,8 +30,8 @@ JSON_SCHEMA_REGISTRY.add(OrganizationSchema, {
   examples: [
     {
       id: "org_123",
-      name: "Downtown Parking Co",
-      slug: "downtown-parking",
+      name: "Sunrise Autism Center",
+      slug: "sunrise-autism-center",
       logo: null,
     },
   ],

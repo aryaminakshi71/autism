@@ -1,15 +1,39 @@
-import { relations } from "drizzle-orm";
-import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { organization, user } from "./auth-schema";
 
-export const parkingLot = pgTable("parking_lot", {
+export const patients = pgTable("patients", {
   id: text("id").primaryKey(),
   organizationId: text("organization_id")
     .notNull()
     .references(() => organization.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  address: text("address"),
-  timezone: text("timezone"),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  dateOfBirth: timestamp("date_of_birth", { mode: "date" }),
+  gender: text("gender"),
+  diagnosis: text("diagnosis"),
+  severityLevel: text("severity_level"),
+  primaryLanguage: text("primary_language").default("en").notNull(),
+  preferredCommunication: text("preferred_communication")
+    .default("verbal")
+    .notNull(),
+  status: text("status").default("active").notNull(),
+  assignedTherapistId: text("assigned_therapist_id").references(
+    () => user.id,
+    { onDelete: "set null" },
+  ),
+  guardianUserId: text("guardian_user_id").references(() => user.id, {
+    onDelete: "set null",
+  }),
+  createdBy: text("created_by").references(() => user.id, {
+    onDelete: "set null",
+  }),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { mode: "date" })
     .defaultNow()
@@ -17,104 +41,144 @@ export const parkingLot = pgTable("parking_lot", {
     .notNull(),
 });
 
-export const parkingSpot = pgTable("parking_spot", {
-  id: text("id").primaryKey(),
-  lotId: text("lot_id")
-    .notNull()
-    .references(() => parkingLot.id, { onDelete: "cascade" }),
-  label: text("label").notNull(),
-  level: text("level"),
-  type: text("type").default("standard").notNull(),
-  status: text("status").default("available").notNull(),
-});
-
-export const vehicle = pgTable("vehicle", {
+export const goals = pgTable("goals", {
   id: text("id").primaryKey(),
   organizationId: text("organization_id")
     .notNull()
     .references(() => organization.id, { onDelete: "cascade" }),
-  ownerUserId: text("owner_user_id").references(() => user.id, {
+  patientId: text("patient_id")
+    .notNull()
+    .references(() => patients.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  description: text("description"),
+  category: text("category").notNull(),
+  subcategory: text("subcategory"),
+  targetBehavior: text("target_behavior"),
+  baselineValue: integer("baseline_value"),
+  targetValue: integer("target_value").notNull(),
+  currentValue: integer("current_value"),
+  unit: text("unit").default("%").notNull(),
+  masteryCriteria: integer("mastery_criteria").default(80).notNull(),
+  status: text("status").default("active").notNull(),
+  priority: text("priority").default("medium").notNull(),
+  startDate: timestamp("start_date", { mode: "date" }),
+  targetDate: timestamp("target_date", { mode: "date" }),
+  domain: text("domain"),
+  createdBy: text("created_by").references(() => user.id, {
     onDelete: "set null",
   }),
-  plate: text("plate").notNull(),
-  make: text("make"),
-  model: text("model"),
-  color: text("color"),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
 });
 
-export const reservation = pgTable("reservation", {
+export const sessions = pgTable("sessions", {
   id: text("id").primaryKey(),
   organizationId: text("organization_id")
     .notNull()
     .references(() => organization.id, { onDelete: "cascade" }),
-  spotId: text("spot_id")
+  patientId: text("patient_id")
     .notNull()
-    .references(() => parkingSpot.id, { onDelete: "cascade" }),
-  vehicleId: text("vehicle_id").references(() => vehicle.id, {
+    .references(() => patients.id, { onDelete: "cascade" }),
+  therapistId: text("therapist_id").notNull(),
+  type: text("type").notNull(),
+  status: text("status").default("scheduled").notNull(),
+  scheduledStart: timestamp("scheduled_start", { mode: "date" }).notNull(),
+  scheduledEnd: timestamp("scheduled_end", { mode: "date" }).notNull(),
+  actualStart: timestamp("actual_start", { mode: "date" }),
+  actualEnd: timestamp("actual_end", { mode: "date" }),
+  durationMinutes: integer("duration_minutes"),
+  location: text("location"),
+  room: text("room"),
+  telehealth: boolean("telehealth").default(false).notNull(),
+  mood: text("mood"),
+  energyLevel: text("energy_level"),
+  notes: text("notes"),
+  createdBy: text("created_by").references(() => user.id, {
     onDelete: "set null",
   }),
-  startsAt: timestamp("starts_at", { mode: "date" }).notNull(),
-  endsAt: timestamp("ends_at", { mode: "date" }).notNull(),
-  status: text("status").default("reserved").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
 });
 
-export const payment = pgTable("payment", {
+export const visualSchedules = pgTable("visual_schedules", {
   id: text("id").primaryKey(),
-  reservationId: text("reservation_id")
+  organizationId: text("organization_id")
     .notNull()
-    .references(() => reservation.id, { onDelete: "cascade" }),
-  amountCents: integer("amount_cents").notNull(),
-  currency: text("currency").default("USD").notNull(),
-  provider: text("provider").default("stripe").notNull(),
-  status: text("status").default("pending").notNull(),
+    .references(() => organization.id, { onDelete: "cascade" }),
+  patientId: text("patient_id").references(() => patients.id, {
+    onDelete: "set null",
+  }),
+  name: text("name").notNull(),
+  description: text("description"),
+  type: text("type").notNull(),
+  schedule: jsonb("schedule"),
+  isTemplate: boolean("is_template").default(false).notNull(),
+  isDefault: boolean("is_default").default(false).notNull(),
+  createdBy: text("created_by").references(() => user.id, {
+    onDelete: "set null",
+  }),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
 });
 
-export const parkingLotRelations = relations(parkingLot, ({ many, one }) => ({
-  organization: one(organization, {
-    fields: [parkingLot.organizationId],
-    references: [organization.id],
+export const communicationCards = pgTable("communication_cards", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  patientId: text("patient_id").references(() => patients.id, {
+    onDelete: "set null",
   }),
-  spots: many(parkingSpot),
-}));
+  name: text("name").notNull(),
+  description: text("description"),
+  category: text("category").notNull(),
+  cards: jsonb("cards"),
+  gridSize: text("grid_size").default("4x4").notNull(),
+  isTemplate: boolean("is_template").default(false).notNull(),
+  language: text("language").default("en").notNull(),
+  createdBy: text("created_by").references(() => user.id, {
+    onDelete: "set null",
+  }),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
 
-export const parkingSpotRelations = relations(parkingSpot, ({ many, one }) => ({
-  lot: one(parkingLot, {
-    fields: [parkingSpot.lotId],
-    references: [parkingLot.id],
+export const assessments = pgTable("assessments", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  patientId: text("patient_id")
+    .notNull()
+    .references(() => patients.id, { onDelete: "cascade" }),
+  type: text("type").notNull(),
+  name: text("name").notNull(),
+  provider: text("provider"),
+  version: text("version"),
+  status: text("status").default("scheduled").notNull(),
+  scheduledDate: timestamp("scheduled_date", { mode: "date" }),
+  completedDate: timestamp("completed_date", { mode: "date" }),
+  administeredBy: text("administered_by"),
+  results: jsonb("results"),
+  recommendations: text("recommendations"),
+  createdBy: text("created_by").references(() => user.id, {
+    onDelete: "set null",
   }),
-  reservations: many(reservation),
-}));
-
-export const vehicleRelations = relations(vehicle, ({ many, one }) => ({
-  owner: one(user, {
-    fields: [vehicle.ownerUserId],
-    references: [user.id],
-  }),
-  reservations: many(reservation),
-}));
-
-export const reservationRelations = relations(reservation, ({ many, one }) => ({
-  organization: one(organization, {
-    fields: [reservation.organizationId],
-    references: [organization.id],
-  }),
-  spot: one(parkingSpot, {
-    fields: [reservation.spotId],
-    references: [parkingSpot.id],
-  }),
-  vehicle: one(vehicle, {
-    fields: [reservation.vehicleId],
-    references: [vehicle.id],
-  }),
-  payments: many(payment),
-}));
-
-export const paymentRelations = relations(payment, ({ one }) => ({
-  reservation: one(reservation, {
-    fields: [payment.reservationId],
-    references: [reservation.id],
-  }),
-}));
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
