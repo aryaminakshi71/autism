@@ -10,6 +10,20 @@
 7. [Analytics & PostHog](#analytics--posthog)
 8. [Service Workers](#service-workers)
 9. [API Caching](#api-caching)
+10. [Frontend Surface](#frontend-surface)
+
+---
+
+## Frontend Surface
+
+- Canonical web frontend: `apps/web/src/*`
+- E2E test target: `bun run dev:web` (see `playwright.config.ts`)
+- Route generation source of truth: `apps/web/src/routeTree.gen.ts`
+- Canonical authenticated surface: `/dashboard/*`
+- Legacy `/app/*` surface is redirected to `/dashboard`
+
+When updating user-facing routes or copy, prefer `apps/web/src/routes/*` so
+changes stay in the active deployed surface.
 
 ---
 
@@ -136,7 +150,7 @@ src/routes/
 ├── login.tsx            # Login page
 ├── register.tsx         # Registration page
 ├── demo.tsx             # Demo page
-├── reserve.tsx          # Reservation page
+├── care-finder.tsx      # Care resources page
 └── dashboard/
     ├── index.tsx        # Dashboard home
     ├── analytics.tsx
@@ -459,6 +473,28 @@ HYPERDRIVE_CONNECTION_STRING=...
 UPSTASH_REDIS_REST_URL=https://xxx.upstash.io
 UPSTASH_REDIS_REST_TOKEN=xxx
 ```
+
+---
+
+## Database Safety
+
+- Create backup before destructive migrations:
+  - `bun run db:backup:pre-migrate`
+- Restore a specific backup file:
+  - `bun run db:restore:backup -- drizzle/backups/<file>.sql`
+- Roll back autism schema transition using latest pre-migration backup:
+  - `bun run db:rollback:autism-transition`
+
+---
+
+## Quality Gates
+
+- Legacy content and surface checks:
+  - `bun run qa:all`
+- Lighthouse desktop + mobile thresholds:
+  - `bun run qa:lighthouse`
+- API contract checks (included in smoke E2E):
+  - `e2e/api-contracts.spec.ts`
 
 ---
 
