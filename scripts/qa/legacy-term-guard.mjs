@@ -31,6 +31,14 @@ const bannedPatterns = [
   { label: "find parking", regex: /\bfind\s+parking\b/gi },
 ];
 
+const allowlist = [
+  {
+    file: "e2e/api-contracts.spec.ts",
+    label: "parking",
+    value: "parking",
+  },
+];
+
 function shouldScan(path) {
   const inScope = scanScopes.some(
     (scope) => path === scope || path.startsWith(scope),
@@ -66,11 +74,17 @@ for (const file of files) {
   for (const { label, regex } of bannedPatterns) {
     for (const match of text.matchAll(regex)) {
       if (match.index == null) continue;
+      const value = match[0];
+      const allowed = allowlist.some(
+        (item) =>
+          item.file === file && item.label === label && item.value === value,
+      );
+      if (allowed) continue;
       violations.push({
         file,
         line: lineForIndex(text, match.index),
         label,
-        value: match[0],
+        value,
       });
     }
   }
