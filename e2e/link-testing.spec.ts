@@ -7,7 +7,13 @@
 
 import { expect, test } from "@playwright/test";
 
-const publicRoutes = ["/", "/login", "/register", "/demo", "/reserve"] as const;
+const publicRoutes = [
+  "/",
+  "/login",
+  "/register",
+  "/demo",
+  "/care-finder",
+] as const;
 
 for (const route of publicRoutes) {
   test(`public route responds (<500): ${route}`, async ({ request }) => {

@@ -10,7 +10,7 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : 4,
+  workers: process.env.CI ? 1 : Number(process.env.PW_WORKERS ?? "2"),
   expect: {
     timeout: 10_000,
   },
@@ -52,7 +52,11 @@ export default defineConfig({
     // Start only the web app; it already serves /api/* via integrated server routes.
     command: `SKIP_CLOUDFLARE=true DISABLE_TANSTACK_DEVTOOLS=true HOST=${host} PORT=${port} bun run dev:web`,
     url: baseURL,
-    reuseExistingServer: false,
+    reuseExistingServer: !process.env.CI,
     timeout: 180000,
+    gracefulShutdown: {
+      signal: "SIGTERM",
+      timeout: 10_000,
+    },
   },
 });

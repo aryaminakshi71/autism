@@ -16,6 +16,8 @@ jobs:
           node-version: '20.x'
           cache: 'npm'
       - run: npm ci
+      - run: node scripts/qa/legacy-term-guard.mjs
+      - run: node scripts/qa/surface-consistency-guard.mjs
       - run: npm run lint
       - run: npm run type-check
 

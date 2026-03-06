@@ -11,7 +11,7 @@ test.describe("Autism Care Platform - Comprehensive Testing", () => {
 
       // Check for key sections
       const content = await page.content();
-      expect(content).toContain("Smart Parking Management");
+      expect(content).toContain("Coordinate Autism Care");
       expect(content).toContain("Features");
       expect(content).toContain("Pricing");
       expect(content).toContain("Frequently Asked Questions");
@@ -22,7 +22,7 @@ test.describe("Autism Care Platform - Comprehensive Testing", () => {
       await page.waitForLoadState("networkidle");
 
       // Check all nav links exist
-      await expect(page.locator('a:has-text("Find Parking")')).toBeVisible();
+      await expect(page.locator('a:has-text("Care Finder")')).toBeVisible();
       await expect(page.locator('a:has-text("Try Demo")')).toBeVisible();
       await expect(page.locator('a:has-text("Sign In")')).toBeVisible();
     });
@@ -149,8 +149,8 @@ test.describe("Autism Care Platform - Comprehensive Testing", () => {
       await page.waitForLoadState("networkidle");
 
       const content = await page.content();
-      expect(content).toContain("Try ParkingPro Demo");
-      expect(content).toContain("Experience smart parking management");
+      expect(content).toContain("Try Autism Platform Demo");
+      expect(content).toContain("Experience autism care coordination");
     });
 
     test("feature list displays", async ({ page }) => {
@@ -161,7 +161,7 @@ test.describe("Autism Care Platform - Comprehensive Testing", () => {
         page.locator("text=Full access to all features"),
       ).toBeVisible();
       await expect(
-        page.locator("text=Sample parking lot data pre-loaded"),
+        page.locator("text=Sample patient and care-plan data pre-loaded"),
       ).toBeVisible();
       await expect(page.locator("text=No credit card required")).toBeVisible();
       await expect(
@@ -202,14 +202,17 @@ test.describe("Autism Care Platform - Comprehensive Testing", () => {
         headers: { "x-api-version": "1" },
       });
 
-      // Should return 404 (no backend) but not 500
-      expect(response.status()).not.toBe(500);
+      expect(response.status()).toBe(404);
+      expect(await response.text()).toContain("404 Not Found");
     });
 
     test("Auth API accessible", async ({ request }) => {
-      const response = await request.get("/api/auth");
+      const response = await request.get("/api/auth/get-session");
 
-      expect(response.status()).not.toBe(500);
+      expect(response.status()).toBe(200);
+      expect(response.headers()["content-type"]).toContain("application/json");
+      const payload = await response.json();
+      expect(payload === null || typeof payload === "object").toBe(true);
     });
 
     test("Service worker file accessible", async ({ request }) => {

@@ -27,6 +27,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Legacy term guard
+        run: node scripts/qa/legacy-term-guard.mjs
+
+      - name: Surface consistency guard
+        run: node scripts/qa/surface-consistency-guard.mjs
+
       - name: Run ESLint
         run: npm run lint
 

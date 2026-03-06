@@ -8,7 +8,7 @@ test("Landing Page - loads correctly with all sections", async ({ page }) => {
   await expect(page.locator("h1")).toBeVisible();
 
   const content = await page.content();
-  expect(content).toContain("Smart Parking Management");
+  expect(content).toContain("Coordinate Autism Care");
   expect(content).toContain("Features");
   expect(content).toContain("Pricing");
   expect(content).toContain("Frequently Asked Questions");
@@ -18,7 +18,7 @@ test("Landing Page - navigation links work", async ({ page }) => {
   await page.goto("/");
   await page.waitForLoadState("networkidle");
 
-  await expect(page.locator('a:has-text("Find Parking")')).toBeVisible();
+  await expect(page.locator('a:has-text("Care Finder")')).toBeVisible();
   await expect(page.locator('a:has-text("Try Demo")')).toBeVisible();
   await expect(page.locator('a:has-text("Sign In")')).toBeVisible();
 });
@@ -137,8 +137,8 @@ test("Demo Page - loads correctly", async ({ page }) => {
   await page.waitForLoadState("networkidle");
 
   const content = await page.content();
-  expect(content).toContain("Try ParkingPro Demo");
-  expect(content).toContain("Experience smart parking management");
+  expect(content).toContain("Try Autism Platform Demo");
+  expect(content).toContain("Experience autism care coordination");
 });
 
 test("Demo Page - feature list displays", async ({ page }) => {
@@ -147,7 +147,7 @@ test("Demo Page - feature list displays", async ({ page }) => {
 
   await expect(page.locator("text=Full access to all features")).toBeVisible();
   await expect(
-    page.locator("text=Sample parking lot data pre-loaded"),
+    page.locator("text=Sample patient and care-plan data pre-loaded"),
   ).toBeVisible();
   await expect(page.locator("text=No credit card required")).toBeVisible();
   await expect(page.locator("text=Demo resets after 24 hours")).toBeVisible();
@@ -182,13 +182,17 @@ test("API - RPC endpoint accessible", async ({ request }) => {
     headers: { "x-api-version": "1" },
   });
 
-  expect(response.status()).not.toBe(500);
+  expect(response.status()).toBe(404);
+  expect(await response.text()).toContain("404 Not Found");
 });
 
 test("API - Auth endpoint accessible", async ({ request }) => {
-  const response = await request.get("/api/auth");
+  const response = await request.get("/api/auth/get-session");
 
-  expect(response.status()).not.toBe(500);
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toContain("application/json");
+  const payload = await response.json();
+  expect(payload === null || typeof payload === "object").toBe(true);
 });
 
 test("Service Worker - file accessible", async ({ request }) => {

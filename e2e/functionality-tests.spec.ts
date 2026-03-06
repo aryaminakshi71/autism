@@ -58,21 +58,21 @@ test.describe("Console & Error Tests", () => {
   });
 
   test("API endpoints accessible", async ({ request }) => {
-    // Test RPC endpoint
     const rpcResponse = await request.get("/api/rpc", {
       headers: {
         "x-api-version": "1",
       },
     });
-    console.log("RPC API status:", rpcResponse.status());
+    const rpcBody = await rpcResponse.text();
+    expect(rpcResponse.status()).toBe(404);
+    expect(rpcBody).toContain("404 Not Found");
 
-    // Test Auth endpoint
-    const authResponse = await request.get("/api/auth");
-    console.log("Auth API status:", authResponse.status());
+    const authResponse = await request.get("/api/auth/get-session");
+    expect(authResponse.status()).toBe(200);
+    expect(authResponse.headers()["content-type"]).toContain("application/json");
 
-    // These endpoints may return 404 in local/dev, but should not 5xx.
-    expect(rpcResponse.status()).toBeLessThan(500);
-    expect(authResponse.status()).toBeLessThan(500);
+    const authPayload = await authResponse.json();
+    expect(authPayload === null || typeof authPayload === "object").toBe(true);
   });
 });
 
@@ -82,7 +82,7 @@ test.describe("Page Functionality Tests", () => {
     await page.waitForLoadState("networkidle");
 
     const content = await page.content();
-    expect(content).toContain("Smart Parking Management");
+    expect(content).toContain("Autism Platform");
     expect(content).toContain("Features");
     expect(content).toContain("Pricing");
   });
@@ -107,11 +107,8 @@ test.describe("Page Functionality Tests", () => {
   test("Dashboard loads with content", async ({ page }) => {
     await page.goto("/dashboard");
     await page.waitForLoadState("networkidle");
-
-    const content = await page.content();
-
-    // Dashboard may redirect or show different content based on auth
-    // Just verify page loads without errors
-    expect(content.length).toBeGreaterThan(1000);
+    await expect(
+      page.getByRole("heading", { name: /welcome back/i }),
+    ).toBeVisible({ timeout: 30000 });
   });
 });

@@ -2,16 +2,16 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Navigation E2E Tests", () => {
   test("should navigate to main public pages", async ({ page }) => {
-    const routes = ["/", "/login", "/register", "/demo", "/reserve"];
+    const routes = ["/", "/login", "/register", "/demo", "/care-finder"];
 
     for (const route of routes) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
       await expect(page).toHaveURL(new RegExp(`${route.replace("/", "\\/")}`));
     }
 
-    await page.goto("/reserve", { waitUntil: "domcontentloaded" });
+    await page.goto("/care-finder", { waitUntil: "domcontentloaded" });
     await expect(
-      page.getByRole("heading", { name: /Find parking in seconds/i }),
+      page.getByRole("heading", { name: /Find support resources in seconds/i }),
     ).toBeVisible();
   });
 
