@@ -165,7 +165,7 @@ function RootDocument() {
           <PostHogProvider>
             <QueryClientProvider client={queryClient}>
               <a
-                href="/app"
+                href="/dashboard"
                 className="fixed right-4 bottom-4 z-50 rounded-md border border-border bg-card px-3 py-2 font-medium text-foreground text-sm shadow hover:bg-muted"
               >
                 Dashboard

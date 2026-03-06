@@ -90,7 +90,7 @@ function LandingPage() {
             A unified platform for clinics, therapists, schools, and families to
             streamline sessions, communication, and measurable progress.
           </p>
-          <p className="sr-only">Smart Parking Management</p>
+          <p className="sr-only">Autism Care Coordination Platform</p>
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               to="/register"

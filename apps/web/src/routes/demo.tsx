@@ -31,7 +31,7 @@ function DemoPage() {
 
   const features = [
     "Full access to all features",
-    "Sample parking lot data pre-loaded",
+    "Sample patient and care-plan data pre-loaded",
     "No credit card required",
     "Demo resets after 24 hours",
     "Explore schedules, AAC, and care plans",
@@ -44,10 +44,10 @@ function DemoPage() {
         <div className="rounded-2xl bg-white p-8 shadow-xl md:p-12">
           <div className="mb-8 text-center">
             <h1 className="mb-4 font-bold text-4xl text-gray-900">
-              Try ParkingPro Demo
+              Try Autism Platform Demo
             </h1>
             <p className="text-gray-600 text-xl">
-              Experience smart parking management with sample data
+              Experience autism care coordination with sample data
             </p>
           </div>
 

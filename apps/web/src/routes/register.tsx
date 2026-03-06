@@ -79,7 +79,7 @@ function RegisterPage() {
       });
 
       // Successful registration - redirect to dashboard or specified path
-      const redirectPath = redirect || "/app";
+      const redirectPath = redirect || "/dashboard";
       navigate({ to: redirectPath });
     } catch (err) {
       console.error("Registration error:", err);

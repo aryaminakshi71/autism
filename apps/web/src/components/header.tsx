@@ -25,11 +25,11 @@ export function Header({ showTryDemo = true }: HeaderProps) {
     localStorage.setItem("demo_mode", "true");
     localStorage.setItem("accessToken", "demo-token");
     localStorage.setItem("companyId", "demo-company");
-    navigate({ to: "/app" });
+    navigate({ to: "/dashboard" });
   };
 
   const navLinks = [
-    { to: "/reserve", label: "Find Parking" },
+    { to: "/care-finder", label: "Care Finder" },
     { to: "/pricing", label: "Pricing" },
     { to: "/blog", label: "Blog" },
     { to: "/docs", label: "Docs" },
@@ -66,7 +66,7 @@ export function Header({ showTryDemo = true }: HeaderProps) {
             </Link>
             {showTryDemo && (
               <Link
-                to="/app"
+                to="/dashboard"
                 onClick={handleTryDemo}
                 className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2.5 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 sm:px-3"
               >

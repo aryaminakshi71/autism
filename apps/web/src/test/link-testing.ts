@@ -24,15 +24,15 @@ export const ROUTES_TO_TEST = {
   // Industry detail pages
   industries: [],
 
-  // App routes (require auth/demo)
+  // Dashboard routes (require auth/demo)
   app: [
-    { path: "/app", name: "Dashboard" },
-    { path: "/app/contacts", name: "Learners" },
-    { path: "/app/deals", name: "Care Plans" },
-    { path: "/app/leads", name: "Referrals" },
-    { path: "/app/activities", name: "Sessions" },
-    { path: "/app/marketing", name: "Family Outreach" },
-    { path: "/app/settings", name: "Settings" },
+    { path: "/dashboard", name: "Dashboard" },
+    { path: "/dashboard/patients", name: "Patients" },
+    { path: "/dashboard/goals", name: "Goals" },
+    { path: "/dashboard/sessions", name: "Sessions" },
+    { path: "/dashboard/schedules", name: "Visual Schedules" },
+    { path: "/dashboard/communication", name: "Communication" },
+    { path: "/dashboard/settings", name: "Settings" },
   ],
 };
 
@@ -59,11 +59,7 @@ export const LINKS_TO_VERIFY = {
       text: "Security & Compliance",
       type: "feature",
     },
-    {
-      selector: 'a[href="/app/marketing"]',
-      text: "Family Outreach",
-      type: "footer",
-    },
+    { selector: 'a[href="/demo"]', text: "Try Demo", type: "footer" },
     { selector: 'a[href="/docs"]', text: "Resources", type: "footer" },
     { selector: 'a[href="/about"]', text: "About", type: "footer" },
     { selector: 'a[href="/contact"]', text: "Contact", type: "footer" },
@@ -85,17 +81,24 @@ export const LINKS_TO_VERIFY = {
     { selector: 'a[href="/login"]', text: "Sign in", type: "link" },
     { selector: 'a[href="/demo"]', text: "Try Demo", type: "link" },
   ],
-  "/app": [
-    { selector: 'a[href="/app"]', text: "Dashboard", type: "sidebar" },
-    { selector: 'a[href="/app/contacts"]', text: "Learners", type: "sidebar" },
-    { selector: 'a[href="/app/deals"]', text: "Care Plans", type: "sidebar" },
-    { selector: 'a[href="/app/leads"]', text: "Referrals", type: "sidebar" },
+  "/dashboard": [
+    { selector: 'a[href="/dashboard"]', text: "Dashboard", type: "sidebar" },
     {
-      selector: 'a[href="/app/activities"]',
+      selector: 'a[href="/dashboard/patients"]',
+      text: "Patients",
+      type: "sidebar",
+    },
+    { selector: 'a[href="/dashboard/goals"]', text: "Goals", type: "sidebar" },
+    {
+      selector: 'a[href="/dashboard/sessions"]',
       text: "Sessions",
       type: "sidebar",
     },
-    { selector: 'a[href="/app/settings"]', text: "Settings", type: "sidebar" },
+    {
+      selector: 'a[href="/dashboard/settings"]',
+      text: "Settings",
+      type: "sidebar",
+    },
   ],
 };
 

@@ -46,7 +46,7 @@ function LoginPage() {
       localStorage.removeItem("companyId");
 
       // Successful login - redirect
-      const redirectPath = redirect || "/app";
+      const redirectPath = redirect || "/dashboard";
       navigate({ to: redirectPath });
     } catch (err) {
       console.error("Login error:", err);
@@ -73,7 +73,7 @@ function LoginPage() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: `${window.location.origin}/app`,
+        callbackURL: `${window.location.origin}/dashboard`,
       });
     } catch {
       if (typeof window !== "undefined") {
@@ -91,7 +91,7 @@ function LoginPage() {
       toast.success(
         `${provider === "github" ? "GitHub" : "Google"} login unavailable. Continuing in demo mode.`,
       );
-      navigate({ to: "/app" });
+      navigate({ to: "/dashboard" });
     }
   };
 

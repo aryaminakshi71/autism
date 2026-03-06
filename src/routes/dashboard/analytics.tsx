@@ -12,10 +12,10 @@ export const Route = createFileRoute("/dashboard/analytics")({
 
 function AnalyticsPage() {
   const stats = [
-    { label: "Total Users", value: "1,234", change: "+12.5%" },
-    { label: "Active Sessions", value: "856", change: "+8.2%" },
-    { label: "Revenue", value: "$45,678", change: "+15.3%" },
-    { label: "Conversion Rate", value: "3.2%", change: "+0.5%" },
+    { label: "Active Learners", value: "124", change: "+6.4%" },
+    { label: "Sessions This Week", value: "86", change: "+9.1%" },
+    { label: "Goals Mastered", value: "42", change: "+11.8%" },
+    { label: "Family Check-ins", value: "57", change: "+4.2%" },
   ];
 
   const chartData = [
