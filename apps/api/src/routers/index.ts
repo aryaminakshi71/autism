@@ -9,8 +9,11 @@ import { activitiesRouter } from "./activities";
 import { contactsRouter } from "./contacts";
 import { dashboardRouter } from "./dashboard";
 import { dealsRouter } from "./deals";
+import { goalsRouter } from "./goals";
 import { healthRouter } from "./health";
 import { leadsRouter } from "./leads";
+import { patientsRouter } from "./patients";
+import { sessionsRouter } from "./sessions";
 
 import { assetsRouter } from "./assets";
 
@@ -21,6 +24,9 @@ export const appRouter = {
   leads: leadsRouter,
   activities: activitiesRouter,
   dashboard: dashboardRouter,
+  patients: patientsRouter,
+  goals: goalsRouter,
+  sessions: sessionsRouter,
   assets: assetsRouter,
 };
 

@@ -1,54 +1,327 @@
+/**
+ * Activities (Sessions) Screen
+ */
+
+import { useState, useEffect } from 'react';
 import {
   FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-const activities = [
-  { id: "1", name: "Speech Therapy", duration: "45 min", children: 5 },
-  { id: "2", name: "OT Session", duration: "30 min", children: 3 },
+  RefreshControl,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { Card, Button, Spinner, EmptyState, Badge } from '../../src/components';
+
+interface Session {
+  id: string;
+  patientName: string;
+  type: string;
+  scheduledStart: string;
+  scheduledEnd: string;
+  status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled';
+  location?: string;
+  telehealth: boolean;
+}
+
+const DEMO_SESSIONS: Session[] = [
+  {
+    id: '1',
+    patientName: 'Emma Johnson',
+    type: 'ABA Therapy',
+    scheduledStart: '2024-01-15T10:00:00',
+    scheduledEnd: '2024-01-15T11:00:00',
+    status: 'completed',
+    location: 'Room 1',
+    telehealth: false,
+  },
+  {
+    id: '2',
+    patientName: 'Liam Williams',
+    type: 'Speech Therapy',
+    scheduledStart: '2024-01-15T11:30:00',
+    scheduledEnd: '2024-01-15T12:00:00',
+    status: 'scheduled',
+    location: 'Room 2',
+    telehealth: false,
+  },
+  {
+    id: '3',
+    patientName: 'Noah Martinez',
+    type: 'OT Session',
+    scheduledStart: '2024-01-15T14:00:00',
+    scheduledEnd: '2024-01-15T14:30:00',
+    status: 'scheduled',
+    location: 'Room 1',
+    telehealth: false,
+  },
+  {
+    id: '4',
+    patientName: 'Olivia Brown',
+    type: 'ABA Therapy',
+    scheduledStart: '2024-01-15T15:00:00',
+    scheduledEnd: '2024-01-15T16:00:00',
+    status: 'scheduled',
+    location: 'Room 3',
+    telehealth: false,
+  },
+  {
+    id: '5',
+    patientName: 'Emma Johnson',
+    type: 'Social Skills Group',
+    scheduledStart: '2024-01-16T09:00:00',
+    scheduledEnd: '2024-01-16T10:00:00',
+    status: 'scheduled',
+    location: '',
+    telehealth: true,
+  },
 ];
+
 export default function ActivitiesScreen() {
+  const router = useRouter();
+  const [sessions, setSessions] = useState<Session[]>(DEMO_SESSIONS);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [filter, setFilter] = useState<string>('all');
+
+  const loadData = async () => {
+    // In production: const data = await sessionsApi.list();
+    setSessions(DEMO_SESSIONS);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadData();
+    setRefreshing(false);
+  };
+
+  const filteredSessions = sessions.filter((session) => {
+    if (filter === 'all') return true;
+    return session.status === filter;
+  });
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'success';
+      case 'scheduled':
+        return 'primary';
+      case 'in-progress':
+        return 'warning';
+      case 'cancelled':
+        return 'danger';
+      default:
+        return 'default';
+    }
+  };
+
+  const renderSession = ({ item }: { item: Session }) => (
+    <TouchableOpacity
+      style={styles.sessionCard}
+      onPress={() => router.push(`/activities/${item.id}`)}
+    >
+      <View style={styles.sessionHeader}>
+        <View style={styles.sessionInfo}>
+          <Text style={styles.sessionType}>{item.type}</Text>
+          <Text style={styles.patientName}>{item.patientName}</Text>
+        </View>
+        <Badge variant={getStatusVariant(item.status) as any} size="sm">
+          {item.status}
+        </Badge>
+      </View>
+
+      <View style={styles.sessionDetails}>
+        <View style={styles.detailItem}>
+          <Text style={styles.detailIcon}>📅</Text>
+          <Text style={styles.detailText}>
+            {formatDate(item.scheduledStart)} • {formatTime(item.scheduledStart)} - {formatTime(item.scheduledEnd)}
+          </Text>
+        </View>
+        <View style={styles.detailItem}>
+          <Text style={styles.detailIcon}>{item.telehealth ? '💻' : '📍'}</Text>
+          <Text style={styles.detailText}>
+            {item.telehealth ? 'Telehealth' : item.location || 'Location TBD'}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Activities</Text>
-        <Text style={styles.subtitle}>{activities.length} activities</Text>
+        <Text style={styles.subtitle}>Session Management</Text>
       </View>
-      <FlatList
-        data={activities}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.activityCard}>
-            <View style={styles.activityInfo}>
-              <Text style={styles.activityName}>{item.name}</Text>
-              <Text style={styles.duration}>{item.duration}</Text>
-            </View>
-            <Text style={styles.children}>{item.children} children</Text>
+
+      <View style={styles.filterContainer}>
+        {['all', 'scheduled', 'completed', 'cancelled'].map((status) => (
+          <TouchableOpacity
+            key={status}
+            style={[styles.filterButton, filter === status && styles.filterButtonActive]}
+            onPress={() => setFilter(status)}
+          >
+            <Text style={[styles.filterText, filter === status && styles.filterTextActive]}>
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </Text>
           </TouchableOpacity>
-        )}
-      />
+        ))}
+      </View>
+
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push('/activities/add')}
+      >
+        <Text style={styles.addButtonText}>+ Schedule Session</Text>
+      </TouchableOpacity>
+
+      {loading ? (
+        <Spinner text="Loading sessions..." />
+      ) : (
+        <FlatList
+          data={filteredSessions}
+          keyExtractor={(item) => item.id}
+          renderItem={renderSession}
+          contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#8B5CF6']} />
+          }
+          ListEmptyComponent={
+            <EmptyState
+              title="No sessions found"
+              description="Schedule a new session to get started"
+              icon="📅"
+              actionLabel="Schedule Session"
+              onAction={() => router.push('/activities/add')}
+            />
+          }
+        />
+      )}
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
-  header: { padding: 20, paddingTop: 60, backgroundColor: "#8B5CF6" },
-  title: { fontSize: 28, fontWeight: "bold", color: "#fff" },
-  subtitle: { fontSize: 14, color: "#EDE9FE", marginTop: 4 },
-  activityCard: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#fff",
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  header: {
+    padding: 20,
+    paddingTop: 60,
+    backgroundColor: '#8B5CF6',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#EDE9FE',
+    marginTop: 4,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    padding: 12,
+    gap: 8,
+  },
+  filterButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  filterButtonActive: {
+    backgroundColor: '#8B5CF6',
+    borderColor: '#8B5CF6',
+  },
+  filterText: {
+    fontSize: 14,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  filterTextActive: {
+    color: '#fff',
+  },
+  addButton: {
+    backgroundColor: '#8B5CF6',
     marginHorizontal: 16,
-    marginVertical: 4,
+    marginBottom: 12,
+    padding: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  list: {
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+  sessionCard: {
+    backgroundColor: '#fff',
+    marginBottom: 12,
     padding: 16,
     borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  activityInfo: { flex: 1 },
-  activityName: { fontSize: 16, fontWeight: "600", color: "#1F2937" },
-  duration: { fontSize: 14, color: "#6B7280", marginTop: 2 },
-  children: { fontSize: 14, color: "#8B5CF6", fontWeight: "600" },
+  sessionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  sessionInfo: {
+    flex: 1,
+  },
+  sessionType: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  patientName: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  sessionDetails: {
+    gap: 8,
+  },
+  detailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  detailIcon: {
+    fontSize: 14,
+  },
+  detailText: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
 });

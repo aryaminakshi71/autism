@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 // Crawling is slow and not browser-engine-specific; run it once (chromium) to
 // keep the full matrix (chromium/firefox/webkit/mobile) from timing out.
-const MAX_DEPTH = Number(process.env.LINK_CRAWL_DEPTH ?? 2);
+const MAX_DEPTH = Number(process.env.LINK_CRAWL_DEPTH ?? 3);
 const MAX_PAGES = Number(process.env.LINK_CRAWL_MAX_PAGES ?? 100);
 const WAIT_AFTER_NAV_MS = Number(process.env.LINK_CRAWL_WAIT_MS ?? 100);
 
@@ -24,6 +24,8 @@ function shouldSkipHref(href: string): boolean {
   if (trimmed.startsWith("javascript:")) return true;
   if (trimmed.startsWith("data:")) return true;
   if (trimmed.startsWith("blob:")) return true;
+  // Skip auth routes that require real auth
+  if (trimmed.includes("/api/auth/")) return true;
   return false;
 }
 
@@ -35,12 +37,31 @@ function isSameOrigin(rawUrl: string, origin: string): boolean {
   }
 }
 
+// Set up demo mode for protected routes
+async function setupDemoMode(page: any) {
+  await page.addInitScript(() => {
+    window.localStorage.setItem("demo_mode", "true");
+    window.localStorage.setItem("isDemo", "true");
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({
+        id: "demo-user",
+        email: "demo@autism.app",
+        name: "Demo User",
+      }),
+    );
+  });
+}
+
 test("crawl internal links", async ({ page }, testInfo) => {
   test.skip(
     testInfo.project.name !== "chromium",
     "Link crawl runs only in chromium to avoid redundant slow runs.",
   );
-  test.setTimeout(120_000);
+  test.setTimeout(180_000);
+
+  // Set up demo mode for protected routes
+  await setupDemoMode(page);
 
   const baseURL =
     (testInfo.project.use as { baseURL?: string })?.baseURL ||
@@ -51,8 +72,26 @@ test("crawl internal links", async ({ page }, testInfo) => {
   }
 
   const origin = new URL(baseURL).origin;
+
+  // First navigate to demo page to initialize demo mode properly
+  await page.goto(`${baseURL}/demo`, { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(500);
+
+  // Also navigate to dashboard to set up demo auth
+  await page.goto(`${baseURL}/dashboard`, { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(500);
+
+  // Include protected routes that need demo mode
   const queue: Array<{ url: string; depth: number }> = [
     { url: baseURL, depth: 0 },
+    { url: `${baseURL}/dashboard`, depth: 0 },
+    { url: `${baseURL}/dashboard/patients`, depth: 1 },
+    { url: `${baseURL}/dashboard/goals`, depth: 1 },
+    { url: `${baseURL}/dashboard/sessions`, depth: 1 },
+    { url: `${baseURL}/dashboard/schedules`, depth: 1 },
+    { url: `${baseURL}/dashboard/communication`, depth: 1 },
+    { url: `${baseURL}/dashboard/assessments`, depth: 1 },
+    { url: `${baseURL}/dashboard/analytics`, depth: 1 },
   ];
   const visited = new Set<string>();
 
@@ -69,7 +108,12 @@ test("crawl internal links", async ({ page }, testInfo) => {
 
     expect(response, `No response for ${current.url}`).not.toBeNull();
     const status = response?.status() ?? 0;
-    expect(status, `Bad status ${status} for ${current.url}`).toBeLessThan(500);
+    // Check for successful status codes (200-299) or redirects (300-399)
+    const isOkStatus = status >= 200 && status < 400;
+    expect(
+      isOkStatus,
+      `Bad status ${status} for ${current.url} - expected 2xx or 3xx`,
+    ).toBe(true);
 
     visited.add(normalized);
 

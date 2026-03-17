@@ -10,6 +10,71 @@ const now = Date.now();
 const isoDate = (offsetDays: number) =>
   new Date(now - offsetDays * dayMs).toISOString();
 
+export type DemoPatient = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string | null;
+  gender: string | null;
+  diagnosis: string | null;
+  severityLevel: string | null;
+  primaryLanguage: string;
+  preferredCommunication: string;
+  status: string;
+  assignedTherapistId: string | null;
+  organizationId: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type DemoGoal = {
+  id: string;
+  patientId: string;
+  name: string;
+  description: string | null;
+  category: string;
+  subcategory: string | null;
+  targetBehavior: string | null;
+  baselineValue: number;
+  targetValue: number;
+  currentValue: number;
+  unit: string;
+  masteryCriteria: number;
+  status: string;
+  priority: string;
+  startDate: string | null;
+  targetDate: string | null;
+  domain: string | null;
+  organizationId: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type DemoSession = {
+  id: string;
+  patientId: string;
+  therapistId: string;
+  type: string;
+  status: string;
+  scheduledStart: string;
+  scheduledEnd: string;
+  actualStart: string | null;
+  actualEnd: string | null;
+  durationMinutes: number | null;
+  location: string | null;
+  room: string | null;
+  telehealth: boolean;
+  mood: string | null;
+  energyLevel: string | null;
+  notes: string | null;
+  organizationId: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type DemoContact = {
   id: string;
   firstName: string;
@@ -597,4 +662,490 @@ export function getDemoDashboardStats() {
     pipeline,
     recentActivities,
   };
+}
+
+// Demo Patients Data
+let demoPatients: DemoPatient[] = [
+  {
+    id: "demo-patient-1",
+    firstName: "Emma",
+    lastName: "Johnson",
+    dateOfBirth: "2019-03-15T00:00:00.000Z",
+    gender: "female",
+    diagnosis: "ASD Level 1",
+    severityLevel: "Level 1",
+    primaryLanguage: "en",
+    preferredCommunication: "verbal",
+    status: "active",
+    assignedTherapistId: "demo-therapist-1",
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(60),
+    updatedAt: isoDate(0),
+  },
+  {
+    id: "demo-patient-2",
+    firstName: "Liam",
+    lastName: "Williams",
+    dateOfBirth: "2020-07-22T00:00:00.000Z",
+    gender: "male",
+    diagnosis: "ASD Level 2",
+    severityLevel: "Level 2",
+    primaryLanguage: "en",
+    preferredCommunication: "pecs",
+    status: "active",
+    assignedTherapistId: "demo-therapist-1",
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(45),
+    updatedAt: isoDate(0),
+  },
+  {
+    id: "demo-patient-3",
+    firstName: "Noah",
+    lastName: "Martinez",
+    dateOfBirth: "2018-11-08T00:00:00.000Z",
+    gender: "male",
+    diagnosis: "ASD Level 1",
+    severityLevel: "Level 1",
+    primaryLanguage: "es",
+    preferredCommunication: "verbal",
+    status: "active",
+    assignedTherapistId: "demo-therapist-2",
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(30),
+    updatedAt: isoDate(0),
+  },
+  {
+    id: "demo-patient-4",
+    firstName: "Olivia",
+    lastName: "Brown",
+    dateOfBirth: "2019-05-30T00:00:00.000Z",
+    gender: "female",
+    diagnosis: "ASD Level 2",
+    severityLevel: "Level 2",
+    primaryLanguage: "en",
+    preferredCommunication: "sign",
+    status: "inactive",
+    assignedTherapistId: "demo-therapist-2",
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(90),
+    updatedAt: isoDate(15),
+  },
+];
+
+// Demo Goals Data
+let demoGoals: DemoGoal[] = [
+  {
+    id: "demo-goal-1",
+    patientId: "demo-patient-1",
+    name: "Increase eye contact",
+    description: "Increase sustained eye contact during verbal exchanges",
+    category: "Social",
+    subcategory: "Joint Attention",
+    targetBehavior: "Maintain eye contact for 3+ seconds",
+    baselineValue: 20,
+    targetValue: 80,
+    currentValue: 75,
+    unit: "%",
+    masteryCriteria: 80,
+    status: "active",
+    priority: "high",
+    startDate: isoDate(30),
+    targetDate: isoDate(60),
+    domain: "Social Communication",
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(30),
+    updatedAt: isoDate(0),
+  },
+  {
+    id: "demo-goal-2",
+    patientId: "demo-patient-1",
+    name: "Picture exchange communication",
+    description: "Use PECS to request desired items",
+    category: "Communication",
+    subcategory: "PECS",
+    targetBehavior: "Independently exchange picture card for desired item",
+    baselineValue: 0,
+    targetValue: 100,
+    currentValue: 100,
+    unit: "%",
+    masteryCriteria: 90,
+    status: "mastered",
+    priority: "high",
+    startDate: isoDate(60),
+    targetDate: isoDate(90),
+    domain: "Communication",
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(60),
+    updatedAt: isoDate(5),
+  },
+  {
+    id: "demo-goal-3",
+    patientId: "demo-patient-2",
+    name: "Turn-taking in games",
+    description: "Take turns during simple board games",
+    category: "Social",
+    subcategory: "Play Skills",
+    targetBehavior: "Complete 5 turns in sequence",
+    baselineValue: 1,
+    targetValue: 5,
+    currentValue: 3,
+    unit: "turns",
+    masteryCriteria: 5,
+    status: "active",
+    priority: "medium",
+    startDate: isoDate(20),
+    targetDate: isoDate(50),
+    domain: "Social Play",
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(20),
+    updatedAt: isoDate(0),
+  },
+  {
+    id: "demo-goal-4",
+    patientId: "demo-patient-3",
+    name: "Verbal requests",
+    description: "Make vocal requests for desired items",
+    category: "Communication",
+    subcategory: "Expressive Language",
+    targetBehavior: "Vocalize request without prompting",
+    baselineValue: 10,
+    targetValue: 80,
+    currentValue: 45,
+    unit: "%",
+    masteryCriteria: 80,
+    status: "active",
+    priority: "high",
+    startDate: isoDate(25),
+    targetDate: isoDate(55),
+    domain: "Expressive Communication",
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(25),
+    updatedAt: isoDate(0),
+  },
+];
+
+// Demo Sessions Data
+let demoSessions: DemoSession[] = [
+  {
+    id: "demo-session-1",
+    patientId: "demo-patient-1",
+    therapistId: "demo-therapist-1",
+    type: "ABA Therapy",
+    status: "completed",
+    scheduledStart: isoDate(1) + "T10:00:00.000Z",
+    scheduledEnd: isoDate(1) + "T11:00:00.000Z",
+    actualStart: isoDate(1) + "T10:05:00.000Z",
+    actualEnd: isoDate(1) + "T11:00:00.000Z",
+    durationMinutes: 55,
+    location: "Room 1",
+    room: "1",
+    telehealth: false,
+    mood: "great",
+    energyLevel: "high",
+    notes: "Great progress on eye contact goal",
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(1),
+    updatedAt: isoDate(1),
+  },
+  {
+    id: "demo-session-2",
+    patientId: "demo-patient-2",
+    therapistId: "demo-therapist-1",
+    type: "Speech Therapy",
+    status: "scheduled",
+    scheduledStart: isoDate(0) + "T11:30:00.000Z",
+    scheduledEnd: isoDate(0) + "T12:00:00.000Z",
+    actualStart: null,
+    actualEnd: null,
+    durationMinutes: 30,
+    location: "Room 2",
+    room: "2",
+    telehealth: false,
+    mood: null,
+    energyLevel: null,
+    notes: null,
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(3),
+    updatedAt: isoDate(3),
+  },
+  {
+    id: "demo-session-3",
+    patientId: "demo-patient-3",
+    therapistId: "demo-therapist-2",
+    type: "OT Session",
+    status: "scheduled",
+    scheduledStart: isoDate(0) + "T14:00:00.000Z",
+    scheduledEnd: isoDate(0) + "T14:30:00.000Z",
+    actualStart: null,
+    actualEnd: null,
+    durationMinutes: 30,
+    location: "OT Room",
+    room: "3",
+    telehealth: false,
+    mood: null,
+    energyLevel: null,
+    notes: null,
+    organizationId: "demo-org",
+    createdBy: "demo-user-001",
+    createdAt: isoDate(2),
+    updatedAt: isoDate(2),
+  },
+];
+
+// Patient functions
+export function getDemoPatients(
+  page: number,
+  limit: number,
+  search?: string,
+  status?: string,
+) {
+  let filtered = demoPatients;
+  if (status) {
+    filtered = filtered.filter((p) => p.status === status);
+  }
+  if (search) {
+    const searchLower = search.toLowerCase();
+    filtered = filtered.filter(
+      (p) =>
+        p.firstName.toLowerCase().includes(searchLower) ||
+        p.lastName.toLowerCase().includes(searchLower),
+    );
+  }
+  return paginate(filtered, page, limit);
+}
+
+export function getDemoPatient(id: string) {
+  const patient = demoPatients.find((p) => p.id === id);
+  if (!patient) {
+    throw new Error("Patient not found");
+  }
+  return patient;
+}
+
+export function getDemoPatientStats() {
+  const now = new Date();
+  const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  return {
+    total: demoPatients.length,
+    active: demoPatients.filter((p) => p.status === "active").length,
+    inactive: demoPatients.filter((p) => p.status === "inactive").length,
+    newThisMonth: demoPatients.filter(
+      (p) => p.createdAt && new Date(p.createdAt) >= firstOfMonth,
+    ).length,
+  };
+}
+
+export function createDemoPatient(input: {
+  firstName: string;
+  lastName: string;
+  dateOfBirth?: string;
+  gender?: string;
+  diagnosis?: string;
+  severityLevel?: string;
+  primaryLanguage?: string;
+  preferredCommunication?: string;
+  status?: string;
+  organizationId?: string;
+  createdBy?: string;
+}) {
+  const newPatient: DemoPatient = {
+    id: `demo-patient-${Date.now()}`,
+    firstName: input.firstName,
+    lastName: input.lastName,
+    dateOfBirth: input.dateOfBirth || null,
+    gender: input.gender || null,
+    diagnosis: input.diagnosis || null,
+    severityLevel: input.severityLevel || null,
+    primaryLanguage: input.primaryLanguage || "en",
+    preferredCommunication: input.preferredCommunication || "verbal",
+    status: input.status || "active",
+    assignedTherapistId: null,
+    organizationId: input.organizationId || "demo-org",
+    createdBy: input.createdBy || "demo-user-001",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  demoPatients = [newPatient, ...demoPatients];
+  return newPatient;
+}
+
+export function deleteDemoPatient(id: string) {
+  const index = demoPatients.findIndex((p) => p.id === id);
+  if (index >= 0) {
+    demoPatients.splice(index, 1);
+  }
+  return { success: true };
+}
+
+// Goal functions
+export function getDemoGoals(page: number, limit: number, patientId?: string, status?: string) {
+  let filtered = demoGoals;
+  if (patientId) {
+    filtered = filtered.filter((g) => g.patientId === patientId);
+  }
+  if (status) {
+    filtered = filtered.filter((g) => g.status === status);
+  }
+  return paginate(filtered, page, limit);
+}
+
+export function getDemoGoal(id: string) {
+  const goal = demoGoals.find((g) => g.id === id);
+  if (!goal) {
+    throw new Error("Goal not found");
+  }
+  return goal;
+}
+
+export function createDemoGoal(input: {
+  patientId: string;
+  name: string;
+  description?: string;
+  category: string;
+  subcategory?: string;
+  targetBehavior?: string;
+  baselineValue: number;
+  targetValue: number;
+  unit?: string;
+  masteryCriteria?: number;
+  priority?: string;
+  startDate?: string;
+  targetDate?: string;
+  domain?: string;
+  organizationId?: string;
+  createdBy?: string;
+}) {
+  const newGoal: DemoGoal = {
+    id: `demo-goal-${Date.now()}`,
+    patientId: input.patientId,
+    name: input.name,
+    description: input.description || null,
+    category: input.category,
+    subcategory: input.subcategory || null,
+    targetBehavior: input.targetBehavior || null,
+    baselineValue: input.baselineValue,
+    targetValue: input.targetValue,
+    currentValue: input.baselineValue,
+    unit: input.unit || "%",
+    masteryCriteria: input.masteryCriteria || 80,
+    status: "active",
+    priority: input.priority || "medium",
+    startDate: input.startDate || new Date().toISOString(),
+    targetDate: input.targetDate || null,
+    domain: input.domain || null,
+    organizationId: input.organizationId || "demo-org",
+    createdBy: input.createdBy || "demo-user-001",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  demoGoals = [newGoal, ...demoGoals];
+  return newGoal;
+}
+
+export function updateDemoGoal(id: string, updates: Partial<DemoGoal>) {
+  const goal = demoGoals.find((g) => g.id === id);
+  if (!goal) {
+    throw new Error("Goal not found");
+  }
+  Object.assign(goal, updates, { updatedAt: new Date().toISOString() });
+  return goal;
+}
+
+export function deleteDemoGoal(id: string) {
+  const index = demoGoals.findIndex((g) => g.id === id);
+  if (index >= 0) {
+    demoGoals.splice(index, 1);
+  }
+  return { success: true };
+}
+
+// Session functions
+export function getDemoSessions(
+  page: number,
+  limit: number,
+  patientId?: string,
+  status?: string,
+) {
+  let filtered = demoSessions;
+  if (patientId) {
+    filtered = filtered.filter((s) => s.patientId === patientId);
+  }
+  if (status) {
+    filtered = filtered.filter((s) => s.status === status);
+  }
+  return paginate(filtered, page, limit);
+}
+
+export function getDemoSession(id: string) {
+  const session = demoSessions.find((s) => s.id === id);
+  if (!session) {
+    throw new Error("Session not found");
+  }
+  return session;
+}
+
+export function createDemoSession(input: {
+  patientId: string;
+  therapistId: string;
+  type: string;
+  scheduledStart: string;
+  scheduledEnd: string;
+  location?: string;
+  room?: string;
+  telehealth?: boolean;
+  organizationId?: string;
+  createdBy?: string;
+}) {
+  const newSession: DemoSession = {
+    id: `demo-session-${Date.now()}`,
+    patientId: input.patientId,
+    therapistId: input.therapistId,
+    type: input.type,
+    status: "scheduled",
+    scheduledStart: input.scheduledStart,
+    scheduledEnd: input.scheduledEnd,
+    actualStart: null,
+    actualEnd: null,
+    durationMinutes: null,
+    location: input.location || null,
+    room: input.room || null,
+    telehealth: input.telehealth || false,
+    mood: null,
+    energyLevel: null,
+    notes: null,
+    organizationId: input.organizationId || "demo-org",
+    createdBy: input.createdBy || "demo-user-001",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  demoSessions = [newSession, ...demoSessions];
+  return newSession;
+}
+
+export function updateDemoSession(id: string, updates: Partial<DemoSession>) {
+  const session = demoSessions.find((s) => s.id === id);
+  if (!session) {
+    throw new Error("Session not found");
+  }
+  Object.assign(session, updates, { updatedAt: new Date().toISOString() });
+  return session;
+}
+
+export function deleteDemoSession(id: string) {
+  const index = demoSessions.findIndex((s) => s.id === id);
+  if (index >= 0) {
+    demoSessions.splice(index, 1);
+  }
+  return { success: true };
 }
