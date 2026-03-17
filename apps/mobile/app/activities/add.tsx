@@ -3,36 +3,53 @@
  */
 
 import { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, Switch } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Card, Input, Button } from '../../src/components';
+import { useCreateSession, usePatients } from '../../src/hooks/use-api';
 
 const SESSION_TYPES = ['ABA Therapy', 'Speech Therapy', 'OT Session', 'PT Session', 'Social Skills', 'Group Therapy'];
 
 export default function AddSessionScreen() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const { createSession, loading, error } = useCreateSession();
+  const { data: patients } = usePatients();
 
   const [sessionType, setSessionType] = useState('');
-  const [patientName, setPatientName] = useState('');
+  const [patientId, setPatientId] = useState('');
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [location, setLocation] = useState('');
+  const [telehealth, setTelehealth] = useState(false);
 
   const handleSave = async () => {
-    if (!sessionType || !patientName || !date || !startTime || !endTime) {
+    if (!sessionType || !date || !startTime || !endTime) {
       Alert.alert('Error', 'Please fill in all required fields');
       return;
     }
 
-    setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setLoading(false);
+    // Combine date and time into ISO format
+    const scheduledStart = `${date}T${startTime}:00`;
+    const scheduledEnd = `${date}T${endTime}:00`;
 
-    Alert.alert('Success', 'Session scheduled successfully', [
-      { text: 'OK', onPress: () => router.back() }
-    ]);
+    const result = await createSession({
+      type: sessionType,
+      patientId: patientId || undefined,
+      scheduledStart,
+      scheduledEnd,
+      location: location || undefined,
+      telehealth,
+      status: 'scheduled',
+    });
+
+    if (result) {
+      Alert.alert('Success', 'Session scheduled successfully', [
+        { text: 'OK', onPress: () => router.back() }
+      ]);
+    } else if (error) {
+      Alert.alert('Error', error);
+    }
   };
 
   return (
@@ -62,15 +79,24 @@ export default function AddSessionScreen() {
           </View>
         </Card>
 
-        <Card style={styles.card}>
-          <Text style={styles.sectionTitle}>Patient *</Text>
-          <Input
-            label="Patient Name"
-            value={patientName}
-            onChangeText={setPatientName}
-            placeholder="Select patient"
-          />
-        </Card>
+        {patients && patients.length > 0 && (
+          <Card style={styles.card}>
+            <Text style={styles.sectionTitle}>Patient</Text>
+            <View style={styles.typeGrid}>
+              {patients.slice(0, 5).map((patient) => (
+                <TouchableOpacity
+                  key={patient.id}
+                  style={[styles.typeOption, patientId === patient.id && styles.typeOptionActive]}
+                  onPress={() => setPatientId(patient.id)}
+                >
+                  <Text style={[styles.typeText, patientId === patient.id && styles.typeTextActive]}>
+                    {patient.firstName} {patient.lastName}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </Card>
+        )}
 
         <Card style={styles.card}>
           <Text style={styles.sectionTitle}>Schedule *</Text>
@@ -86,7 +112,7 @@ export default function AddSessionScreen() {
                 label="Start Time"
                 value={startTime}
                 onChangeText={setStartTime}
-                placeholder="10:00 AM"
+                placeholder="10:00"
               />
             </View>
             <View style={styles.halfInput}>
@@ -94,7 +120,7 @@ export default function AddSessionScreen() {
                 label="End Time"
                 value={endTime}
                 onChangeText={setEndTime}
-                placeholder="11:00 AM"
+                placeholder="11:00"
               />
             </View>
           </View>
@@ -108,6 +134,15 @@ export default function AddSessionScreen() {
             onChangeText={setLocation}
             placeholder="Room 1"
           />
+          <View style={styles.switchRow}>
+            <Text style={styles.switchLabel}>Telehealth</Text>
+            <Switch
+              value={telehealth}
+              onValueChange={setTelehealth}
+              trackColor={{ false: '#E5E7EB', true: '#8B5CF6' }}
+              thumbColor="#fff"
+            />
+          </View>
         </Card>
 
         <View style={styles.buttonContainer}>
@@ -136,6 +171,8 @@ const styles = StyleSheet.create({
   typeTextActive: { color: '#fff', fontWeight: '600' },
   row: { flexDirection: 'row', gap: 12 },
   halfInput: { flex: 1 },
+  switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 16 },
+  switchLabel: { fontSize: 14, color: '#374151' },
   buttonContainer: { marginTop: 8 },
   bottomPadding: { height: 40 },
 });

@@ -4,6 +4,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { apiClient } from '../lib/api-client';
 
 export interface User {
   id: string;
@@ -21,6 +22,9 @@ export interface AuthState {
 }
 
 const AUTH_STORAGE_KEY = 'auth_state';
+
+// API base URL
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787';
 
 class AuthStore {
   private state: AuthState = {
@@ -49,6 +53,10 @@ class AuthStore {
           isLoading: false,
           isAuthenticated: !!parsed.token,
         };
+        // Set token in API client
+        if (parsed.token) {
+          await apiClient.setToken(parsed.token);
+        }
       } else {
         this.state.isLoading = false;
       }
@@ -100,126 +108,87 @@ class AuthStore {
   }
 
   /**
-   * Sign in with credentials
+   * Sign in with credentials - calls real API
    */
   async signIn(email: string, password: string): Promise<{ success: boolean; error?: string }> {
     this.state.isLoading = true;
     this.notifyListeners();
 
     try {
-      // In production, this would call the API
-      // For demo, simulate successful login
-      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787'}/api/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        // For demo mode, allow any credentials
-        const demoUser: User = {
-          id: 'demo-user-1',
-          email,
-          name: email.split('@')[0],
-          role: 'therapist',
-        };
-        const demoToken = 'demo-token-' + Date.now();
+      if (response.ok) {
+        const data = await response.json();
 
         this.state = {
-          user: demoUser,
-          token: demoToken,
+          user: data.user,
+          token: data.token,
           isAuthenticated: true,
           isLoading: false,
         };
+        await apiClient.setToken(data.token);
         await this.saveState();
         this.notifyListeners();
         return { success: true };
+      } else {
+        // If API fails, try demo mode fallback
+        const error = await response.json().catch(() => ({ message: 'Login failed' }));
+        return { success: false, error: error.message };
       }
-
-      const data = await response.json();
-
-      this.state = {
-        user: data.user,
-        token: data.token,
-        isAuthenticated: true,
-        isLoading: false,
-      };
-      await this.saveState();
-      this.notifyListeners();
-      return { success: true };
     } catch (error) {
-      // For demo/offline mode, allow sign in
-      const demoUser: User = {
-        id: 'demo-user-1',
-        email,
-        name: email.split('@')[0] || 'Demo User',
-        role: 'therapist',
-      };
-      const demoToken = 'demo-token-' + Date.now();
-
-      this.state = {
-        user: demoUser,
-        token: demoToken,
-        isAuthenticated: true,
-        isLoading: false,
-      };
-      await this.saveState();
+      this.state.isLoading = false;
       this.notifyListeners();
-      return { success: true };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Network error - make sure the API server is running',
+      };
     }
   }
 
   /**
-   * Register new user
+   * Register new user - calls real API
    */
   async signUp(email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> {
     this.state.isLoading = true;
     this.notifyListeners();
 
     try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787'}/api/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name }),
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        const data = await response.json();
+
+        this.state = {
+          user: data.user,
+          token: data.token,
+          isAuthenticated: true,
+          isLoading: false,
+        };
+        await apiClient.setToken(data.token);
+        await this.saveState();
+        this.notifyListeners();
+        return { success: true };
+      } else {
         const error = await response.json().catch(() => ({ message: 'Registration failed' }));
         this.state.isLoading = false;
         this.notifyListeners();
         return { success: false, error: error.message };
       }
-
-      const data = await response.json();
-
-      this.state = {
-        user: data.user,
-        token: data.token,
-        isAuthenticated: true,
-        isLoading: false,
-      };
-      await this.saveState();
-      this.notifyListeners();
-      return { success: true };
     } catch (error) {
-      // For demo mode
-      const demoUser: User = {
-        id: 'new-user-' + Date.now(),
-        email,
-        name,
-        role: 'therapist',
-      };
-      const demoToken = 'demo-token-' + Date.now();
-
-      this.state = {
-        user: demoUser,
-        token: demoToken,
-        isAuthenticated: true,
-        isLoading: false,
-      };
-      await this.saveState();
+      this.state.isLoading = false;
       this.notifyListeners();
-      return { success: true };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Network error',
+      };
     }
   }
 
@@ -234,11 +203,12 @@ class AuthStore {
       isLoading: false,
     };
     await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+    await apiClient.clearToken();
     this.notifyListeners();
   }
 
   /**
-   * Enable demo mode
+   * Enable demo mode (offline fallback)
    */
   async enableDemoMode(): Promise<void> {
     const demoUser: User = {
@@ -246,6 +216,7 @@ class AuthStore {
       email: 'demo@autism.app',
       name: 'Demo User',
       role: 'therapist',
+      organizationId: 'demo-org',
     };
 
     this.state = {
@@ -254,6 +225,7 @@ class AuthStore {
       isAuthenticated: true,
       isLoading: false,
     };
+    await apiClient.setToken('demo-token');
     await this.saveState();
     this.notifyListeners();
   }

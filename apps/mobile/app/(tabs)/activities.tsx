@@ -2,7 +2,7 @@
  * Activities (Sessions) Screen
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -13,98 +13,24 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Card, Button, Spinner, EmptyState, Badge } from '../../src/components';
-
-interface Session {
-  id: string;
-  patientName: string;
-  type: string;
-  scheduledStart: string;
-  scheduledEnd: string;
-  status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled';
-  location?: string;
-  telehealth: boolean;
-}
-
-const DEMO_SESSIONS: Session[] = [
-  {
-    id: '1',
-    patientName: 'Emma Johnson',
-    type: 'ABA Therapy',
-    scheduledStart: '2024-01-15T10:00:00',
-    scheduledEnd: '2024-01-15T11:00:00',
-    status: 'completed',
-    location: 'Room 1',
-    telehealth: false,
-  },
-  {
-    id: '2',
-    patientName: 'Liam Williams',
-    type: 'Speech Therapy',
-    scheduledStart: '2024-01-15T11:30:00',
-    scheduledEnd: '2024-01-15T12:00:00',
-    status: 'scheduled',
-    location: 'Room 2',
-    telehealth: false,
-  },
-  {
-    id: '3',
-    patientName: 'Noah Martinez',
-    type: 'OT Session',
-    scheduledStart: '2024-01-15T14:00:00',
-    scheduledEnd: '2024-01-15T14:30:00',
-    status: 'scheduled',
-    location: 'Room 1',
-    telehealth: false,
-  },
-  {
-    id: '4',
-    patientName: 'Olivia Brown',
-    type: 'ABA Therapy',
-    scheduledStart: '2024-01-15T15:00:00',
-    scheduledEnd: '2024-01-15T16:00:00',
-    status: 'scheduled',
-    location: 'Room 3',
-    telehealth: false,
-  },
-  {
-    id: '5',
-    patientName: 'Emma Johnson',
-    type: 'Social Skills Group',
-    scheduledStart: '2024-01-16T09:00:00',
-    scheduledEnd: '2024-01-16T10:00:00',
-    status: 'scheduled',
-    location: '',
-    telehealth: true,
-  },
-];
+import { useSessions, Session } from '../../src/hooks/use-api';
 
 export default function ActivitiesScreen() {
   const router = useRouter();
-  const [sessions, setSessions] = useState<Session[]>(DEMO_SESSIONS);
-  const [loading, setLoading] = useState(false);
+  const { data: sessions, loading, error, refetch } = useSessions();
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<string>('all');
 
-  const loadData = async () => {
-    // In production: const data = await sessionsApi.list();
-    setSessions(DEMO_SESSIONS);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await loadData();
+    await refetch();
     setRefreshing(false);
-  };
+  }, [refetch]);
 
-  const filteredSessions = sessions.filter((session) => {
+  const filteredSessions = sessions?.filter((session) => {
     if (filter === 'all') return true;
     return session.status === filter;
-  });
+  }) || [];
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -139,7 +65,7 @@ export default function ActivitiesScreen() {
       <View style={styles.sessionHeader}>
         <View style={styles.sessionInfo}>
           <Text style={styles.sessionType}>{item.type}</Text>
-          <Text style={styles.patientName}>{item.patientName}</Text>
+          <Text style={styles.patientName}>{item.patientName || 'Unknown Patient'}</Text>
         </View>
         <Badge variant={getStatusVariant(item.status) as any} size="sm">
           {item.status}
@@ -193,6 +119,11 @@ export default function ActivitiesScreen() {
 
       {loading ? (
         <Spinner text="Loading sessions..." />
+      ) : error ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <Button title="Retry" onPress={refetch} variant="outline" />
+        </View>
       ) : (
         <FlatList
           data={filteredSessions}
@@ -323,5 +254,13 @@ const styles = StyleSheet.create({
   detailText: {
     fontSize: 14,
     color: '#6B7280',
+  },
+  errorContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#EF4444',
+    marginBottom: 12,
   },
 });

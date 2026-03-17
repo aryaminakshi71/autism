@@ -4,6 +4,7 @@
  */
 
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Base API URL - should be configured via environment
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787';
@@ -25,10 +26,18 @@ class ApiClient {
    */
   private async getToken(): Promise<string | null> {
     try {
+      // First try secure store
       const token = await SecureStore.getItemAsync('auth_token');
-      return token;
+      if (token) return token;
+
+      // Fallback to AsyncStorage
+      const stored = await AsyncStorage.getItem('auth_state');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.token || null;
+      }
+      return null;
     } catch {
-      // Fallback to localStorage for demo mode
       return null;
     }
   }
@@ -109,6 +118,16 @@ class ApiClient {
   }
 
   /**
+   * PUT request
+   */
+  async put<T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'PUT',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  }
+
+  /**
    * DELETE request
    */
   async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
@@ -122,7 +141,15 @@ class ApiClient {
     try {
       await SecureStore.setItemAsync('auth_token', token);
     } catch {
-      // Fallback - token will be sent in Authorization header directly
+      // Fallback - also store in AsyncStorage
+      try {
+        const stored = await AsyncStorage.getItem('auth_state');
+        const parsed = stored ? JSON.parse(stored) : {};
+        parsed.token = token;
+        await AsyncStorage.setItem('auth_state', JSON.stringify(parsed));
+      } catch {
+        // Ignore errors
+      }
     }
   }
 

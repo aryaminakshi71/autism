@@ -6,16 +6,18 @@ import { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Card, Input, Button } from '../../src/components';
+import { useCreatePatient } from '../../src/hooks/use-api';
 
 export default function AddPatientScreen() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const { createPatient, loading, error } = useCreatePatient();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [gender, setGender] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
+  const [severityLevel, setSeverityLevel] = useState('');
 
   const handleSave = async () => {
     if (!firstName || !lastName) {
@@ -23,14 +25,23 @@ export default function AddPatientScreen() {
       return;
     }
 
-    setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setLoading(false);
+    const result = await createPatient({
+      firstName,
+      lastName,
+      dateOfBirth: dateOfBirth || undefined,
+      gender: gender || undefined,
+      diagnosis: diagnosis || undefined,
+      severityLevel: severityLevel || undefined,
+      status: 'active',
+    });
 
-    Alert.alert('Success', 'Patient added successfully', [
-      { text: 'OK', onPress: () => router.back() }
-    ]);
+    if (result) {
+      Alert.alert('Success', 'Patient added successfully', [
+        { text: 'OK', onPress: () => router.back() }
+      ]);
+    } else if (error) {
+      Alert.alert('Error', error);
+    }
   };
 
   return (
@@ -89,6 +100,22 @@ export default function AddPatientScreen() {
             onChangeText={setDiagnosis}
             placeholder="e.g., ASD Level 1"
           />
+          <View style={styles.genderSelector}>
+            <Text style={styles.label}>Severity Level</Text>
+            <View style={styles.genderOptions}>
+              {['Level 1', 'Level 2', 'Level 3'].map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={[styles.genderOption, severityLevel === option && styles.genderOptionActive]}
+                  onPress={() => setSeverityLevel(option)}
+                >
+                  <Text style={[styles.genderText, severityLevel === option && styles.genderTextActive]}>
+                    {option}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
         </Card>
 
         <View style={styles.buttonContainer}>

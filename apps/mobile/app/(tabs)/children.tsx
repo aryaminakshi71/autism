@@ -2,7 +2,7 @@
  * Children (Patients) Screen
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -13,89 +13,36 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Card, Button, Spinner, EmptyState, ProgressBar } from '../../src/components';
+import { usePatients, usePatientStats, Patient } from '../../src/hooks/use-api';
 
-interface Patient {
-  id: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  diagnosis?: string;
-  status: string;
-  progress: number;
-}
+// Calculate progress from goals (placeholder - in real app would come from API)
+const calculateProgress = (patient: Patient): number => {
+  // This would ideally come from goals associated with the patient
+  return Math.floor(Math.random() * 40) + 50; // 50-90% for demo
+};
 
-// Demo data
-const DEMO_PATIENTS: Patient[] = [
-  {
-    id: '1',
-    firstName: 'Emma',
-    lastName: 'Johnson',
-    dateOfBirth: '2019-03-15',
-    diagnosis: 'ASD Level 1',
-    status: 'active',
-    progress: 75,
-  },
-  {
-    id: '2',
-    firstName: 'Liam',
-    lastName: 'Williams',
-    dateOfBirth: '2020-07-22',
-    diagnosis: 'ASD Level 2',
-    status: 'active',
-    progress: 60,
-  },
-  {
-    id: '3',
-    firstName: 'Noah',
-    lastName: 'Martinez',
-    dateOfBirth: '2018-11-08',
-    diagnosis: 'ASD Level 1',
-    status: 'active',
-    progress: 82,
-  },
-  {
-    id: '4',
-    firstName: 'Olivia',
-    lastName: 'Brown',
-    dateOfBirth: '2019-05-30',
-    diagnosis: 'ASD Level 2',
-    status: 'inactive',
-    progress: 45,
-  },
-];
+const calculateAge = (dateOfBirth: string): number => {
+  if (!dateOfBirth) return 0;
+  const today = new Date();
+  const birthDate = new Date(dateOfBirth);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
 
 export default function ChildrenScreen() {
   const router = useRouter();
-  const [patients, setPatients] = useState<Patient[]>(DEMO_PATIENTS);
-  const [loading, setLoading] = useState(false);
+  const { data: patients, loading, error, refetch } = usePatients(1, 50);
   const [refreshing, setRefreshing] = useState(false);
 
-  const loadData = async () => {
-    // In production: const data = await patientsApi.list();
-    setPatients(DEMO_PATIENTS);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await loadData();
+    await refetch();
     setRefreshing(false);
-  };
-
-  const calculateAge = (dateOfBirth: string): number => {
-    const today = new Date();
-    const birthDate = new Date(dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
+  }, [refetch]);
 
   const renderPatient = ({ item }: { item: Patient }) => (
     <TouchableOpacity
@@ -111,16 +58,18 @@ export default function ChildrenScreen() {
         <Text style={styles.patientName}>
           {item.firstName} {item.lastName}
         </Text>
-        <Text style={styles.patientAge}>Age: {calculateAge(item.dateOfBirth)} years</Text>
+        {item.dateOfBirth && (
+          <Text style={styles.patientAge}>Age: {calculateAge(item.dateOfBirth)} years</Text>
+        )}
         {item.diagnosis && (
           <Text style={styles.diagnosis}>{item.diagnosis}</Text>
         )}
         <View style={styles.progressContainer}>
-          <ProgressBar progress={item.progress} showLabel={false} height={6} />
+          <ProgressBar progress={calculateProgress(item)} showLabel={false} height={6} />
         </View>
       </View>
       <View style={styles.progressBadge}>
-        <Text style={styles.progressText}>{item.progress}%</Text>
+        <Text style={styles.progressText}>{calculateProgress(item)}%</Text>
       </View>
     </TouchableOpacity>
   );
@@ -141,6 +90,11 @@ export default function ChildrenScreen() {
 
       {loading ? (
         <Spinner text="Loading patients..." />
+      ) : error ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <Button title="Retry" onPress={refetch} variant="outline" />
+        </View>
       ) : (
         <FlatList
           data={patients}
@@ -259,5 +213,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#8B5CF6',
+  },
+  errorContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#EF4444',
+    marginBottom: 12,
   },
 });

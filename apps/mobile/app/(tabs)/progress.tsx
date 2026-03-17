@@ -2,85 +2,16 @@
  * Progress (Goals) Screen
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Card, Button, Spinner, EmptyState, ProgressBar, Badge } from '../../src/components';
-
-interface Goal {
-  id: string;
-  patientName: string;
-  name: string;
-  category: string;
-  currentValue: number;
-  targetValue: number;
-  status: 'active' | 'mastered' | 'inactive';
-  priority: 'high' | 'medium' | 'low';
-  trend: 'improving' | 'stable' | 'declining';
-}
-
-const DEMO_GOALS: Goal[] = [
-  {
-    id: '1',
-    patientName: 'Emma Johnson',
-    name: 'Increase eye contact',
-    category: 'Social',
-    currentValue: 75,
-    targetValue: 100,
-    status: 'active',
-    priority: 'high',
-    trend: 'improving',
-  },
-  {
-    id: '2',
-    patientName: 'Emma Johnson',
-    name: 'Picture exchange communication',
-    category: 'Communication',
-    currentValue: 100,
-    targetValue: 100,
-    status: 'mastered',
-    priority: 'high',
-    trend: 'improving',
-  },
-  {
-    id: '3',
-    patientName: 'Liam Williams',
-    name: 'Turn-taking in games',
-    category: 'Social',
-    currentValue: 60,
-    targetValue: 80,
-    status: 'active',
-    priority: 'medium',
-    trend: 'stable',
-  },
-  {
-    id: '4',
-    patientName: 'Noah Martinez',
-    name: 'Verbal requests',
-    category: 'Communication',
-    currentValue: 45,
-    targetValue: 80,
-    status: 'active',
-    priority: 'high',
-    trend: 'improving',
-  },
-  {
-    id: '5',
-    patientName: 'Noah Martinez',
-    name: 'Fine motor skills',
-    category: 'Motor',
-    currentValue: 30,
-    targetValue: 70,
-    status: 'active',
-    priority: 'low',
-    trend: 'declining',
-  },
-];
+import { useGoals, Goal } from '../../src/hooks/use-api';
 
 const TREND_ICONS = {
-  improving: '↗️',
+  improving: '↗',
   stable: '→',
-  declining: '↘️',
+  declining: '↘',
 };
 
 const PRIORITY_COLORS = {
@@ -91,31 +22,20 @@ const PRIORITY_COLORS = {
 
 export default function ProgressScreen() {
   const router = useRouter();
-  const [goals, setGoals] = useState<Goal[]>(DEMO_GOALS);
-  const [loading, setLoading] = useState(false);
+  const { data: goals, loading, error, refetch } = useGoals();
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<string>('all');
 
-  const loadData = async () => {
-    // In production: const data = await goalsApi.list();
-    setGoals(DEMO_GOALS);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await loadData();
+    await refetch();
     setRefreshing(false);
-  };
+  }, [refetch]);
 
-  const filteredGoals = goals.filter((goal) => {
+  const filteredGoals = goals?.filter((goal) => {
     if (filter === 'all') return true;
     return goal.status === filter;
-  });
+  }) || [];
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -132,6 +52,13 @@ export default function ProgressScreen() {
 
   const getPriorityColor = (priority: string) => {
     return PRIORITY_COLORS[priority as keyof typeof PRIORITY_COLORS] || '#6B7280';
+  };
+
+  const getTrend = (goal: Goal): 'improving' | 'stable' | 'declining' => {
+    const progress = goal.currentValue / goal.targetValue;
+    if (progress >= 0.7) return 'improving';
+    if (progress >= 0.3) return 'stable';
+    return 'declining';
   };
 
   return (
@@ -164,6 +91,11 @@ export default function ProgressScreen() {
 
       {loading ? (
         <Spinner text="Loading goals..." />
+      ) : error ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <Button title="Retry" onPress={refetch} variant="outline" />
+        </View>
       ) : (
         <ScrollView
           style={styles.scrollView}
@@ -189,7 +121,7 @@ export default function ProgressScreen() {
                 <View style={styles.goalHeader}>
                   <View style={styles.goalInfo}>
                     <Text style={styles.goalName}>{goal.name}</Text>
-                    <Text style={styles.patientName}>{goal.patientName}</Text>
+                    <Text style={styles.patientName}>{goal.patientName || 'Unknown Patient'}</Text>
                   </View>
                   <View style={styles.goalBadges}>
                     <Badge variant={getStatusVariant(goal.status) as any} size="sm">
@@ -211,8 +143,8 @@ export default function ProgressScreen() {
                     <Text style={styles.category}>{goal.category}</Text>
                   </View>
                   <View style={styles.trendContainer}>
-                    <Text style={styles.trendIcon}>{TREND_ICONS[goal.trend]}</Text>
-                    <Text style={styles.trendText}>{goal.trend}</Text>
+                    <Text style={styles.trendIcon}>{TREND_ICONS[getTrend(goal)]}</Text>
+                    <Text style={styles.trendText}>{getTrend(goal)}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -360,5 +292,13 @@ const styles = StyleSheet.create({
   },
   bottomPadding: {
     height: 40,
+  },
+  errorContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#EF4444',
+    marginBottom: 12,
   },
 });
