@@ -11,7 +11,9 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "build:analyze": "ANALYZE=true vite build"
+    "build:analyze": "ANALYZE=true vite build",
+    "test:integration": "vitest run src/integration --passWithNoTests",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@orpc/client": "^1.13.4",

@@ -30,10 +30,7 @@ const compatibilityContracts = [
   { path: "/dashboard/stats", methods: ["get"] },
 ] as const;
 
-function resolvePathKey(
-  paths: Record<string, unknown>,
-  contractPath: string,
-) {
+function resolvePathKey(paths: Record<string, unknown>, contractPath: string) {
   if (paths[contractPath]) {
     return contractPath;
   }
@@ -56,12 +53,15 @@ test.describe("API Contract E2E", () => {
     const payload = await response.json();
     const parsed = HealthResponseSchema.safeParse(payload);
 
-    expect(parsed.success, JSON.stringify(parsed.error?.format(), null, 2)).toBe(
-      true,
-    );
+    expect(
+      parsed.success,
+      JSON.stringify(parsed.error?.format(), null, 2),
+    ).toBe(true);
   });
 
-  test("openapi contains autism-care endpoint contracts", async ({ request }) => {
+  test("openapi contains autism-care endpoint contracts", async ({
+    request,
+  }) => {
     const response = await request.get("/api/openapi/spec.json", {
       headers: { "x-api-version": "1" },
     });
@@ -96,7 +96,10 @@ test.describe("API Contract E2E", () => {
 
     for (const contract of requiredContracts) {
       const resolvedPath = resolvePathKey(paths, contract.path);
-      expect(resolvedPath, `Missing OpenAPI path: ${contract.path}`).toBeTruthy();
+      expect(
+        resolvedPath,
+        `Missing OpenAPI path: ${contract.path}`,
+      ).toBeTruthy();
 
       if (!resolvedPath) continue;
       const operations = paths[resolvedPath];

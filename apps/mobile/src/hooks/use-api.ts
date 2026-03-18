@@ -89,7 +89,7 @@ export function usePatients(page = 1, limit = 20) {
     setError(null);
 
     try {
-      const response = await apiClient.get<PaginatedResponse<Patient>>('/patients', {
+      const response = await apiClient.get<PaginatedResponse<Patient>>('/api/v1/patients', {
         page: String(page),
         limit: String(limit),
       });
@@ -130,7 +130,7 @@ export function usePatient(id: string) {
       setError(null);
 
       try {
-        const response = await apiClient.get<Patient>(`/patients/${id}`);
+        const response = await apiClient.get<Patient>(`/api/v1/patients/${id}`);
 
         if (response.error) {
           setError(response.error);
@@ -163,7 +163,7 @@ export function usePatientStats() {
     setError(null);
 
     try {
-      const response = await apiClient.get<PatientStats>('/patients/stats');
+      const response = await apiClient.get<PatientStats>('/api/v1/patients/stats');
 
       if (response.error) {
         setError(response.error);
@@ -205,7 +205,7 @@ export function useGoals(patientId?: string) {
         params.patientId = patientId;
       }
 
-      const response = await apiClient.get<PaginatedResponse<Goal>>('/goals', params);
+      const response = await apiClient.get<PaginatedResponse<Goal>>('/api/v1/goals', params);
 
       if (response.error) {
         setError(response.error);
@@ -242,7 +242,7 @@ export function useGoal(id: string) {
       setError(null);
 
       try {
-        const response = await apiClient.get<Goal>(`/goals/${id}`);
+        const response = await apiClient.get<Goal>(`/api/v1/goals/${id}`);
 
         if (response.error) {
           setError(response.error);
@@ -283,7 +283,7 @@ export function useSessions(patientId?: string) {
         params.patientId = patientId;
       }
 
-      const response = await apiClient.get<PaginatedResponse<Session>>('/sessions', params);
+      const response = await apiClient.get<PaginatedResponse<Session>>('/api/v1/sessions', params);
 
       if (response.error) {
         setError(response.error);
@@ -320,7 +320,7 @@ export function useSession(id: string) {
       setError(null);
 
       try {
-        const response = await apiClient.get<Session>(`/sessions/${id}`);
+        const response = await apiClient.get<Session>(`/api/v1/sessions/${id}`);
 
         if (response.error) {
           setError(response.error);
@@ -352,7 +352,7 @@ export function useCreatePatient() {
     setError(null);
 
     try {
-      const response = await apiClient.post<Patient>('/patients', input);
+      const response = await apiClient.post<Patient>('/api/v1/patients', input);
 
       if (response.error) {
         setError(response.error);
@@ -384,7 +384,7 @@ export function useCreateGoal() {
     setError(null);
 
     try {
-      const response = await apiClient.post<Goal>('/goals', input);
+      const response = await apiClient.post<Goal>('/api/v1/goals', input);
 
       if (response.error) {
         setError(response.error);
@@ -416,7 +416,7 @@ export function useCreateSession() {
     setError(null);
 
     try {
-      const response = await apiClient.post<Session>('/sessions', input);
+      const response = await apiClient.post<Session>('/api/v1/sessions', input);
 
       if (response.error) {
         setError(response.error);
@@ -448,7 +448,7 @@ export function useUpdatePatient() {
     setError(null);
 
     try {
-      const response = await apiClient.patch<Patient>(`/patients/${id}`, input);
+      const response = await apiClient.patch<Patient>(`/api/v1/patients/${id}`, input);
 
       if (response.error) {
         setError(response.error);
@@ -480,7 +480,7 @@ export function useUpdateGoal() {
     setError(null);
 
     try {
-      const response = await apiClient.patch<Goal>(`/goals/${id}`, input);
+      const response = await apiClient.patch<Goal>(`/api/v1/goals/${id}`, input);
 
       if (response.error) {
         setError(response.error);
@@ -512,7 +512,7 @@ export function useDeletePatient() {
     setError(null);
 
     try {
-      const response = await apiClient.delete(`/patients/${id}`);
+      const response = await apiClient.delete(`/api/v1/patients/${id}`);
 
       if (response.error) {
         setError(response.error);
@@ -544,7 +544,7 @@ export function useDeleteGoal() {
     setError(null);
 
     try {
-      const response = await apiClient.delete(`/goals/${id}`);
+      const response = await apiClient.delete(`/api/v1/goals/${id}`);
 
       if (response.error) {
         setError(response.error);

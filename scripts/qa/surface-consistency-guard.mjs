@@ -32,7 +32,7 @@ if (existsSync(tsrConfig)) {
 
 if (existsSync(routerFile)) {
   const raw = readFileSync(routerFile, "utf8");
-  if (!raw.includes("from \"./routeTree.gen\"")) {
+  if (!raw.includes('from "./routeTree.gen"')) {
     checks.push(`${routerFile} should import route tree from ./routeTree.gen.`);
   }
 }
@@ -59,7 +59,9 @@ if (existsSync(headerFile)) {
 if (existsSync(loginFile)) {
   const raw = readFileSync(loginFile, "utf8");
   if (!raw.includes('redirect || "/dashboard"')) {
-    checks.push(`${loginFile} should default post-login redirect to /dashboard.`);
+    checks.push(
+      `${loginFile} should default post-login redirect to /dashboard.`,
+    );
   }
 }
 

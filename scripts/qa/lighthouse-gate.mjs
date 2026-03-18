@@ -107,10 +107,14 @@ function evaluateReport(label, reportPath, limits) {
     );
   }
   if (scores.seo < limits.seo) {
-    failures.push(`${label} seo ${toPercent(scores.seo)} < ${toPercent(limits.seo)}`);
+    failures.push(
+      `${label} seo ${toPercent(scores.seo)} < ${toPercent(limits.seo)}`,
+    );
   }
   if (scores.lcpMs > limits.lcpMs) {
-    failures.push(`${label} LCP ${Math.round(scores.lcpMs)}ms > ${limits.lcpMs}ms`);
+    failures.push(
+      `${label} LCP ${Math.round(scores.lcpMs)}ms > ${limits.lcpMs}ms`,
+    );
   }
 
   return failures;

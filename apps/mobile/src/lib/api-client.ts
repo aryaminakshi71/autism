@@ -54,6 +54,7 @@ class ApiClient {
 
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
+      'x-demo-mode': 'true', // Enable demo mode for testing
       ...options.headers,
     };
 

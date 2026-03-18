@@ -44,7 +44,8 @@
     "security:scan": "bunx snyk test",
     "start": "bun run dev",
     "dev:web": "bun run --cwd apps/web dev",
-    "dev:api": "bun run --cwd apps/api dev"
+    "dev:api": "bun run --cwd apps/api dev",
+    "test:integration": "vitest run src/integration --passWithNoTests"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.999.0",

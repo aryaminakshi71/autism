@@ -29,7 +29,9 @@ try {
 
   console.log(`Restore complete from: ${backupFile}`);
 } catch (error) {
-  console.error("Restore failed. Ensure `psql` is installed and access is valid.");
+  console.error(
+    "Restore failed. Ensure `psql` is installed and access is valid.",
+  );
   if (error instanceof Error) {
     console.error(error.message);
   }

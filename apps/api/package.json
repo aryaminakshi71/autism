@@ -5,7 +5,10 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "dev": "WRANGLER_HYPERDRIVE_LOCAL_CONNECTION_STRING_DATABASE=${DATABASE_URL:-postgresql://postgres:postgres@localhost:5432/autism_db} wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts"
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "test:integration": "vitest run src/integration --passWithNoTests",
+    "test": "vitest run --passWithNoTests",
+    "test:e2e": "playwright test"
   },
   "exports": {
     ".": "./src/index.ts",

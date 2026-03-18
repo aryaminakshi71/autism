@@ -30,11 +30,9 @@ if (backups.length === 0) {
 const latest = path.join(backupDir, backups[backups.length - 1]);
 
 try {
-  execFileSync(
-    "psql",
-    [databaseUrl, "-v", "ON_ERROR_STOP=1", "-f", latest],
-    { stdio: "inherit" },
-  );
+  execFileSync("psql", [databaseUrl, "-v", "ON_ERROR_STOP=1", "-f", latest], {
+    stdio: "inherit",
+  });
 
   console.log(`Rollback restored from latest backup: ${latest}`);
 } catch (error) {

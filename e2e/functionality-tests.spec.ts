@@ -69,7 +69,9 @@ test.describe("Console & Error Tests", () => {
 
     const authResponse = await request.get("/api/auth/get-session");
     expect(authResponse.status()).toBe(200);
-    expect(authResponse.headers()["content-type"]).toContain("application/json");
+    expect(authResponse.headers()["content-type"]).toContain(
+      "application/json",
+    );
 
     const authPayload = await authResponse.json();
     expect(authPayload === null || typeof authPayload === "object").toBe(true);

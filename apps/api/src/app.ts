@@ -446,6 +446,234 @@ export function createApp() {
     });
   });
 
+  // Patients
+  app.get("/api/v1/patients", async (c: any) => {
+    const isDemo = c.req.header("x-demo-mode") === "true";
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+
+    if (isDemo) {
+      return c.json({
+        data: [
+          { id: "1", firstName: "Emma", lastName: "Johnson", dateOfBirth: "2019-03-15", diagnosis: "ASD Level 1", status: "active" },
+          { id: "2", firstName: "Liam", lastName: "Williams", dateOfBirth: "2020-07-22", diagnosis: "ASD Level 2", status: "active" },
+          { id: "3", firstName: "Noah", lastName: "Martinez", dateOfBirth: "2018-11-08", diagnosis: "ASD Level 1", status: "active" },
+        ],
+        total: 3,
+        page: 1,
+        limit: 10,
+        totalPages: 1
+      });
+    }
+
+    const db = getDb({ env: c.env });
+    const { patients } = schema;
+    const allPatients = await db
+      .select()
+      .from(patients)
+      .where(eq(patients.organizationId, orgId));
+    return c.json({ data: allPatients, total: allPatients.length, page: 1, limit: 10, totalPages: 1 });
+  });
+
+  app.post("/api/v1/patients", async (c: any) => {
+    const isDemo = c.req.header("x-demo-mode") === "true";
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const body = await c.req.json().catch(() => null);
+
+    if (isDemo || !c.env) {
+      return c.json({
+        id: crypto.randomUUID(),
+        organizationId: orgId,
+        firstName: body?.firstName || "",
+        lastName: body?.lastName || "",
+        dateOfBirth: body?.dateOfBirth || null,
+        diagnosis: body?.diagnosis || null,
+        status: "active",
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    const db = getDb({ env: c.env });
+    const { patients } = schema;
+    const [patient] = await db
+      .insert(patients)
+      .values({
+        id: crypto.randomUUID(),
+        firstName: body.firstName,
+        lastName: body.lastName,
+        dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : null,
+        diagnosis: body.diagnosis || null,
+        severityLevel: body.severityLevel || null,
+        primaryLanguage: body.primaryLanguage || "en",
+        preferredCommunication: body.preferredCommunication || "verbal",
+        status: "active",
+        organizationId: orgId,
+        createdBy: "mobile-user",
+      })
+      .returning();
+    return c.json(patient);
+  });
+
+  app.get("/api/v1/patients/stats", async (c: any) => {
+    const isDemo = c.req.header("x-demo-mode") === "true";
+
+    if (isDemo) {
+      return c.json({ total: 3, active: 3, inactive: 0, newThisMonth: 0 });
+    }
+
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const db = getDb({ env: c.env });
+    const { patients } = schema;
+    const allPatients = await db
+      .select()
+      .from(patients)
+      .where(eq(patients.organizationId, orgId));
+
+    return c.json({
+      total: allPatients.length,
+      active: allPatients.filter(p => p.status === "active").length,
+      inactive: allPatients.filter(p => p.status === "inactive").length,
+      newThisMonth: 0
+    });
+  });
+
+  // Goals
+  app.get("/api/v1/goals", async (c: any) => {
+    const isDemo = c.req.header("x-demo-mode") === "true";
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+
+    if (isDemo) {
+      return c.json({
+        data: [
+          { id: "1", patientId: "1", patientName: "Emma Johnson", name: "Increase eye contact", category: "Social", currentValue: 75, targetValue: 100, status: "active", priority: "high" },
+          { id: "2", patientId: "1", patientName: "Emma Johnson", name: "Picture exchange communication", category: "Communication", currentValue: 100, targetValue: 100, status: "mastered", priority: "high" },
+          { id: "3", patientId: "2", patientName: "Liam Williams", name: "Turn-taking in games", category: "Social", currentValue: 60, targetValue: 80, status: "active", priority: "medium" },
+        ],
+        total: 3,
+        page: 1,
+        limit: 10,
+        totalPages: 1
+      });
+    }
+
+    const db = getDb({ env: c.env });
+    const { goals } = schema;
+    const allGoals = await db
+      .select()
+      .from(goals)
+      .where(eq(goals.organizationId, orgId));
+    return c.json({ data: allGoals, total: allGoals.length, page: 1, limit: 10, totalPages: 1 });
+  });
+
+  app.post("/api/v1/goals", async (c: any) => {
+    const isDemo = c.req.header("x-demo-mode") === "true";
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const body = await c.req.json().catch(() => null);
+
+    if (isDemo || !c.env) {
+      return c.json({
+        id: crypto.randomUUID(),
+        organizationId: orgId,
+        patientId: body?.patientId || "",
+        name: body?.name || "",
+        description: body?.description || null,
+        category: body?.category || "Communication",
+        baselineValue: body?.baselineValue || 0,
+        targetValue: body?.targetValue || 100,
+        currentValue: body?.baselineValue || 0,
+        status: "active",
+        priority: body?.priority || "medium",
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    const db = getDb({ env: c.env });
+    const { goals } = schema;
+    const [goal] = await db
+      .insert(goals)
+      .values({
+        id: crypto.randomUUID(),
+        patientId: body.patientId,
+        name: body.name,
+        description: body.description || null,
+        category: body.category || "Communication",
+        baselineValue: body.baselineValue || 0,
+        targetValue: body.targetValue || 100,
+        currentValue: body.baselineValue || 0,
+        status: "active",
+        priority: body.priority || "medium",
+        organizationId: orgId,
+      })
+      .returning();
+    return c.json(goal);
+  });
+
+  // Sessions
+  app.get("/api/v1/sessions", async (c: any) => {
+    const isDemo = c.req.header("x-demo-mode") === "true";
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+
+    if (isDemo) {
+      const now = new Date().toISOString();
+      return c.json({
+        data: [
+          { id: "1", patientId: "1", patientName: "Emma Johnson", type: "ABA Therapy", status: "scheduled", scheduledStart: now, scheduledEnd: now, telehealth: false },
+          { id: "2", patientId: "2", patientName: "Liam Williams", type: "Speech Therapy", status: "scheduled", scheduledStart: now, scheduledEnd: now, telehealth: false },
+        ],
+        total: 2,
+        page: 1,
+        limit: 10,
+        totalPages: 1
+      });
+    }
+
+    const db = getDb({ env: c.env });
+    const { sessions } = schema;
+    const allSessions = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.organizationId, orgId));
+    return c.json({ data: allSessions, total: allSessions.length, page: 1, limit: 10, totalPages: 1 });
+  });
+
+  app.post("/api/v1/sessions", async (c: any) => {
+    const isDemo = c.req.header("x-demo-mode") === "true";
+    const orgId = c.req.header("x-organization-id") || "demo-org";
+    const body = await c.req.json().catch(() => null);
+
+    if (isDemo || !c.env) {
+      return c.json({
+        id: crypto.randomUUID(),
+        organizationId: orgId,
+        patientId: body?.patientId || "",
+        type: body?.type || "",
+        status: "scheduled",
+        scheduledStart: body?.scheduledStart || new Date().toISOString(),
+        scheduledEnd: body?.scheduledEnd || new Date().toISOString(),
+        location: body?.location || null,
+        telehealth: body?.telehealth || false,
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    const db = getDb({ env: c.env });
+    const { sessions } = schema;
+    const [session] = await db
+      .insert(sessions)
+      .values({
+        id: crypto.randomUUID(),
+        patientId: body.patientId,
+        type: body.type,
+        status: "scheduled",
+        scheduledStart: new Date(body.scheduledStart),
+        scheduledEnd: new Date(body.scheduledEnd),
+        location: body.location || null,
+        telehealth: body.telehealth || false,
+        organizationId: orgId,
+      })
+      .returning();
+    return c.json(session);
+  });
+
   // Rate limiting middleware
   app.use("/api/*", rateLimitRedis({ limiterType: "api" }));
   app.use("/api/auth/*", rateLimitRedis({ limiterType: "auth" }));

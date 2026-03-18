@@ -24,10 +24,9 @@ export const patients = pgTable("patients", {
     .default("verbal")
     .notNull(),
   status: text("status").default("active").notNull(),
-  assignedTherapistId: text("assigned_therapist_id").references(
-    () => user.id,
-    { onDelete: "set null" },
-  ),
+  assignedTherapistId: text("assigned_therapist_id").references(() => user.id, {
+    onDelete: "set null",
+  }),
   guardianUserId: text("guardian_user_id").references(() => user.id, {
     onDelete: "set null",
   }),
