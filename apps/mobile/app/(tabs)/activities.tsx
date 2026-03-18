@@ -2,7 +2,7 @@
  * Activities (Sessions) Screen
  */
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -25,10 +25,11 @@ export default function ActivitiesScreen() {
     await refetch();
   }, [refetch]);
 
-  const filteredSessions = sessions?.filter((session) => {
+  const sessionsData = sessions?.data || [];
+  const filteredSessions = sessionsData.filter((session: any) => {
     if (filter === 'all') return true;
     return session.status === filter;
-  }) || [];
+  });
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);

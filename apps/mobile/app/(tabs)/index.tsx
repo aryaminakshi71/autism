@@ -20,8 +20,10 @@ export default function HomeScreen() {
     await refetchStats();
   }, [refetchStats]);
 
-  const upcomingSessions = sessions?.slice(0, 3) || [];
-  const activeGoals = goals?.filter(g => g.status === 'active').length || 0;
+  const sessionsData = sessions?.data || [];
+  const goalsData = goals?.data || [];
+  const upcomingSessions = sessionsData.slice(0, 3);
+  const activeGoals = goalsData.filter((g: any) => g.status === 'active').length || 0;
 
   // Format stats for display
   const statsData = [
