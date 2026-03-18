@@ -2,25 +2,22 @@
  * Home Screen (Dashboard)
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Card, Spinner } from '../../src/components';
+import { Skeleton, SkeletonCard } from '../../src/components/Skeleton';
 import { usePatientStats, useSessions, useGoals, Session } from '../../src/hooks/use-api';
 import { authStore } from '../../src/stores/auth-store';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { data: stats, loading: statsLoading, refetch: refetchStats } = usePatientStats();
-  const { data: sessions, loading: sessionsLoading } = useSessions();
+  const { data: stats, isLoading: statsLoading, refetch: refetchStats, isRefetching: statsRefetching } = usePatientStats();
+  const { data: sessions, isLoading: sessionsLoading } = useSessions();
   const { data: goals } = useGoals();
 
-  const [refreshing, setRefreshing] = useState(false);
-
   const onRefresh = useCallback(async () => {
-    setRefreshing(true);
     await refetchStats();
-    setRefreshing(false);
   }, [refetchStats]);
 
   const upcomingSessions = sessions?.slice(0, 3) || [];
@@ -55,7 +52,7 @@ export default function HomeScreen() {
     <ScrollView
       style={styles.container}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#8B5CF6']} />
+        <RefreshControl refreshing={statsRefetching} onRefresh={onRefresh} colors={['#8B5CF6']} />
       }
     >
       <View style={styles.header}>
@@ -64,21 +61,33 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.statsGrid}>
-        {statsData.map((stat, index) => (
-          <View key={index} style={styles.statCard}>
-            <View style={[styles.statIconContainer, { backgroundColor: stat.color + '20' }]}>
-              <Text style={styles.statIcon}>{stat.icon}</Text>
+        {statsLoading ? (
+          <>
+            <Skeleton height={100} style={{ margin: 8, width: '46%' }} />
+            <Skeleton height={100} style={{ margin: 8, width: '46%' }} />
+            <Skeleton height={100} style={{ margin: 8, width: '46%' }} />
+            <Skeleton height={100} style={{ margin: 8, width: '46%' }} />
+          </>
+        ) : (
+          statsData.map((stat, index) => (
+            <View key={index} style={styles.statCard}>
+              <View style={[styles.statIconContainer, { backgroundColor: stat.color + '20' }]}>
+                <Text style={styles.statIcon}>{stat.icon}</Text>
+              </View>
+              <Text style={styles.statValue}>{stat.value}</Text>
+              <Text style={styles.statLabel}>{stat.label}</Text>
             </View>
-            <Text style={styles.statValue}>{stat.value}</Text>
-            <Text style={styles.statLabel}>{stat.label}</Text>
-          </View>
-        ))}
+          ))
+        )}
       </View>
 
       <Text style={styles.sectionTitle}>Upcoming Sessions</Text>
 
       {sessionsLoading ? (
-        <Spinner text="Loading sessions..." />
+        <View style={{ paddingHorizontal: 16 }}>
+          <SkeletonCard />
+          <SkeletonCard />
+        </View>
       ) : upcomingSessions.length > 0 ? (
         upcomingSessions.map((session: Session) => (
           <Card key={session.id} style={styles.sessionCard}>

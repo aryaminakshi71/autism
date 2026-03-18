@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useAuth } from "../src/hooks/use-auth";
 import { ThemeProvider } from "../src/lib/theme";
+import { ErrorBoundary } from "../src/components/ErrorBoundary";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -36,17 +37,19 @@ export default function RootLayout() {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <StatusBar style="auto" />
-        <AuthGuard>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(tabs)" />
-          </Stack>
-        </AuthGuard>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <StatusBar style="auto" />
+          <AuthGuard>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="(tabs)" />
+            </Stack>
+          </AuthGuard>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

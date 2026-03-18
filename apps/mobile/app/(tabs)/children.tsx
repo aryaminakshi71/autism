@@ -2,7 +2,7 @@
  * Children (Patients) Screen
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -12,16 +12,14 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Card, Button, Spinner, EmptyState, ProgressBar } from '../../src/components';
-import { usePatients, usePatientStats, Patient } from '../../src/hooks/use-api';
+import { Card, Button, EmptyState, ProgressBar, Spinner } from '../../src/components';
+import { SkeletonList } from '../../src/components/Skeleton';
+import { usePatients, Patient } from '../../src/hooks/use-api';
 
-// Calculate progress from goals (placeholder - in real app would come from API)
-const calculateProgress = (patient: Patient): number => {
-  // This would ideally come from goals associated with the patient
-  return Math.floor(Math.random() * 40) + 50; // 50-90% for demo
-};
+// Calculate progress (placeholder)
+const calculateProgress = (): number => Math.floor(Math.random() * 40) + 50;
 
-const calculateAge = (dateOfBirth: string): number => {
+const calculateAge = (dateOfBirth?: string): number => {
   if (!dateOfBirth) return 0;
   const today = new Date();
   const birthDate = new Date(dateOfBirth);
@@ -35,44 +33,44 @@ const calculateAge = (dateOfBirth: string): number => {
 
 export default function ChildrenScreen() {
   const router = useRouter();
-  const { data: patients, loading, error, refetch } = usePatients(1, 50);
-  const [refreshing, setRefreshing] = useState(false);
+  const { data: patients, isLoading, error, refetch, isRefetching } = usePatients(1, 50);
 
   const onRefresh = useCallback(async () => {
-    setRefreshing(true);
     await refetch();
-    setRefreshing(false);
   }, [refetch]);
 
-  const renderPatient = ({ item }: { item: Patient }) => (
-    <TouchableOpacity
-      style={styles.patientCard}
-      onPress={() => router.push(`/children/${item.id}`)}
-    >
-      <View style={styles.avatar}>
-        <Text style={styles.avatarText}>
-          {item.firstName.charAt(0)}{item.lastName.charAt(0)}
-        </Text>
-      </View>
-      <View style={styles.patientInfo}>
-        <Text style={styles.patientName}>
-          {item.firstName} {item.lastName}
-        </Text>
-        {item.dateOfBirth && (
-          <Text style={styles.patientAge}>Age: {calculateAge(item.dateOfBirth)} years</Text>
-        )}
-        {item.diagnosis && (
-          <Text style={styles.diagnosis}>{item.diagnosis}</Text>
-        )}
-        <View style={styles.progressContainer}>
-          <ProgressBar progress={calculateProgress(item)} showLabel={false} height={6} />
+  const renderPatient = ({ item }: { item: Patient }) => {
+    const progress = calculateProgress();
+    return (
+      <TouchableOpacity
+        style={styles.patientCard}
+        onPress={() => router.push(`/children/${item.id}`)}
+      >
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>
+            {item.firstName.charAt(0)}{item.lastName.charAt(0)}
+          </Text>
         </View>
-      </View>
-      <View style={styles.progressBadge}>
-        <Text style={styles.progressText}>{calculateProgress(item)}%</Text>
-      </View>
-    </TouchableOpacity>
-  );
+        <View style={styles.patientInfo}>
+          <Text style={styles.patientName}>
+            {item.firstName} {item.lastName}
+          </Text>
+          {item.dateOfBirth && (
+            <Text style={styles.patientAge}>Age: {calculateAge(item.dateOfBirth)} years</Text>
+          )}
+          {item.diagnosis && (
+            <Text style={styles.diagnosis}>{item.diagnosis}</Text>
+          )}
+          <View style={styles.progressContainer}>
+            <ProgressBar progress={progress} showLabel={false} height={6} />
+          </View>
+        </View>
+        <View style={styles.progressBadge}>
+          <Text style={styles.progressText}>{progress}%</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -88,22 +86,24 @@ export default function ChildrenScreen() {
         <Text style={styles.addButtonText}>+ Add Patient</Text>
       </TouchableOpacity>
 
-      {loading ? (
-        <Spinner text="Loading patients..." />
+      {isLoading ? (
+        <View style={styles.list}>
+          <SkeletonList count={5} />
+        </View>
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-          <Button title="Retry" onPress={refetch} variant="outline" />
+          <Text style={styles.errorText}>Failed to load patients</Text>
+          <Button title="Retry" onPress={() => refetch()} variant="outline" />
         </View>
       ) : (
         <FlatList
-          data={patients}
+          data={patients?.data || []}
           keyExtractor={(item) => item.id}
           renderItem={renderPatient}
           contentContainerStyle={styles.list}
           refreshControl={
             <RefreshControl
-              refreshing={refreshing}
+              refreshing={isRefetching}
               onRefresh={onRefresh}
               colors={['#8B5CF6']}
             />

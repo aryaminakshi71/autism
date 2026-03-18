@@ -2,10 +2,11 @@
  * Progress (Goals) Screen
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Card, Button, Spinner, EmptyState, ProgressBar, Badge } from '../../src/components';
+import { Card, Button, EmptyState, ProgressBar, Badge } from '../../src/components';
+import { SkeletonCard } from '../../src/components/Skeleton';
 import { useGoals, Goal } from '../../src/hooks/use-api';
 
 const TREND_ICONS = {
@@ -22,14 +23,13 @@ const PRIORITY_COLORS = {
 
 export default function ProgressScreen() {
   const router = useRouter();
-  const { data: goals, loading, error, refetch } = useGoals();
-  const [refreshing, setRefreshing] = useState(false);
+  const { data: goalsData, isLoading, error, refetch, isRefetching } = useGoals();
   const [filter, setFilter] = useState<string>('all');
 
+  const goals = goalsData?.data || [];
+
   const onRefresh = useCallback(async () => {
-    setRefreshing(true);
     await refetch();
-    setRefreshing(false);
   }, [refetch]);
 
   const filteredGoals = goals?.filter((goal) => {
@@ -89,8 +89,12 @@ export default function ProgressScreen() {
         <Text style={styles.addButtonText}>+ Add Goal</Text>
       </TouchableOpacity>
 
-      {loading ? (
-        <Spinner text="Loading goals..." />
+      {isLoading ? (
+        <View style={styles.list}>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </View>
       ) : error ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
@@ -100,7 +104,7 @@ export default function ProgressScreen() {
         <ScrollView
           style={styles.scrollView}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#8B5CF6']} />
+            <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} colors={['#8B5CF6']} />
           }
         >
           {filteredGoals.length === 0 ? (
@@ -209,6 +213,11 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 12,
     alignItems: 'center',
+  },
+  list: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 40,
   },
   addButtonText: {
     color: '#fff',

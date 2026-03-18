@@ -2,7 +2,7 @@
  * Activities (Sessions) Screen
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -12,19 +12,17 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Card, Button, Spinner, EmptyState, Badge } from '../../src/components';
+import { Card, Button, EmptyState, Badge } from '../../src/components';
+import { SkeletonList } from '../../src/components/Skeleton';
 import { useSessions, Session } from '../../src/hooks/use-api';
 
 export default function ActivitiesScreen() {
   const router = useRouter();
-  const { data: sessions, loading, error, refetch } = useSessions();
-  const [refreshing, setRefreshing] = useState(false);
+  const { data: sessions, isLoading, error, refetch, isRefetching } = useSessions();
   const [filter, setFilter] = useState<string>('all');
 
   const onRefresh = useCallback(async () => {
-    setRefreshing(true);
     await refetch();
-    setRefreshing(false);
   }, [refetch]);
 
   const filteredSessions = sessions?.filter((session) => {
@@ -89,6 +87,8 @@ export default function ActivitiesScreen() {
     </TouchableOpacity>
   );
 
+  const filterOptions = ['all', 'scheduled', 'completed', 'cancelled'];
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -97,7 +97,7 @@ export default function ActivitiesScreen() {
       </View>
 
       <View style={styles.filterContainer}>
-        {['all', 'scheduled', 'completed', 'cancelled'].map((status) => (
+        {filterOptions.map((status) => (
           <TouchableOpacity
             key={status}
             style={[styles.filterButton, filter === status && styles.filterButtonActive]}
@@ -117,12 +117,14 @@ export default function ActivitiesScreen() {
         <Text style={styles.addButtonText}>+ Schedule Session</Text>
       </TouchableOpacity>
 
-      {loading ? (
-        <Spinner text="Loading sessions..." />
+      {isLoading ? (
+        <View style={styles.list}>
+          <SkeletonList count={3} />
+        </View>
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-          <Button title="Retry" onPress={refetch} variant="outline" />
+          <Text style={styles.errorText}>Failed to load sessions</Text>
+          <Button title="Retry" onPress={() => refetch()} variant="outline" />
         </View>
       ) : (
         <FlatList
@@ -131,7 +133,7 @@ export default function ActivitiesScreen() {
           renderItem={renderSession}
           contentContainerStyle={styles.list}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#8B5CF6']} />
+            <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} colors={['#8B5CF6']} />
           }
           ListEmptyComponent={
             <EmptyState
