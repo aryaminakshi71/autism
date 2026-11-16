@@ -4,8 +4,9 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  useRouterState,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 import { ErrorBoundaryWrapper } from "../components/error-boundary-wrapper";
@@ -148,6 +149,10 @@ export const Route = createRootRoute({
 });
 
 function RootDocument() {
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+
   // Register service worker for offline support
   useEffect(() => {
     registerServiceWorker();
@@ -164,12 +169,14 @@ function RootDocument() {
         <ErrorBoundaryWrapper>
           <PostHogProvider>
             <QueryClientProvider client={queryClient}>
-              <a
-                href="/dashboard"
-                className="fixed right-4 bottom-4 z-50 rounded-md border border-border bg-card px-3 py-2 font-medium text-foreground text-sm shadow hover:bg-muted"
-              >
-                Dashboard
-              </a>
+              {pathname.startsWith("/dashboard") ? null : (
+                <a
+                  href="/dashboard"
+                  className="fixed right-4 bottom-4 z-50 rounded-md border border-border bg-card px-3 py-2 font-medium text-foreground text-sm shadow hover:bg-muted"
+                >
+                  Dashboard
+                </a>
+              )}
               <Outlet />
               <Toaster position="top-right" />
               {import.meta.env.PROD ? null : <TanStackRouterDevtools />}

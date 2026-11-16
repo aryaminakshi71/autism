@@ -3,8 +3,8 @@
  * Layout for authentication screens (login, register)
  */
 
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 export default function AuthLayout() {
   return (
@@ -13,7 +13,7 @@ export default function AuthLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#fff' },
+          contentStyle: { backgroundColor: "#fff" },
         }}
       >
         <Stack.Screen name="login" />

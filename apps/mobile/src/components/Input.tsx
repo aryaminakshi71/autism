@@ -2,7 +2,14 @@
  * Input Component
  */
 
-import { View, Text, TextInput, StyleSheet, ViewStyle, TextInputProps } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+  ViewStyle,
+} from "react-native";
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -33,7 +40,9 @@ export function Input({
         {...props}
       />
       {error && <Text style={styles.error}>{error}</Text>}
-      {!error && helperText && <Text style={styles.helperText}>{helperText}</Text>}
+      {!error && helperText && (
+        <Text style={styles.helperText}>{helperText}</Text>
+      )}
     </View>
   );
 }
@@ -44,34 +53,34 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: "#D1D5DB",
     borderRadius: 12,
     padding: 14,
     fontSize: 16,
-    color: '#111827',
-    backgroundColor: '#F9FAFB',
+    color: "#111827",
+    backgroundColor: "#F9FAFB",
   },
   inputError: {
-    borderColor: '#EF4444',
+    borderColor: "#EF4444",
   },
   multiline: {
     minHeight: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   error: {
     fontSize: 12,
-    color: '#EF4444',
+    color: "#EF4444",
     marginTop: 4,
   },
   helperText: {
     fontSize: 12,
-    color: '#6B7280',
+    color: "#6B7280",
     marginTop: 4,
   },
 });

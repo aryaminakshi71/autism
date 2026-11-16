@@ -129,6 +129,12 @@ function AssessmentsPage() {
     ]);
   };
 
+  const handleDeleteAssessment = (id: string) => {
+    if (confirm("Are you sure you want to delete this assessment?")) {
+      setAssessments((prev) => prev.filter((a) => a.id !== id));
+    }
+  };
+
   const filteredAssessments = assessments.filter((assessment) => {
     const matchesSearch =
       assessment.patient.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -166,7 +172,7 @@ function AssessmentsPage() {
     return colors[type] || "bg-gray-100 text-gray-700";
   };
 
-  const formatDate = (dateString: string | null) => {
+  const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return "Not scheduled";
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -391,6 +397,14 @@ function AssessmentsPage() {
                 </button>
               </div>
             )}
+            <div className="mt-4 flex justify-end border-gray-100 border-t pt-4">
+              <button
+                onClick={() => handleDeleteAssessment(assessment.id)}
+                className="flex items-center space-x-1 font-medium text-red-600 text-sm hover:text-red-800"
+              >
+                <span>Delete</span>
+              </button>
+            </div>
           </div>
         ))}
       </div>

@@ -2,7 +2,7 @@
  * ProgressBar Component
  */
 
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from "react-native";
 
 interface ProgressBarProps {
   progress: number; // 0-100
@@ -13,7 +13,7 @@ interface ProgressBarProps {
 
 export function ProgressBar({
   progress,
-  color = '#7C3AED',
+  color = "#7C3AED",
   showLabel = true,
   height = 8,
 }: ProgressBarProps) {
@@ -42,24 +42,24 @@ export function ProgressBar({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   track: {
     flex: 1,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: "#E5E7EB",
     borderRadius: 4,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   fill: {
     borderRadius: 4,
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     minWidth: 40,
-    textAlign: 'right',
+    textAlign: "right",
   },
 });

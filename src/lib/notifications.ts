@@ -32,7 +32,9 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
 
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(vapidKey),
+      applicationServerKey: urlBase64ToUint8Array(
+        vapidKey,
+      ) as unknown as BufferSource,
     });
 
     await fetch("/api/push/subscribe", {
@@ -145,7 +147,7 @@ export async function sendTestNotification(
     tag: payload.tag,
     data: payload.data,
     actions: payload.actions,
-  });
+  } as NotificationOptions);
 }
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {

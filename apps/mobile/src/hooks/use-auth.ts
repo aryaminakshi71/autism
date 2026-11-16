@@ -3,12 +3,19 @@
  * React hook for authentication state
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { authStore, type User, type AuthState } from '../stores/auth-store';
+import { useCallback, useEffect, useState } from "react";
+import { type AuthState, type User, authStore } from "../stores/auth-store";
 
 export interface UseAuthReturn extends AuthState {
-  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
+  signIn: (
+    email: string,
+    password: string,
+  ) => Promise<{ success: boolean; error?: string }>;
+  signUp: (
+    email: string,
+    password: string,
+    name: string,
+  ) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   enableDemoMode: () => Promise<void>;
   updateProfile: (updates: Partial<User>) => Promise<void>;
@@ -28,9 +35,12 @@ export function useAuth(): UseAuthReturn {
     return authStore.signIn(email, password);
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string, name: string) => {
-    return authStore.signUp(email, password, name);
-  }, []);
+  const signUp = useCallback(
+    async (email: string, password: string, name: string) => {
+      return authStore.signUp(email, password, name);
+    },
+    [],
+  );
 
   const signOut = useCallback(async () => {
     return authStore.signOut();

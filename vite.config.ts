@@ -4,6 +4,7 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react";
+import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, loadEnv } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -37,6 +38,12 @@ export default defineConfig(({ mode }) => {
       port: Number(port),
       host: process.env.HOST ?? "127.0.0.1",
       strictPort: true,
+      proxy: {
+        "/api": {
+          target: env.VITE_LOCAL_API_URL || "http://127.0.0.1:8787",
+          changeOrigin: true,
+        },
+      },
     },
     plugins: [
       tsconfigPaths({
@@ -55,6 +62,17 @@ export default defineConfig(({ mode }) => {
         server: { entry: "./src/server.ts" },
       }),
       react(),
+      // Bundle analyzer - run with ANALYZE=true bun run build
+      ...(process.env.ANALYZE === "true"
+        ? [
+            visualizer({
+              open: true,
+              filename: "dist/stats.html",
+              gzipSize: true,
+              brotliSize: true,
+            }),
+          ]
+        : []),
     ].filter(Boolean),
   };
 });

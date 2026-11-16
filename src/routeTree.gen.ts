@@ -8,492 +8,492 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as ApiAuthSplatRouteImport } from "./routes/api/auth.$";
-import { Route as ApiHealthRouteImport } from "./routes/api/health";
-import { Route as ApiOpenapiSplatRouteImport } from "./routes/api/openapi.$";
-import { Route as ApiRpcSplatRouteImport } from "./routes/api/rpc.$";
-import { Route as ContactRouteImport } from "./routes/contact";
-import { Route as DashboardAnalyticsRouteImport } from "./routes/dashboard/analytics";
-import { Route as DashboardAssessmentsIndexRouteImport } from "./routes/dashboard/assessments/index";
-import { Route as DashboardCommunicationIndexRouteImport } from "./routes/dashboard/communication/index";
-import { Route as DashboardGoalsIndexRouteImport } from "./routes/dashboard/goals/index";
-import { Route as DashboardIndexRouteImport } from "./routes/dashboard/index";
-import { Route as DashboardPatientsIndexRouteImport } from "./routes/dashboard/patients/index";
-import { Route as DashboardReportsRouteImport } from "./routes/dashboard/reports";
-import { Route as DashboardSchedulesIndexRouteImport } from "./routes/dashboard/schedules/index";
-import { Route as DashboardSessionsIndexRouteImport } from "./routes/dashboard/sessions/index";
-import { Route as DashboardSettingsRouteImport } from "./routes/dashboard/settings";
-import { Route as DashboardUsersRouteImport } from "./routes/dashboard/users";
-import { Route as DemoRouteImport } from "./routes/demo";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as LoginRouteImport } from "./routes/login";
-import { Route as PricingRouteImport } from "./routes/pricing";
-import { Route as PrivacyRouteImport } from "./routes/privacy";
-import { Route as RegisterRouteImport } from "./routes/register";
-import { Route as TermsRouteImport } from "./routes/terms";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as DemoRouteImport } from './routes/demo'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardUsersRouteImport } from './routes/dashboard/users'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as DashboardReportsRouteImport } from './routes/dashboard/reports'
+import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard/analytics'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as DashboardSessionsIndexRouteImport } from './routes/dashboard/sessions/index'
+import { Route as DashboardSchedulesIndexRouteImport } from './routes/dashboard/schedules/index'
+import { Route as DashboardPatientsIndexRouteImport } from './routes/dashboard/patients/index'
+import { Route as DashboardGoalsIndexRouteImport } from './routes/dashboard/goals/index'
+import { Route as DashboardCommunicationIndexRouteImport } from './routes/dashboard/communication/index'
+import { Route as DashboardAssessmentsIndexRouteImport } from './routes/dashboard/assessments/index'
+import { Route as ApiRpcSplatRouteImport } from './routes/api/rpc.$'
+import { Route as ApiOpenapiSplatRouteImport } from './routes/api/openapi.$'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
 const TermsRoute = TermsRouteImport.update({
-  id: "/terms",
-  path: "/terms",
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
-  id: "/register",
-  path: "/register",
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
-  id: "/privacy",
-  path: "/privacy",
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const PricingRoute = PricingRouteImport.update({
-  id: "/pricing",
-  path: "/pricing",
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const LoginRoute = LoginRouteImport.update({
-  id: "/login",
-  path: "/login",
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DemoRoute = DemoRouteImport.update({
-  id: "/demo",
-  path: "/demo",
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ContactRoute = ContactRouteImport.update({
-  id: "/contact",
-  path: "/contact",
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: "/dashboard/",
-  path: "/dashboard/",
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardUsersRoute = DashboardUsersRouteImport.update({
-  id: "/dashboard/users",
-  path: "/dashboard/users",
+  id: '/dashboard/users',
+  path: '/dashboard/users',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
-  id: "/dashboard/settings",
-  path: "/dashboard/settings",
+  id: '/dashboard/settings',
+  path: '/dashboard/settings',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardReportsRoute = DashboardReportsRouteImport.update({
-  id: "/dashboard/reports",
-  path: "/dashboard/reports",
+  id: '/dashboard/reports',
+  path: '/dashboard/reports',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
-  id: "/dashboard/analytics",
-  path: "/dashboard/analytics",
+  id: '/dashboard/analytics',
+  path: '/dashboard/analytics',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
-  id: "/api/health",
-  path: "/api/health",
+  id: '/api/health',
+  path: '/api/health',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardSessionsIndexRoute = DashboardSessionsIndexRouteImport.update({
-  id: "/dashboard/sessions/",
-  path: "/dashboard/sessions/",
+  id: '/dashboard/sessions/',
+  path: '/dashboard/sessions/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardSchedulesIndexRoute = DashboardSchedulesIndexRouteImport.update({
-  id: "/dashboard/schedules/",
-  path: "/dashboard/schedules/",
+  id: '/dashboard/schedules/',
+  path: '/dashboard/schedules/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardPatientsIndexRoute = DashboardPatientsIndexRouteImport.update({
-  id: "/dashboard/patients/",
-  path: "/dashboard/patients/",
+  id: '/dashboard/patients/',
+  path: '/dashboard/patients/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardGoalsIndexRoute = DashboardGoalsIndexRouteImport.update({
-  id: "/dashboard/goals/",
-  path: "/dashboard/goals/",
+  id: '/dashboard/goals/',
+  path: '/dashboard/goals/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DashboardCommunicationIndexRoute =
   DashboardCommunicationIndexRouteImport.update({
-    id: "/dashboard/communication/",
-    path: "/dashboard/communication/",
+    id: '/dashboard/communication/',
+    path: '/dashboard/communication/',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const DashboardAssessmentsIndexRoute =
   DashboardAssessmentsIndexRouteImport.update({
-    id: "/dashboard/assessments/",
-    path: "/dashboard/assessments/",
+    id: '/dashboard/assessments/',
+    path: '/dashboard/assessments/',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
-  id: "/api/rpc/$",
-  path: "/api/rpc/$",
+  id: '/api/rpc/$',
+  path: '/api/rpc/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiOpenapiSplatRoute = ApiOpenapiSplatRouteImport.update({
-  id: "/api/openapi/$",
-  path: "/api/openapi/$",
+  id: '/api/openapi/$',
+  path: '/api/openapi/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: "/api/auth/$",
-  path: "/api/auth/$",
+  id: '/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/contact": typeof ContactRoute;
-  "/demo": typeof DemoRoute;
-  "/login": typeof LoginRoute;
-  "/pricing": typeof PricingRoute;
-  "/privacy": typeof PrivacyRoute;
-  "/register": typeof RegisterRoute;
-  "/terms": typeof TermsRoute;
-  "/api/health": typeof ApiHealthRoute;
-  "/dashboard/analytics": typeof DashboardAnalyticsRoute;
-  "/dashboard/reports": typeof DashboardReportsRoute;
-  "/dashboard/settings": typeof DashboardSettingsRoute;
-  "/dashboard/users": typeof DashboardUsersRoute;
-  "/dashboard/": typeof DashboardIndexRoute;
-  "/api/auth/$": typeof ApiAuthSplatRoute;
-  "/api/openapi/$": typeof ApiOpenapiSplatRoute;
-  "/api/rpc/$": typeof ApiRpcSplatRoute;
-  "/dashboard/assessments/": typeof DashboardAssessmentsIndexRoute;
-  "/dashboard/communication/": typeof DashboardCommunicationIndexRoute;
-  "/dashboard/goals/": typeof DashboardGoalsIndexRoute;
-  "/dashboard/patients/": typeof DashboardPatientsIndexRoute;
-  "/dashboard/schedules/": typeof DashboardSchedulesIndexRoute;
-  "/dashboard/sessions/": typeof DashboardSessionsIndexRoute;
+  '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/demo': typeof DemoRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
+  '/api/health': typeof ApiHealthRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/reports': typeof DashboardReportsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/openapi/$': typeof ApiOpenapiSplatRoute
+  '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/dashboard/assessments/': typeof DashboardAssessmentsIndexRoute
+  '/dashboard/communication/': typeof DashboardCommunicationIndexRoute
+  '/dashboard/goals/': typeof DashboardGoalsIndexRoute
+  '/dashboard/patients/': typeof DashboardPatientsIndexRoute
+  '/dashboard/schedules/': typeof DashboardSchedulesIndexRoute
+  '/dashboard/sessions/': typeof DashboardSessionsIndexRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/contact": typeof ContactRoute;
-  "/demo": typeof DemoRoute;
-  "/login": typeof LoginRoute;
-  "/pricing": typeof PricingRoute;
-  "/privacy": typeof PrivacyRoute;
-  "/register": typeof RegisterRoute;
-  "/terms": typeof TermsRoute;
-  "/api/health": typeof ApiHealthRoute;
-  "/dashboard/analytics": typeof DashboardAnalyticsRoute;
-  "/dashboard/reports": typeof DashboardReportsRoute;
-  "/dashboard/settings": typeof DashboardSettingsRoute;
-  "/dashboard/users": typeof DashboardUsersRoute;
-  "/dashboard": typeof DashboardIndexRoute;
-  "/api/auth/$": typeof ApiAuthSplatRoute;
-  "/api/openapi/$": typeof ApiOpenapiSplatRoute;
-  "/api/rpc/$": typeof ApiRpcSplatRoute;
-  "/dashboard/assessments": typeof DashboardAssessmentsIndexRoute;
-  "/dashboard/communication": typeof DashboardCommunicationIndexRoute;
-  "/dashboard/goals": typeof DashboardGoalsIndexRoute;
-  "/dashboard/patients": typeof DashboardPatientsIndexRoute;
-  "/dashboard/schedules": typeof DashboardSchedulesIndexRoute;
-  "/dashboard/sessions": typeof DashboardSessionsIndexRoute;
+  '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/demo': typeof DemoRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
+  '/api/health': typeof ApiHealthRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/reports': typeof DashboardReportsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/openapi/$': typeof ApiOpenapiSplatRoute
+  '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/dashboard/assessments': typeof DashboardAssessmentsIndexRoute
+  '/dashboard/communication': typeof DashboardCommunicationIndexRoute
+  '/dashboard/goals': typeof DashboardGoalsIndexRoute
+  '/dashboard/patients': typeof DashboardPatientsIndexRoute
+  '/dashboard/schedules': typeof DashboardSchedulesIndexRoute
+  '/dashboard/sessions': typeof DashboardSessionsIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/contact": typeof ContactRoute;
-  "/demo": typeof DemoRoute;
-  "/login": typeof LoginRoute;
-  "/pricing": typeof PricingRoute;
-  "/privacy": typeof PrivacyRoute;
-  "/register": typeof RegisterRoute;
-  "/terms": typeof TermsRoute;
-  "/api/health": typeof ApiHealthRoute;
-  "/dashboard/analytics": typeof DashboardAnalyticsRoute;
-  "/dashboard/reports": typeof DashboardReportsRoute;
-  "/dashboard/settings": typeof DashboardSettingsRoute;
-  "/dashboard/users": typeof DashboardUsersRoute;
-  "/dashboard/": typeof DashboardIndexRoute;
-  "/api/auth/$": typeof ApiAuthSplatRoute;
-  "/api/openapi/$": typeof ApiOpenapiSplatRoute;
-  "/api/rpc/$": typeof ApiRpcSplatRoute;
-  "/dashboard/assessments/": typeof DashboardAssessmentsIndexRoute;
-  "/dashboard/communication/": typeof DashboardCommunicationIndexRoute;
-  "/dashboard/goals/": typeof DashboardGoalsIndexRoute;
-  "/dashboard/patients/": typeof DashboardPatientsIndexRoute;
-  "/dashboard/schedules/": typeof DashboardSchedulesIndexRoute;
-  "/dashboard/sessions/": typeof DashboardSessionsIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/demo': typeof DemoRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
+  '/api/health': typeof ApiHealthRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/reports': typeof DashboardReportsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/openapi/$': typeof ApiOpenapiSplatRoute
+  '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/dashboard/assessments/': typeof DashboardAssessmentsIndexRoute
+  '/dashboard/communication/': typeof DashboardCommunicationIndexRoute
+  '/dashboard/goals/': typeof DashboardGoalsIndexRoute
+  '/dashboard/patients/': typeof DashboardPatientsIndexRoute
+  '/dashboard/schedules/': typeof DashboardSchedulesIndexRoute
+  '/dashboard/sessions/': typeof DashboardSessionsIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/contact"
-    | "/demo"
-    | "/login"
-    | "/pricing"
-    | "/privacy"
-    | "/register"
-    | "/terms"
-    | "/api/health"
-    | "/dashboard/analytics"
-    | "/dashboard/reports"
-    | "/dashboard/settings"
-    | "/dashboard/users"
-    | "/dashboard/"
-    | "/api/auth/$"
-    | "/api/openapi/$"
-    | "/api/rpc/$"
-    | "/dashboard/assessments/"
-    | "/dashboard/communication/"
-    | "/dashboard/goals/"
-    | "/dashboard/patients/"
-    | "/dashboard/schedules/"
-    | "/dashboard/sessions/";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/contact'
+    | '/demo'
+    | '/login'
+    | '/pricing'
+    | '/privacy'
+    | '/register'
+    | '/terms'
+    | '/api/health'
+    | '/dashboard/analytics'
+    | '/dashboard/reports'
+    | '/dashboard/settings'
+    | '/dashboard/users'
+    | '/dashboard/'
+    | '/api/auth/$'
+    | '/api/openapi/$'
+    | '/api/rpc/$'
+    | '/dashboard/assessments/'
+    | '/dashboard/communication/'
+    | '/dashboard/goals/'
+    | '/dashboard/patients/'
+    | '/dashboard/schedules/'
+    | '/dashboard/sessions/'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/contact"
-    | "/demo"
-    | "/login"
-    | "/pricing"
-    | "/privacy"
-    | "/register"
-    | "/terms"
-    | "/api/health"
-    | "/dashboard/analytics"
-    | "/dashboard/reports"
-    | "/dashboard/settings"
-    | "/dashboard/users"
-    | "/dashboard"
-    | "/api/auth/$"
-    | "/api/openapi/$"
-    | "/api/rpc/$"
-    | "/dashboard/assessments"
-    | "/dashboard/communication"
-    | "/dashboard/goals"
-    | "/dashboard/patients"
-    | "/dashboard/schedules"
-    | "/dashboard/sessions";
+    | '/'
+    | '/contact'
+    | '/demo'
+    | '/login'
+    | '/pricing'
+    | '/privacy'
+    | '/register'
+    | '/terms'
+    | '/api/health'
+    | '/dashboard/analytics'
+    | '/dashboard/reports'
+    | '/dashboard/settings'
+    | '/dashboard/users'
+    | '/dashboard'
+    | '/api/auth/$'
+    | '/api/openapi/$'
+    | '/api/rpc/$'
+    | '/dashboard/assessments'
+    | '/dashboard/communication'
+    | '/dashboard/goals'
+    | '/dashboard/patients'
+    | '/dashboard/schedules'
+    | '/dashboard/sessions'
   id:
-    | "__root__"
-    | "/"
-    | "/contact"
-    | "/demo"
-    | "/login"
-    | "/pricing"
-    | "/privacy"
-    | "/register"
-    | "/terms"
-    | "/api/health"
-    | "/dashboard/analytics"
-    | "/dashboard/reports"
-    | "/dashboard/settings"
-    | "/dashboard/users"
-    | "/dashboard/"
-    | "/api/auth/$"
-    | "/api/openapi/$"
-    | "/api/rpc/$"
-    | "/dashboard/assessments/"
-    | "/dashboard/communication/"
-    | "/dashboard/goals/"
-    | "/dashboard/patients/"
-    | "/dashboard/schedules/"
-    | "/dashboard/sessions/";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/contact'
+    | '/demo'
+    | '/login'
+    | '/pricing'
+    | '/privacy'
+    | '/register'
+    | '/terms'
+    | '/api/health'
+    | '/dashboard/analytics'
+    | '/dashboard/reports'
+    | '/dashboard/settings'
+    | '/dashboard/users'
+    | '/dashboard/'
+    | '/api/auth/$'
+    | '/api/openapi/$'
+    | '/api/rpc/$'
+    | '/dashboard/assessments/'
+    | '/dashboard/communication/'
+    | '/dashboard/goals/'
+    | '/dashboard/patients/'
+    | '/dashboard/schedules/'
+    | '/dashboard/sessions/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  ContactRoute: typeof ContactRoute;
-  DemoRoute: typeof DemoRoute;
-  LoginRoute: typeof LoginRoute;
-  PricingRoute: typeof PricingRoute;
-  PrivacyRoute: typeof PrivacyRoute;
-  RegisterRoute: typeof RegisterRoute;
-  TermsRoute: typeof TermsRoute;
-  ApiHealthRoute: typeof ApiHealthRoute;
-  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute;
-  DashboardReportsRoute: typeof DashboardReportsRoute;
-  DashboardSettingsRoute: typeof DashboardSettingsRoute;
-  DashboardUsersRoute: typeof DashboardUsersRoute;
-  DashboardIndexRoute: typeof DashboardIndexRoute;
-  ApiAuthSplatRoute: typeof ApiAuthSplatRoute;
-  ApiOpenapiSplatRoute: typeof ApiOpenapiSplatRoute;
-  ApiRpcSplatRoute: typeof ApiRpcSplatRoute;
-  DashboardAssessmentsIndexRoute: typeof DashboardAssessmentsIndexRoute;
-  DashboardCommunicationIndexRoute: typeof DashboardCommunicationIndexRoute;
-  DashboardGoalsIndexRoute: typeof DashboardGoalsIndexRoute;
-  DashboardPatientsIndexRoute: typeof DashboardPatientsIndexRoute;
-  DashboardSchedulesIndexRoute: typeof DashboardSchedulesIndexRoute;
-  DashboardSessionsIndexRoute: typeof DashboardSessionsIndexRoute;
+  IndexRoute: typeof IndexRoute
+  ContactRoute: typeof ContactRoute
+  DemoRoute: typeof DemoRoute
+  LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  RegisterRoute: typeof RegisterRoute
+  TermsRoute: typeof TermsRoute
+  ApiHealthRoute: typeof ApiHealthRoute
+  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardReportsRoute: typeof DashboardReportsRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardUsersRoute: typeof DashboardUsersRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiOpenapiSplatRoute: typeof ApiOpenapiSplatRoute
+  ApiRpcSplatRoute: typeof ApiRpcSplatRoute
+  DashboardAssessmentsIndexRoute: typeof DashboardAssessmentsIndexRoute
+  DashboardCommunicationIndexRoute: typeof DashboardCommunicationIndexRoute
+  DashboardGoalsIndexRoute: typeof DashboardGoalsIndexRoute
+  DashboardPatientsIndexRoute: typeof DashboardPatientsIndexRoute
+  DashboardSchedulesIndexRoute: typeof DashboardSchedulesIndexRoute
+  DashboardSessionsIndexRoute: typeof DashboardSessionsIndexRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/terms": {
-      id: "/terms";
-      path: "/terms";
-      fullPath: "/terms";
-      preLoaderRoute: typeof TermsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/register": {
-      id: "/register";
-      path: "/register";
-      fullPath: "/register";
-      preLoaderRoute: typeof RegisterRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/privacy": {
-      id: "/privacy";
-      path: "/privacy";
-      fullPath: "/privacy";
-      preLoaderRoute: typeof PrivacyRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/pricing": {
-      id: "/pricing";
-      path: "/pricing";
-      fullPath: "/pricing";
-      preLoaderRoute: typeof PricingRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/login": {
-      id: "/login";
-      path: "/login";
-      fullPath: "/login";
-      preLoaderRoute: typeof LoginRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/demo": {
-      id: "/demo";
-      path: "/demo";
-      fullPath: "/demo";
-      preLoaderRoute: typeof DemoRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/contact": {
-      id: "/contact";
-      path: "/contact";
-      fullPath: "/contact";
-      preLoaderRoute: typeof ContactRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/": {
-      id: "/dashboard/";
-      path: "/dashboard";
-      fullPath: "/dashboard/";
-      preLoaderRoute: typeof DashboardIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/users": {
-      id: "/dashboard/users";
-      path: "/dashboard/users";
-      fullPath: "/dashboard/users";
-      preLoaderRoute: typeof DashboardUsersRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/settings": {
-      id: "/dashboard/settings";
-      path: "/dashboard/settings";
-      fullPath: "/dashboard/settings";
-      preLoaderRoute: typeof DashboardSettingsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/reports": {
-      id: "/dashboard/reports";
-      path: "/dashboard/reports";
-      fullPath: "/dashboard/reports";
-      preLoaderRoute: typeof DashboardReportsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/analytics": {
-      id: "/dashboard/analytics";
-      path: "/dashboard/analytics";
-      fullPath: "/dashboard/analytics";
-      preLoaderRoute: typeof DashboardAnalyticsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/health": {
-      id: "/api/health";
-      path: "/api/health";
-      fullPath: "/api/health";
-      preLoaderRoute: typeof ApiHealthRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/sessions/": {
-      id: "/dashboard/sessions/";
-      path: "/dashboard/sessions";
-      fullPath: "/dashboard/sessions/";
-      preLoaderRoute: typeof DashboardSessionsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/schedules/": {
-      id: "/dashboard/schedules/";
-      path: "/dashboard/schedules";
-      fullPath: "/dashboard/schedules/";
-      preLoaderRoute: typeof DashboardSchedulesIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/patients/": {
-      id: "/dashboard/patients/";
-      path: "/dashboard/patients";
-      fullPath: "/dashboard/patients/";
-      preLoaderRoute: typeof DashboardPatientsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/goals/": {
-      id: "/dashboard/goals/";
-      path: "/dashboard/goals";
-      fullPath: "/dashboard/goals/";
-      preLoaderRoute: typeof DashboardGoalsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/communication/": {
-      id: "/dashboard/communication/";
-      path: "/dashboard/communication";
-      fullPath: "/dashboard/communication/";
-      preLoaderRoute: typeof DashboardCommunicationIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dashboard/assessments/": {
-      id: "/dashboard/assessments/";
-      path: "/dashboard/assessments";
-      fullPath: "/dashboard/assessments/";
-      preLoaderRoute: typeof DashboardAssessmentsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/rpc/$": {
-      id: "/api/rpc/$";
-      path: "/api/rpc/$";
-      fullPath: "/api/rpc/$";
-      preLoaderRoute: typeof ApiRpcSplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/openapi/$": {
-      id: "/api/openapi/$";
-      path: "/api/openapi/$";
-      fullPath: "/api/openapi/$";
-      preLoaderRoute: typeof ApiOpenapiSplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/auth/$": {
-      id: "/api/auth/$";
-      path: "/api/auth/$";
-      fullPath: "/api/auth/$";
-      preLoaderRoute: typeof ApiAuthSplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/users': {
+      id: '/dashboard/users'
+      path: '/dashboard/users'
+      fullPath: '/dashboard/users'
+      preLoaderRoute: typeof DashboardUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/dashboard/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/reports': {
+      id: '/dashboard/reports'
+      path: '/dashboard/reports'
+      fullPath: '/dashboard/reports'
+      preLoaderRoute: typeof DashboardReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/analytics': {
+      id: '/dashboard/analytics'
+      path: '/dashboard/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/sessions/': {
+      id: '/dashboard/sessions/'
+      path: '/dashboard/sessions'
+      fullPath: '/dashboard/sessions/'
+      preLoaderRoute: typeof DashboardSessionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/schedules/': {
+      id: '/dashboard/schedules/'
+      path: '/dashboard/schedules'
+      fullPath: '/dashboard/schedules/'
+      preLoaderRoute: typeof DashboardSchedulesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/patients/': {
+      id: '/dashboard/patients/'
+      path: '/dashboard/patients'
+      fullPath: '/dashboard/patients/'
+      preLoaderRoute: typeof DashboardPatientsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/goals/': {
+      id: '/dashboard/goals/'
+      path: '/dashboard/goals'
+      fullPath: '/dashboard/goals/'
+      preLoaderRoute: typeof DashboardGoalsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/communication/': {
+      id: '/dashboard/communication/'
+      path: '/dashboard/communication'
+      fullPath: '/dashboard/communication/'
+      preLoaderRoute: typeof DashboardCommunicationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/assessments/': {
+      id: '/dashboard/assessments/'
+      path: '/dashboard/assessments'
+      fullPath: '/dashboard/assessments/'
+      preLoaderRoute: typeof DashboardAssessmentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/rpc/$': {
+      id: '/api/rpc/$'
+      path: '/api/rpc/$'
+      fullPath: '/api/rpc/$'
+      preLoaderRoute: typeof ApiRpcSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/openapi/$': {
+      id: '/api/openapi/$'
+      path: '/api/openapi/$'
+      fullPath: '/api/openapi/$'
+      preLoaderRoute: typeof ApiOpenapiSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -521,7 +521,16 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardPatientsIndexRoute: DashboardPatientsIndexRoute,
   DashboardSchedulesIndexRoute: DashboardSchedulesIndexRoute,
   DashboardSessionsIndexRoute: DashboardSessionsIndexRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

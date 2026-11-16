@@ -3,18 +3,18 @@
  * Handles offline data storage and sync when back online
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import NetInfo from '@react-native-community/netinfo';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
 
 // Storage keys
-const OFFLINE_QUEUE_KEY = 'offline_queue';
-const CACHE_PREFIX = 'cache_';
-const OFFLINE_MODE_KEY = 'offline_mode';
+const OFFLINE_QUEUE_KEY = "offline_queue";
+const CACHE_PREFIX = "cache_";
+const OFFLINE_MODE_KEY = "offline_mode";
 
 // Types
 export interface QueuedAction {
   id: string;
-  type: 'CREATE' | 'UPDATE' | 'DELETE';
+  type: "CREATE" | "UPDATE" | "DELETE";
   entity: string;
   data: any;
   timestamp: number;
@@ -66,7 +66,7 @@ class OfflineSyncManager {
   async getOfflineMode(): Promise<boolean> {
     try {
       const value = await AsyncStorage.getItem(OFFLINE_MODE_KEY);
-      return value === 'true';
+      return value === "true";
     } catch {
       return false;
     }
@@ -79,7 +79,7 @@ class OfflineSyncManager {
     try {
       await AsyncStorage.setItem(OFFLINE_MODE_KEY, String(offline));
     } catch (error) {
-      console.error('Failed to set offline mode:', error);
+      console.error("Failed to set offline mode:", error);
     }
   }
 
@@ -89,18 +89,20 @@ class OfflineSyncManager {
   addListener(listener: () => void): () => void {
     this.syncListeners.push(listener);
     return () => {
-      this.syncListeners = this.syncListeners.filter(l => l !== listener);
+      this.syncListeners = this.syncListeners.filter((l) => l !== listener);
     };
   }
 
   private notifyListeners() {
-    this.syncListeners.forEach(listener => listener());
+    this.syncListeners.forEach((listener) => listener());
   }
 
   /**
    * Queue an action for offline sync
    */
-  async queueAction(action: Omit<QueuedAction, 'id' | 'timestamp'>): Promise<void> {
+  async queueAction(
+    action: Omit<QueuedAction, "id" | "timestamp">,
+  ): Promise<void> {
     const queuedAction: QueuedAction = {
       ...action,
       id: `action_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -112,7 +114,7 @@ class OfflineSyncManager {
       const newQueue = [...existingQueue, queuedAction];
       await AsyncStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(newQueue));
     } catch (error) {
-      console.error('Failed to queue action:', error);
+      console.error("Failed to queue action:", error);
     }
   }
 
@@ -135,7 +137,7 @@ class OfflineSyncManager {
     try {
       await AsyncStorage.removeItem(OFFLINE_QUEUE_KEY);
     } catch (error) {
-      console.error('Failed to clear queue:', error);
+      console.error("Failed to clear queue:", error);
     }
   }
 
@@ -161,7 +163,7 @@ class OfflineSyncManager {
         await this.processAction(action);
         success++;
       } catch (error) {
-        console.error('Failed to sync action:', error);
+        console.error("Failed to sync action:", error);
         failed++;
       }
     }
@@ -180,16 +182,20 @@ class OfflineSyncManager {
   private async processAction(action: QueuedAction): Promise<void> {
     // This would make actual API calls in production
     // For now, simulate the sync
-    console.log('Syncing action:', action);
+    console.log("Syncing action:", action);
 
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   /**
    * Cache data locally
    */
-  async setCache<T>(key: string, data: T, ttlMinutes: number = 5): Promise<void> {
+  async setCache<T>(
+    key: string,
+    data: T,
+    ttlMinutes: number = 5,
+  ): Promise<void> {
     try {
       const now = Date.now();
       const entry: CacheEntry<T> = {
@@ -199,7 +205,7 @@ class OfflineSyncManager {
       };
       await AsyncStorage.setItem(CACHE_PREFIX + key, JSON.stringify(entry));
     } catch (error) {
-      console.error('Failed to set cache:', error);
+      console.error("Failed to set cache:", error);
     }
   }
 
@@ -231,10 +237,10 @@ class OfflineSyncManager {
   async clearCache(): Promise<void> {
     try {
       const keys = await AsyncStorage.getAllKeys();
-      const cacheKeys = keys.filter(k => k.startsWith(CACHE_PREFIX));
+      const cacheKeys = keys.filter((k) => k.startsWith(CACHE_PREFIX));
       await AsyncStorage.multiRemove(cacheKeys);
     } catch (error) {
-      console.error('Failed to clear cache:', error);
+      console.error("Failed to clear cache:", error);
     }
   }
 }
@@ -251,7 +257,7 @@ export function useOfflineSync() {
     isOnline,
     isOfflineMode,
     sync: () => offlineSync.sync(),
-    queueAction: (action: Omit<QueuedAction, 'id' | 'timestamp'>) =>
+    queueAction: (action: Omit<QueuedAction, "id" | "timestamp">) =>
       offlineSync.queueAction(action),
   };
 }

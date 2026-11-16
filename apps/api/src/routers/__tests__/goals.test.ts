@@ -1,8 +1,3 @@
-/**
- * Goals Router Tests
- */
-
-import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 import { schema } from "../../procedures";
 import { goalsRouter } from "../goals";
@@ -125,32 +120,29 @@ describe("Goals Router", () => {
   });
 
   describe("create", () => {
-    it.skipIf(!hasDatabase || !testDb)(
-      "should create new goal",
-      async () => {
-        const input = {
-          patientId: testPatientId,
-          name: "Increase eye contact",
-          description: "Increase sustained eye contact",
-          category: "Social",
-          baselineValue: 20,
-          targetValue: 80,
-          unit: "%",
-          masteryCriteria: 80,
-          priority: "high",
-        };
+    it.skipIf(!hasDatabase || !testDb)("should create new goal", async () => {
+      const input = {
+        patientId: testPatientId,
+        name: "Increase eye contact",
+        description: "Increase sustained eye contact",
+        category: "Social",
+        baselineValue: 20,
+        targetValue: 80,
+        unit: "%",
+        masteryCriteria: 80,
+        priority: "high",
+      };
 
-        const result = await goalsRouter.create.handler({
-          context,
-          input,
-        });
+      const result = await goalsRouter.create.handler({
+        context,
+        input,
+      });
 
-        expect(result).toBeDefined();
-        expect(result.name).toBe("Increase eye contact");
-        expect(result.patientId).toBe(testPatientId);
-        expect(result.status).toBe("active");
-      },
-    );
+      expect(result).toBeDefined();
+      expect(result.name).toBe("Increase eye contact");
+      expect(result.patientId).toBe(testPatientId);
+      expect(result.status).toBe("active");
+    });
   });
 
   describe("update", () => {
@@ -186,32 +178,29 @@ describe("Goals Router", () => {
   });
 
   describe("delete", () => {
-    it.skipIf(!hasDatabase || !testDb)(
-      "should delete goal",
-      async () => {
-        // Create a test goal first
-        const { goals } = schema;
-        const [goal] = await testDb
-          .insert(goals)
-          .values({
-            id: crypto.randomUUID(),
-            organizationId: testOrgId,
-            patientId: testPatientId,
-            name: "ToDelete",
-            category: "Communication",
-            targetValue: 100,
-            status: "active",
-            priority: "low",
-          })
-          .returning();
+    it.skipIf(!hasDatabase || !testDb)("should delete goal", async () => {
+      // Create a test goal first
+      const { goals } = schema;
+      const [goal] = await testDb
+        .insert(goals)
+        .values({
+          id: crypto.randomUUID(),
+          organizationId: testOrgId,
+          patientId: testPatientId,
+          name: "ToDelete",
+          category: "Communication",
+          targetValue: 100,
+          status: "active",
+          priority: "low",
+        })
+        .returning();
 
-        const result = await goalsRouter.delete.handler({
-          context,
-          input: { id: goal.id },
-        });
+      const result = await goalsRouter.delete.handler({
+        context,
+        input: { id: goal.id },
+      });
 
-        expect(result.success).toBe(true);
-      },
-    );
+      expect(result.success).toBe(true);
+    });
   });
 });

@@ -3,9 +3,8 @@
  * Provides React hooks for data fetching with caching and offline support
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '../lib/api-client';
-import { offlineCache, CACHE_KEYS } from '../lib/offline-cache';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "../lib/api-client";
 
 // Types
 export interface Patient {
@@ -40,8 +39,8 @@ export interface Goal {
   baselineValue: number;
   targetValue: number;
   currentValue: number;
-  status: 'active' | 'mastered' | 'inactive';
-  priority: 'high' | 'medium' | 'low';
+  status: "active" | "mastered" | "inactive";
+  priority: "high" | "medium" | "low";
 }
 
 export interface Session {
@@ -50,7 +49,7 @@ export interface Session {
   patientId: string;
   patientName?: string;
   type: string;
-  status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled';
+  status: "scheduled" | "in-progress" | "completed" | "cancelled";
   scheduledStart: string;
   scheduledEnd: string;
   location?: string;
@@ -67,23 +66,23 @@ interface PaginatedResponse<T> {
 
 // Headers for demo mode
 const getHeaders = () => ({
-  'Content-Type': 'application/json',
-  'x-demo-mode': 'true',
+  "Content-Type": "application/json",
+  "x-demo-mode": "true",
 });
 
 // API Functions
 const fetchPatients = async (page = 1, limit = 20) => {
   const response = await apiClient.get<PaginatedResponse<Patient>>(
     `/api/v1/patients?page=${page}&limit=${limit}`,
-    getHeaders()
+    getHeaders(),
   );
   return response.data;
 };
 
 const fetchPatientStats = async () => {
   const response = await apiClient.get<PatientStats>(
-    '/api/v1/patients/stats',
-    getHeaders()
+    "/api/v1/patients/stats",
+    getHeaders(),
   );
   return response.data;
 };
@@ -91,33 +90,51 @@ const fetchPatientStats = async () => {
 const fetchGoals = async (patientId?: string) => {
   const url = patientId
     ? `/api/v1/goals?patientId=${patientId}`
-    : '/api/v1/goals';
-  const response = await apiClient.get<PaginatedResponse<Goal>>(url, getHeaders());
+    : "/api/v1/goals";
+  const response = await apiClient.get<PaginatedResponse<Goal>>(
+    url,
+    getHeaders(),
+  );
   return response.data;
 };
 
 const fetchSessions = async (patientId?: string) => {
   const url = patientId
     ? `/api/v1/sessions?patientId=${patientId}`
-    : '/api/v1/sessions';
-  const response = await apiClient.get<PaginatedResponse<Session>>(url, getHeaders());
+    : "/api/v1/sessions";
+  const response = await apiClient.get<PaginatedResponse<Session>>(
+    url,
+    getHeaders(),
+  );
   return response.data;
 };
 
 const createPatient = async (input: Partial<Patient>) => {
-  const response = await apiClient.post<Patient>('/api/v1/patients', {
-    ...input,
-  }, getHeaders());
+  const response = await apiClient.post<Patient>(
+    "/api/v1/patients",
+    {
+      ...input,
+    },
+    getHeaders(),
+  );
   return response.data;
 };
 
 const createGoal = async (input: Partial<Goal>) => {
-  const response = await apiClient.post<Goal>('/api/v1/goals', input, getHeaders());
+  const response = await apiClient.post<Goal>(
+    "/api/v1/goals",
+    input,
+    getHeaders(),
+  );
   return response.data;
 };
 
 const createSession = async (input: Partial<Session>) => {
-  const response = await apiClient.post<Session>('/api/v1/sessions', input, getHeaders());
+  const response = await apiClient.post<Session>(
+    "/api/v1/sessions",
+    input,
+    getHeaders(),
+  );
   return response.data;
 };
 
@@ -125,7 +142,7 @@ const createSession = async (input: Partial<Session>) => {
 
 export function usePatients(page = 1, limit = 20) {
   return useQuery({
-    queryKey: ['patients', page, limit],
+    queryKey: ["patients", page, limit],
     queryFn: () => fetchPatients(page, limit),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
@@ -133,7 +150,7 @@ export function usePatients(page = 1, limit = 20) {
 
 export function usePatientStats() {
   return useQuery({
-    queryKey: ['patients', 'stats'],
+    queryKey: ["patients", "stats"],
     queryFn: fetchPatientStats,
     staleTime: 1000 * 60 * 5,
   });
@@ -141,7 +158,7 @@ export function usePatientStats() {
 
 export function useGoals(patientId?: string) {
   return useQuery({
-    queryKey: ['goals', patientId],
+    queryKey: ["goals", patientId],
     queryFn: () => fetchGoals(patientId),
     staleTime: 1000 * 60 * 5,
   });
@@ -149,7 +166,7 @@ export function useGoals(patientId?: string) {
 
 export function useSessions(patientId?: string) {
   return useQuery({
-    queryKey: ['sessions', patientId],
+    queryKey: ["sessions", patientId],
     queryFn: () => fetchSessions(patientId),
     staleTime: 1000 * 60 * 5,
   });
@@ -161,8 +178,8 @@ export function useCreatePatient() {
   return useMutation({
     mutationFn: createPatient,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['patients'] });
-      queryClient.invalidateQueries({ queryKey: ['patients', 'stats'] });
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
+      queryClient.invalidateQueries({ queryKey: ["patients", "stats"] });
     },
   });
 }
@@ -173,7 +190,7 @@ export function useCreateGoal() {
   return useMutation({
     mutationFn: createGoal,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     },
   });
 }
@@ -184,7 +201,7 @@ export function useCreateSession() {
   return useMutation({
     mutationFn: createSession,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+      queryClient.invalidateQueries({ queryKey: ["sessions"] });
     },
   });
 }

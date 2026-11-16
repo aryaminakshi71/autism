@@ -33,6 +33,14 @@ export default defineConfig(({ mode }) => {
       port: Number(port),
       host: true,
       strictPort: true,
+      // Keep browser requests same-origin in local development while the
+      // clinical API runs in its own Worker on port 8787.
+      proxy: {
+        "/api": {
+          target: env.VITE_LOCAL_API_URL || "http://127.0.0.1:8787",
+          changeOrigin: true,
+        },
+      },
     },
     build: {
       target: "esnext",

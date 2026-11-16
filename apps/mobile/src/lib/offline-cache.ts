@@ -3,9 +3,9 @@
  * Caches API responses locally for offline use
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const CACHE_PREFIX = 'offline_cache_';
+const CACHE_PREFIX = "offline_cache_";
 const CACHE_EXPIRY = 1000 * 60 * 30; // 30 minutes
 
 interface CacheItem<T> {
@@ -32,7 +32,7 @@ class OfflineCache {
 
       return item.data;
     } catch (error) {
-      console.error('Cache get error:', error);
+      console.error("Cache get error:", error);
       return null;
     }
   }
@@ -48,7 +48,7 @@ class OfflineCache {
       };
       await AsyncStorage.setItem(CACHE_PREFIX + key, JSON.stringify(item));
     } catch (error) {
-      console.error('Cache set error:', error);
+      console.error("Cache set error:", error);
     }
   }
 
@@ -59,7 +59,7 @@ class OfflineCache {
     try {
       await AsyncStorage.removeItem(CACHE_PREFIX + key);
     } catch (error) {
-      console.error('Cache remove error:', error);
+      console.error("Cache remove error:", error);
     }
   }
 
@@ -69,10 +69,10 @@ class OfflineCache {
   async clear(): Promise<void> {
     try {
       const keys = await AsyncStorage.getAllKeys();
-      const cacheKeys = keys.filter(k => k.startsWith(CACHE_PREFIX));
+      const cacheKeys = keys.filter((k) => k.startsWith(CACHE_PREFIX));
       await AsyncStorage.multiRemove(cacheKeys);
     } catch (error) {
-      console.error('Cache clear error:', error);
+      console.error("Cache clear error:", error);
     }
   }
 
@@ -89,8 +89,8 @@ export const offlineCache = new OfflineCache();
 
 // Cache keys
 export const CACHE_KEYS = {
-  PATIENTS: 'patients',
-  PATIENTS_STATS: 'patients_stats',
-  GOALS: 'goals',
-  SESSIONS: 'sessions',
+  PATIENTS: "patients",
+  PATIENTS_STATS: "patients_stats",
+  GOALS: "goals",
+  SESSIONS: "sessions",
 };

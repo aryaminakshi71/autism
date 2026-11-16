@@ -2,7 +2,7 @@
  * Sessions API Endpoints
  */
 
-import { apiClient } from '../api-client';
+import { apiClient } from "../api-client";
 
 export interface Session {
   id: string;
@@ -10,7 +10,7 @@ export interface Session {
   patientId: string;
   therapistId?: string;
   type: string;
-  status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled';
+  status: "scheduled" | "in-progress" | "completed" | "cancelled";
   scheduledStart: string;
   scheduledEnd: string;
   actualStart?: string;
@@ -19,7 +19,7 @@ export interface Session {
   location?: string;
   room?: string;
   telehealth: boolean;
-  mood?: 'great' | 'good' | 'okay' | 'struggling';
+  mood?: "great" | "good" | "okay" | "struggling";
   energyLevel?: number;
   notes?: string;
   createdAt: string;
@@ -38,10 +38,10 @@ export interface CreateSessionInput {
 }
 
 export interface UpdateSessionInput extends Partial<CreateSessionInput> {
-  status?: 'scheduled' | 'in-progress' | 'completed' | 'cancelled';
+  status?: "scheduled" | "in-progress" | "completed" | "cancelled";
   actualStart?: string;
   actualEnd?: string;
-  mood?: 'great' | 'good' | 'okay' | 'struggling';
+  mood?: "great" | "good" | "okay" | "struggling";
   energyLevel?: number;
   notes?: string;
 }
@@ -58,12 +58,16 @@ export const sessionsApi = {
   /**
    * Get all sessions with pagination
    */
-  list: async (page = 1, limit = 20, filters?: {
-    patientId?: string;
-    status?: string;
-    startDate?: string;
-    endDate?: string;
-  }): Promise<SessionsListResponse> => {
+  list: async (
+    page = 1,
+    limit = 20,
+    filters?: {
+      patientId?: string;
+      status?: string;
+      startDate?: string;
+      endDate?: string;
+    },
+  ): Promise<SessionsListResponse> => {
     const params: Record<string, string> = {
       page: String(page),
       limit: String(limit),
@@ -73,7 +77,10 @@ export const sessionsApi = {
     if (filters?.startDate) params.startDate = filters.startDate;
     if (filters?.endDate) params.endDate = filters.endDate;
 
-    const response = await apiClient.get<SessionsListResponse>('/sessions', params);
+    const response = await apiClient.get<SessionsListResponse>(
+      "/sessions",
+      params,
+    );
     return response.data;
   },
 
@@ -89,7 +96,7 @@ export const sessionsApi = {
    * Create new session
    */
   create: async (input: CreateSessionInput): Promise<Session> => {
-    const response = await apiClient.post<Session>('/sessions', input);
+    const response = await apiClient.post<Session>("/sessions", input);
     return response.data;
   },
 
@@ -105,7 +112,10 @@ export const sessionsApi = {
    * Start session
    */
   start: async (id: string): Promise<Session> => {
-    const response = await apiClient.patch<Session>(`/sessions/${id}/start`, {});
+    const response = await apiClient.patch<Session>(
+      `/sessions/${id}/start`,
+      {},
+    );
     return response.data;
   },
 
@@ -113,7 +123,10 @@ export const sessionsApi = {
    * Complete session
    */
   complete: async (id: string, notes?: string): Promise<Session> => {
-    const response = await apiClient.patch<Session>(`/sessions/${id}/complete`, { notes });
+    const response = await apiClient.patch<Session>(
+      `/sessions/${id}/complete`,
+      { notes },
+    );
     return response.data;
   },
 
@@ -121,7 +134,9 @@ export const sessionsApi = {
    * Cancel session
    */
   cancel: async (id: string, reason?: string): Promise<Session> => {
-    const response = await apiClient.patch<Session>(`/sessions/${id}/cancel`, { reason });
+    const response = await apiClient.patch<Session>(`/sessions/${id}/cancel`, {
+      reason,
+    });
     return response.data;
   },
 
@@ -136,7 +151,7 @@ export const sessionsApi = {
    * Get sessions for today
    */
   today: async (): Promise<Session[]> => {
-    const response = await apiClient.get<Session[]>('/sessions/today');
+    const response = await apiClient.get<Session[]>("/sessions/today");
     return response.data;
   },
 
@@ -144,7 +159,9 @@ export const sessionsApi = {
    * Get upcoming sessions
    */
   upcoming: async (limit = 5): Promise<Session[]> => {
-    const response = await apiClient.get<Session[]>('/sessions/upcoming', { limit: String(limit) });
+    const response = await apiClient.get<Session[]>("/sessions/upcoming", {
+      limit: String(limit),
+    });
     return response.data;
   },
 };

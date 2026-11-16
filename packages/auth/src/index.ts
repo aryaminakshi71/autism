@@ -16,6 +16,14 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { apiKey, openAPI, organization } from "better-auth/plugins";
 import { createKVStorage } from "./kv-storage";
 
+// Better Auth uses plural *model keys* when `usePlural` is enabled. The
+// storage package exports authSessions (rather than sessions) so it can live
+// beside the clinical sessions table; map it back only for the auth adapter.
+const betterAuthSchema = {
+  ...authSchema,
+  sessions: authSchema.authSessions,
+};
+
 export interface AuthConfig {
   /** Database instance from @autism-legacy-20260205/storage */
   db: Database;
@@ -100,7 +108,7 @@ export function createAuth(config: AuthConfig) {
   return betterAuth({
     database: drizzleAdapter(db, {
       provider: "pg",
-      schema: authSchema,
+      schema: betterAuthSchema,
       usePlural: true,
     }),
     ...(kv ? { secondaryStorage: createKVStorage(kv) } : {}),

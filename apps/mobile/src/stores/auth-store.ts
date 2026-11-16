@@ -3,8 +3,8 @@
  * Manages auth state with AsyncStorage for persistence
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { apiClient } from '../lib/api-client';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiClient } from "../lib/api-client";
 
 export interface User {
   id: string;
@@ -21,10 +21,10 @@ export interface AuthState {
   isLoading: boolean;
 }
 
-const AUTH_STORAGE_KEY = 'auth_state';
+const AUTH_STORAGE_KEY = "auth_state";
 
 // API base URL
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:8787";
 
 class AuthStore {
   private state: AuthState = {
@@ -61,7 +61,7 @@ class AuthStore {
         this.state.isLoading = false;
       }
     } catch (error) {
-      console.error('Failed to load auth state:', error);
+      console.error("Failed to load auth state:", error);
       this.state.isLoading = false;
     }
     this.notifyListeners();
@@ -79,7 +79,7 @@ class AuthStore {
       };
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(toStore));
     } catch (error) {
-      console.error('Failed to save auth state:', error);
+      console.error("Failed to save auth state:", error);
     }
   }
 
@@ -89,7 +89,7 @@ class AuthStore {
   subscribe(listener: (state: AuthState) => void) {
     this.listeners.push(listener);
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
+      this.listeners = this.listeners.filter((l) => l !== listener);
     };
   }
 
@@ -97,7 +97,7 @@ class AuthStore {
    * Notify all listeners of state changes
    */
   private notifyListeners() {
-    this.listeners.forEach(listener => listener(this.state));
+    this.listeners.forEach((listener) => listener(this.state));
   }
 
   /**
@@ -110,14 +110,17 @@ class AuthStore {
   /**
    * Sign in with credentials - calls real API
    */
-  async signIn(email: string, password: string): Promise<{ success: boolean; error?: string }> {
+  async signIn(
+    email: string,
+    password: string,
+  ): Promise<{ success: boolean; error?: string }> {
     this.state.isLoading = true;
     this.notifyListeners();
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
@@ -136,7 +139,9 @@ class AuthStore {
         return { success: true };
       } else {
         // If API fails, try demo mode fallback
-        const error = await response.json().catch(() => ({ message: 'Login failed' }));
+        const error = await response
+          .json()
+          .catch(() => ({ message: "Login failed" }));
         return { success: false, error: error.message };
       }
     } catch (error) {
@@ -144,7 +149,10 @@ class AuthStore {
       this.notifyListeners();
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Network error - make sure the API server is running',
+        error:
+          error instanceof Error
+            ? error.message
+            : "Network error - make sure the API server is running",
       };
     }
   }
@@ -152,14 +160,18 @@ class AuthStore {
   /**
    * Register new user - calls real API
    */
-  async signUp(email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> {
+  async signUp(
+    email: string,
+    password: string,
+    name: string,
+  ): Promise<{ success: boolean; error?: string }> {
     this.state.isLoading = true;
     this.notifyListeners();
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, name }),
       });
 
@@ -177,7 +189,9 @@ class AuthStore {
         this.notifyListeners();
         return { success: true };
       } else {
-        const error = await response.json().catch(() => ({ message: 'Registration failed' }));
+        const error = await response
+          .json()
+          .catch(() => ({ message: "Registration failed" }));
         this.state.isLoading = false;
         this.notifyListeners();
         return { success: false, error: error.message };
@@ -187,7 +201,7 @@ class AuthStore {
       this.notifyListeners();
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Network error',
+        error: error instanceof Error ? error.message : "Network error",
       };
     }
   }
@@ -212,20 +226,20 @@ class AuthStore {
    */
   async enableDemoMode(): Promise<void> {
     const demoUser: User = {
-      id: 'demo-user',
-      email: 'demo@autism.app',
-      name: 'Demo User',
-      role: 'therapist',
-      organizationId: 'demo-org',
+      id: "demo-user",
+      email: "demo@autism.app",
+      name: "Demo User",
+      role: "therapist",
+      organizationId: "demo-org",
     };
 
     this.state = {
       user: demoUser,
-      token: 'demo-token',
+      token: "demo-token",
       isAuthenticated: true,
       isLoading: false,
     };
-    await apiClient.setToken('demo-token');
+    await apiClient.setToken("demo-token");
     await this.saveState();
     this.notifyListeners();
   }

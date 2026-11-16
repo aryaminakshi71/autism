@@ -1,5 +1,7 @@
 "use client";
 
+import { CenterOperationsCommand } from "@/components/operations/CenterOperationsCommand";
+import { SessionNoteWorkspace } from "@/components/notes/SessionNoteWorkspace";
 import { Link, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
@@ -15,6 +17,7 @@ const navItems = [
   { to: "/dashboard/schedules", label: "Visual Schedules" },
   { to: "/dashboard/communication", label: "Communication" },
   { to: "/dashboard/assessments", label: "Assessments" },
+  { to: "/dashboard/operations", label: "Operations" },
   { to: "/dashboard/analytics", label: "Analytics" },
   { to: "/dashboard/settings", label: "Settings" },
 ] as const;
@@ -258,57 +261,7 @@ function DashboardLayout() {
     }
 
     if (currentPath === "/dashboard/sessions") {
-      return (
-        <div className="space-y-5">
-          <h1 className="font-bold text-3xl text-gray-900">Sessions</h1>
-
-          <div className="max-w-xs">
-            <select
-              value={sessionFilter}
-              onChange={(event) =>
-                setSessionFilter(
-                  event.target.value as "all" | "scheduled" | "completed",
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 px-3 py-2"
-            >
-              <option value="all">All statuses</option>
-              <option value="scheduled">Scheduled</option>
-              <option value="completed">Completed</option>
-            </select>
-          </div>
-
-          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-            <table className="w-full">
-              <thead className="bg-gray-50 text-left text-gray-600 text-sm">
-                <tr>
-                  <th className="px-4 py-3">Patient</th>
-                  <th className="px-4 py-3">Session Type</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredSessions.map((session) => (
-                  <tr
-                    key={`${session.patient}-${session.status}`}
-                    className="border-gray-100 border-t"
-                  >
-                    <td className="px-4 py-3 text-gray-900">
-                      {session.patient}
-                    </td>
-                    <td className="px-4 py-3 text-gray-700">
-                      {session.therapy}
-                    </td>
-                    <td className="px-4 py-3 text-gray-700">
-                      {session.status}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      );
+      return <SessionNoteWorkspace />;
     }
 
     if (currentPath === "/dashboard/schedules") {
@@ -444,6 +397,10 @@ function DashboardLayout() {
           </p>
         </div>
       );
+    }
+
+    if (currentPath === "/dashboard/operations") {
+      return <CenterOperationsCommand />;
     }
 
     if (currentPath === "/dashboard/settings") {

@@ -3,8 +3,8 @@
  * Catches React errors and shows fallback UI
  */
 
-import React, { Component, ReactNode } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { Component, ReactNode } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
   children: ReactNode;
@@ -27,7 +27,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught:', error, errorInfo);
+    console.error("ErrorBoundary caught:", error, errorInfo);
   }
 
   handleRetry = () => {
@@ -44,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
         <View style={styles.container}>
           <Text style={styles.title}>Something went wrong</Text>
           <Text style={styles.message}>
-            {this.state.error?.message || 'An unexpected error occurred'}
+            {this.state.error?.message || "An unexpected error occurred"}
           </Text>
           <TouchableOpacity style={styles.button} onPress={this.handleRetry}>
             <Text style={styles.buttonText}>Try Again</Text>
@@ -60,31 +60,31 @@ export class ErrorBoundary extends Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 24,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: "#F9FAFB",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1F2937',
+    fontWeight: "bold",
+    color: "#1F2937",
     marginBottom: 8,
   },
   message: {
     fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
+    color: "#6B7280",
+    textAlign: "center",
     marginBottom: 24,
   },
   button: {
-    backgroundColor: '#8B5CF6',
+    backgroundColor: "#8B5CF6",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
   },
 });

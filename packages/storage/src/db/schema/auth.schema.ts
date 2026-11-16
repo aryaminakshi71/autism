@@ -3,7 +3,10 @@ import { relations } from "drizzle-orm";
 import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 // User table - managed by BetterAuth
-export const users = pgTable("users", {
+// These physical names match the Better Auth migrations already used by the
+// application. Export names stay plural so they can be used consistently by
+// the application and relation definitions.
+export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -20,7 +23,7 @@ export const users = pgTable("users", {
 });
 
 // Session table - managed by BetterAuth
-export const sessions = pgTable("sessions", {
+export const authSessions = pgTable("session", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -41,7 +44,7 @@ export const sessions = pgTable("sessions", {
 });
 
 // Account table - for OAuth providers and credentials
-export const accounts = pgTable("accounts", {
+export const accounts = pgTable("account", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -70,7 +73,7 @@ export const accounts = pgTable("accounts", {
 });
 
 // Verification table - for email verification tokens
-export const verifications = pgTable("verifications", {
+export const verifications = pgTable("verification", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -82,7 +85,7 @@ export const verifications = pgTable("verifications", {
 });
 
 // Organizations table
-export const organizations = pgTable("organizations", {
+export const organizations = pgTable("organization", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -99,7 +102,7 @@ export const organizations = pgTable("organizations", {
 });
 
 // Members table (organization-user relationships)
-export const members = pgTable("members", {
+export const members = pgTable("member", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -116,7 +119,7 @@ export const members = pgTable("members", {
 });
 
 // Invitation table - for org invitations
-export const invitations = pgTable("invitations", {
+export const invitations = pgTable("invitation", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -136,7 +139,7 @@ export const invitations = pgTable("invitations", {
 export const usersRelations = relations(users, ({ many }) => ({
   memberships: many(members),
   accounts: many(accounts),
-  sessions: many(sessions),
+  sessions: many(authSessions),
 }));
 
 export const organizationsRelations = relations(organizations, ({ many }) => ({
@@ -161,9 +164,9 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
   }),
 }));
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
+export const authSessionsRelations = relations(authSessions, ({ one }) => ({
   user: one(users, {
-    fields: [sessions.userId],
+    fields: [authSessions.userId],
     references: [users.id],
   }),
 }));

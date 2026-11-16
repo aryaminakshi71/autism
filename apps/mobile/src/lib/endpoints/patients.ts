@@ -2,7 +2,7 @@
  * Patients API Endpoints
  */
 
-import { apiClient } from '../api-client';
+import { apiClient } from "../api-client";
 
 export interface Patient {
   id: string;
@@ -58,7 +58,7 @@ export const patientsApi = {
    * Get all patients with pagination
    */
   list: async (page = 1, limit = 20): Promise<PatientsListResponse> => {
-    const response = await apiClient.get<PatientsListResponse>('/patients', {
+    const response = await apiClient.get<PatientsListResponse>("/patients", {
       page: String(page),
       limit: String(limit),
     });
@@ -77,7 +77,7 @@ export const patientsApi = {
    * Create new patient
    */
   create: async (input: CreatePatientInput): Promise<Patient> => {
-    const response = await apiClient.post<Patient>('/patients', input);
+    const response = await apiClient.post<Patient>("/patients", input);
     return response.data;
   },
 
@@ -100,7 +100,7 @@ export const patientsApi = {
    * Get patient statistics
    */
   stats: async (): Promise<PatientStats> => {
-    const response = await apiClient.get<PatientStats>('/patients/stats');
+    const response = await apiClient.get<PatientStats>("/patients/stats");
     return response.data;
   },
 
@@ -108,7 +108,9 @@ export const patientsApi = {
    * Search patients
    */
   search: async (query: string): Promise<Patient[]> => {
-    const response = await apiClient.get<Patient[]>('/patients', { search: query });
+    const response = await apiClient.get<Patient[]>("/patients", {
+      search: query,
+    });
     return response.data;
   },
 };

@@ -15,14 +15,14 @@ export interface WebSocketMessage {
 
 export type WebSocketEventHandler = (data: any) => void;
 
-class WebSocketClient {
+export class WebSocketClient {
   private ws: WebSocket | null = null;
   private url: string;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
-  private reconnectTimer: NodeJS.Timeout | null = null;
-  private heartbeatInterval: NodeJS.Timeout | null = null;
+  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
   private eventHandlers: Map<WebSocketEventType, Set<WebSocketEventHandler>> =
     new Map();
   private messageHandlers: Map<string, Set<WebSocketEventHandler>> = new Map();

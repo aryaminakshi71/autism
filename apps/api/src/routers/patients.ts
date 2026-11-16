@@ -8,7 +8,8 @@ import {
   getOrCache,
   invalidateCache,
 } from "@autism-legacy-20260205/storage/redis";
-import { desc, eq, and, like, or } from "drizzle-orm";
+import { and, desc, eq, like, or } from "drizzle-orm";
+import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { z } from "zod";
 import type { OrgContext } from "../context";
 import { trackQuery } from "../lib/db-performance";
@@ -17,12 +18,30 @@ import {
   createDemoPatient,
   deleteDemoPatient,
   getDemoPatient,
-  getDemoPatients,
   getDemoPatientStats,
+  getDemoPatients,
 } from "../lib/demo-data";
-import { getDb, orgAuthed, schema } from "../procedures";
+import { getDb, orgAuthed } from "../procedures";
 
-const { patients } = schema;
+// Match the text-ID clinical migration used by the local application.
+const patients = pgTable("patients", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id").notNull(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  dateOfBirth: timestamp("date_of_birth"),
+  gender: text("gender"),
+  diagnosis: text("diagnosis"),
+  severityLevel: text("severity_level"),
+  primaryLanguage: text("primary_language").notNull(),
+  preferredCommunication: text("preferred_communication").notNull(),
+  status: text("status").notNull(),
+  assignedTherapistId: text("assigned_therapist_id"),
+  guardianUserId: text("guardian_user_id"),
+  createdBy: text("created_by"),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+});
 
 export const patientsRouter = {
   /**
@@ -58,16 +77,28 @@ export const patientsRouter = {
         input,
       }: {
         context: OrgContext;
-        input: { page: number; limit: number; search?: string; status?: string };
+        input: {
+          page: number;
+          limit: number;
+          search?: string;
+          status?: string;
+        };
       }) => {
         if (isDemoRequest(context)) {
-          return getDemoPatients(input.page, input.limit, input.search, input.status);
+          return getDemoPatients(
+            input.page,
+            input.limit,
+            input.search,
+            input.status,
+          );
         }
         const db = getDb(context);
         const offset = (input.page - 1) * input.limit;
 
         // Build where clause
-        const conditions = [eq(patients.organizationId, context.organization.id)];
+        const conditions = [
+          eq((patients as any).organizationId, context.organization.id),
+        ];
         if (input.status) {
           conditions.push(eq(patients.status, input.status));
         }
@@ -76,7 +107,7 @@ export const patientsRouter = {
             or(
               like(patients.firstName, `%${input.search}%`),
               like(patients.lastName, `%${input.search}%`),
-            ),
+            ) as any,
           );
         }
 
@@ -85,12 +116,17 @@ export const patientsRouter = {
         return getOrCache(
           cacheKey,
           async () => {
-            const allPatients = await trackQuery("listPatientsCount", () =>
-              db.select().from(patients).where(and(...conditions)),
+            const allPatients: any[] = await trackQuery(
+              "listPatientsCount",
+              () =>
+                db
+                  .select()
+                  .from(patients)
+                  .where(and(...conditions)),
             );
             const total = allPatients.length;
 
-            const paginatedPatients = await trackQuery(
+            const paginatedPatients: any[] = await trackQuery(
               "listPatientsPaginated",
               () =>
                 db
@@ -108,10 +144,22 @@ export const patientsRouter = {
               page: input.page,
               limit: input.limit,
               totalPages: Math.ceil(total / input.limit),
+            } as {
+              data: any[];
+              total: number;
+              page: number;
+              limit: number;
+              totalPages: number;
             };
           },
           300,
-        );
+        ) as Promise<{
+          data: any[];
+          total: number;
+          page: number;
+          limit: number;
+          totalPages: number;
+        }>;
       },
     ),
 
@@ -128,7 +176,10 @@ export const patientsRouter = {
     .input(z.object({ id: z.string() }))
     .output(z.any())
     .handler(
-      async ({ context, input }: { context: OrgContext; input: { id: string } }) => {
+      async ({
+        context,
+        input,
+      }: { context: OrgContext; input: { id: string } }) => {
         if (isDemoRequest(context)) {
           return getDemoPatient(input.id);
         }
@@ -176,28 +227,31 @@ export const patientsRouter = {
         newThisMonth: z.number(),
       }),
     )
-    .handler(
-      async ({ context }: { context: OrgContext }) => {
-        if (isDemoRequest(context)) {
-          return getDemoPatientStats();
-        }
-        const db = getDb(context);
+    .handler(async ({ context }: { context: OrgContext }) => {
+      if (isDemoRequest(context)) {
+        return getDemoPatientStats();
+      }
+      const db = getDb(context);
 
-        const allPatients = await trackQuery("patientStats", () =>
-          db.select().from(patients).where(eq(patients.organizationId, context.organization.id)),
-        );
+      const allPatients: any[] = await trackQuery("patientStats", () =>
+        db
+          .select()
+          .from(patients)
+          .where(eq((patients as any).organizationId, context.organization.id)),
+      );
 
-        const now = new Date();
-        const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const now = new Date();
+      const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-        return {
-          total: allPatients.length,
-          active: allPatients.filter((p) => p.status === "active").length,
-          inactive: allPatients.filter((p) => p.status === "inactive").length,
-          newThisMonth: allPatients.filter((p) => p.createdAt && p.createdAt >= firstOfMonth).length,
-        };
-      },
-    ),
+      return {
+        total: allPatients.length,
+        active: allPatients.filter((p) => p.status === "active").length,
+        inactive: allPatients.filter((p) => p.status === "inactive").length,
+        newThisMonth: allPatients.filter(
+          (p) => p.createdAt && p.createdAt >= firstOfMonth,
+        ).length,
+      };
+    }),
 
   /**
    * Create a new patient
@@ -249,14 +303,16 @@ export const patientsRouter = {
           });
         }
         const db = getDb(context);
-        const [patient] = await trackQuery("createPatient", () =>
+        const patientResult = await trackQuery("createPatient", () =>
           db
             .insert(patients)
             .values({
               id: crypto.randomUUID(),
               firstName: input.firstName,
               lastName: input.lastName,
-              dateOfBirth: input.dateOfBirth ? new Date(input.dateOfBirth) : null,
+              dateOfBirth: input.dateOfBirth
+                ? new Date(input.dateOfBirth)
+                : null,
               gender: input.gender || null,
               diagnosis: input.diagnosis || null,
               severityLevel: input.severityLevel || null,
@@ -268,6 +324,10 @@ export const patientsRouter = {
             })
             .returning(),
         );
+        const patient =
+          Array.isArray(patientResult) && patientResult.length > 0
+            ? patientResult[0]
+            : null;
 
         await invalidateCache(`patients:list:${context.organization.id}`);
 
@@ -339,13 +399,17 @@ export const patientsRouter = {
           }
         });
 
-        const [patient] = await trackQuery("updatePatient", () =>
+        const patientResult = await trackQuery("updatePatient", () =>
           db
             .update(patients)
             .set(filteredData)
             .where(eq(patients.id, id))
             .returning(),
         );
+        const patient =
+          Array.isArray(patientResult) && patientResult.length > 0
+            ? patientResult[0]
+            : null;
 
         if (!patient) {
           throw new Error("Patient not found");
@@ -371,7 +435,10 @@ export const patientsRouter = {
     .input(z.object({ id: z.string() }))
     .output(z.object({ success: z.boolean() }))
     .handler(
-      async ({ context, input }: { context: OrgContext; input: { id: string } }) => {
+      async ({
+        context,
+        input,
+      }: { context: OrgContext; input: { id: string } }) => {
         if (isDemoRequest(context)) {
           return deleteDemoPatient(input.id);
         }

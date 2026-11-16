@@ -9,7 +9,7 @@ import { OpenAPIGenerator } from "@orpc/openapi";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
@@ -30,6 +30,188 @@ import { loggerMiddleware } from "./middleware/logger";
 // import { initDatadog } from "./lib/datadog";
 import { rateLimitRedis } from "./middleware/rate-limit-redis";
 import { appRouter } from "./routers";
+import { registerOperationsRestRoutes } from "./routes/operations-rest";
+
+type OperationsEntity =
+  | "providers"
+  | "licenses"
+  | "payerCredentialing"
+  | "authorizations"
+  | "payrollEntries"
+  | "claims"
+  | "ledgerEntries";
+
+const operationsEntities = new Set<OperationsEntity>([
+  "providers",
+  "licenses",
+  "payerCredentialing",
+  "authorizations",
+  "payrollEntries",
+  "claims",
+  "ledgerEntries",
+]);
+
+function getOperationTable(entity: OperationsEntity) {
+  const tableByEntity = {
+    providers: schema.providerProfiles,
+    licenses: schema.providerStateLicenses,
+    payerCredentialing: schema.payerCredentialing,
+    authorizations: schema.serviceAuthorizations,
+    payrollEntries: schema.operationsPayrollTimeEntries,
+    claims: schema.insuranceClaims,
+    ledgerEntries: schema.operationsAccountingLedgerEntries,
+  } as const;
+  return tableByEntity[entity] as any;
+}
+
+function asEntity(value: string): OperationsEntity | null {
+  return operationsEntities.has(value as OperationsEntity)
+    ? (value as OperationsEntity)
+    : null;
+}
+
+const stringOrNull = (value: unknown) =>
+  typeof value === "string" && value.trim() ? value : null;
+const stringOrDefault = (value: unknown, fallback: string) =>
+  typeof value === "string" && value.trim() ? value : fallback;
+const numberOrDefault = (value: unknown, fallback = 0) =>
+  typeof value === "number" && Number.isFinite(value) ? value : fallback;
+const booleanOrDefault = (value: unknown, fallback = false) =>
+  typeof value === "boolean" ? value : fallback;
+const dateOrNull = (value: unknown) =>
+  typeof value === "string" && value ? new Date(value) : null;
+const dateOrDefault = (value: unknown, fallback = new Date()) =>
+  typeof value === "string" && value ? new Date(value) : fallback;
+const stringArrayOrNull = (value: unknown) =>
+  Array.isArray(value) ? value.filter((item) => typeof item === "string") : null;
+
+function buildOperationsRestValues(
+  entity: OperationsEntity,
+  record: Record<string, unknown>,
+  orgId: string,
+) {
+  if (entity === "providers") {
+    return {
+      organizationId: orgId,
+      userId: stringOrNull(record.userId),
+      displayName: stringOrDefault(record.displayName, "New Provider"),
+      role: stringOrDefault(record.role, "rbt"),
+      employmentType: stringOrNull(record.employmentType),
+      homeState: stringOrNull(record.homeState),
+      serviceStates: stringArrayOrNull(record.serviceStates),
+      status: stringOrDefault(record.status, "active"),
+      maxClientLoad:
+        record.maxClientLoad === null ? null : numberOrDefault(record.maxClientLoad, 0),
+      notes: stringOrNull(record.notes),
+    };
+  }
+  if (entity === "licenses") {
+    return {
+      organizationId: orgId,
+      providerId: stringOrDefault(record.providerId, ""),
+      state: stringOrDefault(record.state, "WA"),
+      licenseType: stringOrDefault(record.licenseType, "BCBA"),
+      licenseNumber: stringOrNull(record.licenseNumber),
+      status: stringOrDefault(record.status, "pending"),
+      issuedDate: dateOrNull(record.issuedDate),
+      expirationDate: dateOrNull(record.expirationDate),
+      evidenceUrl: stringOrNull(record.evidenceUrl),
+      verifiedBy: stringOrNull(record.verifiedBy),
+      verifiedAt: dateOrNull(record.verifiedAt),
+    };
+  }
+  if (entity === "payerCredentialing") {
+    return {
+      organizationId: orgId,
+      providerId: stringOrNull(record.providerId),
+      payerName: stringOrDefault(record.payerName, "Medicaid"),
+      state: stringOrDefault(record.state, "WA"),
+      networkType: stringOrNull(record.networkType),
+      status: stringOrDefault(record.status, "not_started"),
+      applicationId: stringOrNull(record.applicationId),
+      submittedDate: dateOrNull(record.submittedDate),
+      effectiveDate: dateOrNull(record.effectiveDate),
+      revalidationDate: dateOrNull(record.revalidationDate),
+      portalUrl: stringOrNull(record.portalUrl),
+      notes: stringOrNull(record.notes),
+    };
+  }
+  if (entity === "authorizations") {
+    return {
+      organizationId: orgId,
+      patientId: stringOrDefault(record.patientId, ""),
+      payerCredentialingId: stringOrNull(record.payerCredentialingId),
+      payerName: stringOrDefault(record.payerName, "Medicaid"),
+      authorizationNumber: stringOrNull(record.authorizationNumber),
+      state: stringOrDefault(record.state, "WA"),
+      cptCode: stringOrDefault(record.cptCode, "97153"),
+      modifier: stringOrNull(record.modifier),
+      approvedUnits: numberOrDefault(record.approvedUnits, 0),
+      usedUnits: numberOrDefault(record.usedUnits, 0),
+      startDate: dateOrDefault(record.startDate),
+      endDate: dateOrDefault(record.endDate, new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)),
+      status: stringOrDefault(record.status, "active"),
+      documentUrl: stringOrNull(record.documentUrl),
+    };
+  }
+  if (entity === "payrollEntries") {
+    return {
+      organizationId: orgId,
+      providerId: stringOrNull(record.providerId),
+      patientId: stringOrNull(record.patientId),
+      staffName: stringOrDefault(record.staffName, "New Staff"),
+      role: stringOrDefault(record.role, "rbt"),
+      state: stringOrDefault(record.state, "WA"),
+      center: stringOrNull(record.center),
+      serviceType: stringOrDefault(record.serviceType, "rbt_direct"),
+      clockIn: dateOrDefault(record.clockIn),
+      clockOut: dateOrNull(record.clockOut),
+      paidMinutes: numberOrDefault(record.paidMinutes, 0),
+      billableMinutes: numberOrDefault(record.billableMinutes, 0),
+      noteSigned: booleanOrDefault(record.noteSigned),
+      claimReady: booleanOrDefault(record.claimReady),
+      payrollRunId: stringOrNull(record.payrollRunId),
+    };
+  }
+  if (entity === "claims") {
+    return {
+      organizationId: orgId,
+      patientId: stringOrDefault(record.patientId, ""),
+      sessionId: stringOrNull(record.sessionId),
+      authorizationId: stringOrNull(record.authorizationId),
+      payerName: stringOrDefault(record.payerName, "Medicaid"),
+      state: stringOrDefault(record.state, "WA"),
+      claimNumber: stringOrNull(record.claimNumber),
+      clearinghouseTrace: stringOrNull(record.clearinghouseTrace),
+      status: stringOrDefault(record.status, "draft"),
+      dateOfService: dateOrDefault(record.dateOfService),
+      submittedDate: dateOrNull(record.submittedDate),
+      billedCents: numberOrDefault(record.billedCents, 0),
+      allowedCents:
+        record.allowedCents === null ? null : numberOrDefault(record.allowedCents, 0),
+      paidCents: record.paidCents === null ? null : numberOrDefault(record.paidCents, 0),
+      denialReason: stringOrNull(record.denialReason),
+      nextFollowUpDate: dateOrNull(record.nextFollowUpDate),
+      assignedRcmUserId: stringOrNull(record.assignedRcmUserId),
+    };
+  }
+  return {
+    organizationId: orgId,
+    state: stringOrDefault(record.state, "WA"),
+    center: stringOrNull(record.center),
+    clientLabel: stringOrNull(record.clientLabel),
+    providerId: stringOrNull(record.providerId),
+    patientId: stringOrNull(record.patientId),
+    sourceType: stringOrDefault(record.sourceType, "manual"),
+    sourceId: stringOrNull(record.sourceId),
+    account: stringOrDefault(record.account, "Uncategorized"),
+    debitCents: numberOrDefault(record.debitCents, 0),
+    creditCents: numberOrDefault(record.creditCents, 0),
+    entryDate: dateOrDefault(record.entryDate),
+    memo: stringOrNull(record.memo),
+    postedAt: dateOrNull(record.postedAt),
+  };
+}
 
 /**
  * Create Hono app with all routes
@@ -454,14 +636,35 @@ export function createApp() {
     if (isDemo) {
       return c.json({
         data: [
-          { id: "1", firstName: "Emma", lastName: "Johnson", dateOfBirth: "2019-03-15", diagnosis: "ASD Level 1", status: "active" },
-          { id: "2", firstName: "Liam", lastName: "Williams", dateOfBirth: "2020-07-22", diagnosis: "ASD Level 2", status: "active" },
-          { id: "3", firstName: "Noah", lastName: "Martinez", dateOfBirth: "2018-11-08", diagnosis: "ASD Level 1", status: "active" },
+          {
+            id: "1",
+            firstName: "Emma",
+            lastName: "Johnson",
+            dateOfBirth: "2019-03-15",
+            diagnosis: "ASD Level 1",
+            status: "active",
+          },
+          {
+            id: "2",
+            firstName: "Liam",
+            lastName: "Williams",
+            dateOfBirth: "2020-07-22",
+            diagnosis: "ASD Level 2",
+            status: "active",
+          },
+          {
+            id: "3",
+            firstName: "Noah",
+            lastName: "Martinez",
+            dateOfBirth: "2018-11-08",
+            diagnosis: "ASD Level 1",
+            status: "active",
+          },
         ],
         total: 3,
         page: 1,
         limit: 10,
-        totalPages: 1
+        totalPages: 1,
       });
     }
 
@@ -470,8 +673,14 @@ export function createApp() {
     const allPatients = await db
       .select()
       .from(patients)
-      .where(eq(patients.organizationId, orgId));
-    return c.json({ data: allPatients, total: allPatients.length, page: 1, limit: 10, totalPages: 1 });
+      .where(eq((patients as any).organizationId, orgId));
+    return c.json({
+      data: allPatients,
+      total: allPatients.length,
+      page: 1,
+      limit: 10,
+      totalPages: 1,
+    });
   });
 
   app.post("/api/v1/patients", async (c: any) => {
@@ -488,7 +697,7 @@ export function createApp() {
         dateOfBirth: body?.dateOfBirth || null,
         diagnosis: body?.diagnosis || null,
         status: "active",
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       });
     }
 
@@ -526,13 +735,13 @@ export function createApp() {
     const allPatients = await db
       .select()
       .from(patients)
-      .where(eq(patients.organizationId, orgId));
+      .where(eq((patients as any).organizationId, orgId));
 
     return c.json({
       total: allPatients.length,
-      active: allPatients.filter(p => p.status === "active").length,
-      inactive: allPatients.filter(p => p.status === "inactive").length,
-      newThisMonth: 0
+      active: allPatients.filter((p: any) => p.status === "active").length,
+      inactive: allPatients.filter((p: any) => p.status === "inactive").length,
+      newThisMonth: 0,
     });
   });
 
@@ -544,14 +753,44 @@ export function createApp() {
     if (isDemo) {
       return c.json({
         data: [
-          { id: "1", patientId: "1", patientName: "Emma Johnson", name: "Increase eye contact", category: "Social", currentValue: 75, targetValue: 100, status: "active", priority: "high" },
-          { id: "2", patientId: "1", patientName: "Emma Johnson", name: "Picture exchange communication", category: "Communication", currentValue: 100, targetValue: 100, status: "mastered", priority: "high" },
-          { id: "3", patientId: "2", patientName: "Liam Williams", name: "Turn-taking in games", category: "Social", currentValue: 60, targetValue: 80, status: "active", priority: "medium" },
+          {
+            id: "1",
+            patientId: "1",
+            patientName: "Emma Johnson",
+            name: "Increase eye contact",
+            category: "Social",
+            currentValue: 75,
+            targetValue: 100,
+            status: "active",
+            priority: "high",
+          },
+          {
+            id: "2",
+            patientId: "1",
+            patientName: "Emma Johnson",
+            name: "Picture exchange communication",
+            category: "Communication",
+            currentValue: 100,
+            targetValue: 100,
+            status: "mastered",
+            priority: "high",
+          },
+          {
+            id: "3",
+            patientId: "2",
+            patientName: "Liam Williams",
+            name: "Turn-taking in games",
+            category: "Social",
+            currentValue: 60,
+            targetValue: 80,
+            status: "active",
+            priority: "medium",
+          },
         ],
         total: 3,
         page: 1,
         limit: 10,
-        totalPages: 1
+        totalPages: 1,
       });
     }
 
@@ -561,7 +800,13 @@ export function createApp() {
       .select()
       .from(goals)
       .where(eq(goals.organizationId, orgId));
-    return c.json({ data: allGoals, total: allGoals.length, page: 1, limit: 10, totalPages: 1 });
+    return c.json({
+      data: allGoals,
+      total: allGoals.length,
+      page: 1,
+      limit: 10,
+      totalPages: 1,
+    });
   });
 
   app.post("/api/v1/goals", async (c: any) => {
@@ -582,7 +827,7 @@ export function createApp() {
         currentValue: body?.baselineValue || 0,
         status: "active",
         priority: body?.priority || "medium",
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       });
     }
 
@@ -616,13 +861,31 @@ export function createApp() {
       const now = new Date().toISOString();
       return c.json({
         data: [
-          { id: "1", patientId: "1", patientName: "Emma Johnson", type: "ABA Therapy", status: "scheduled", scheduledStart: now, scheduledEnd: now, telehealth: false },
-          { id: "2", patientId: "2", patientName: "Liam Williams", type: "Speech Therapy", status: "scheduled", scheduledStart: now, scheduledEnd: now, telehealth: false },
+          {
+            id: "1",
+            patientId: "1",
+            patientName: "Emma Johnson",
+            type: "ABA Therapy",
+            status: "scheduled",
+            scheduledStart: now,
+            scheduledEnd: now,
+            telehealth: false,
+          },
+          {
+            id: "2",
+            patientId: "2",
+            patientName: "Liam Williams",
+            type: "Speech Therapy",
+            status: "scheduled",
+            scheduledStart: now,
+            scheduledEnd: now,
+            telehealth: false,
+          },
         ],
         total: 2,
         page: 1,
         limit: 10,
-        totalPages: 1
+        totalPages: 1,
       });
     }
 
@@ -631,8 +894,20 @@ export function createApp() {
     const allSessions = await db
       .select()
       .from(sessions)
-      .where(eq(sessions.organizationId, orgId));
-    return c.json({ data: allSessions, total: allSessions.length, page: 1, limit: 10, totalPages: 1 });
+      .where(
+        eq(
+          (sessions as any).organizationId ||
+            (sessions as any).activeOrganizationId,
+          orgId,
+        ),
+      );
+    return c.json({
+      data: allSessions,
+      total: allSessions.length,
+      page: 1,
+      limit: 10,
+      totalPages: 1,
+    });
   });
 
   app.post("/api/v1/sessions", async (c: any) => {
@@ -651,7 +926,7 @@ export function createApp() {
         scheduledEnd: body?.scheduledEnd || new Date().toISOString(),
         location: body?.location || null,
         telehealth: body?.telehealth || false,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       });
     }
 
@@ -754,6 +1029,8 @@ export function createApp() {
       );
     }
   });
+
+  registerOperationsRestRoutes(app);
 
   // oRPC handler
   const rpcHandler = new RPCHandler(appRouter, {
@@ -876,10 +1153,8 @@ export function createApp() {
   // Scalar API Documentation UI
   app.get("/api/docs", async (c: any) => {
     const { Scalar } = await import("@scalar/hono-api-reference");
-    return Scalar({
-      spec: {
-        url: "/api/openapi.json",
-      },
+    return (Scalar as any)({
+      url: "/api/openapi.json",
       theme: "purple",
     })(c);
   });

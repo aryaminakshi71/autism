@@ -163,6 +163,22 @@ function SchedulesPage() {
     ]);
   };
 
+  const handleDeleteSchedule = (id: string) => {
+    if (confirm("Are you sure you want to delete this schedule?")) {
+      setSchedules((prev) => prev.filter((s) => s.id !== id));
+    }
+  };
+
+  const handleDuplicateSchedule = (schedule: (typeof DEFAULT_SCHEDULES)[0]) => {
+    const newSchedule = {
+      ...schedule,
+      id: String(schedules.length + 1),
+      name: `${schedule.name} (Copy)`,
+      isDefault: false,
+    };
+    setSchedules((prev) => [newSchedule, ...prev]);
+  };
+
   const filteredSchedules = schedules.filter(
     (schedule) =>
       schedule.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -277,10 +293,10 @@ function SchedulesPage() {
                     >
                       <span className="text-xl">{item.icon}</span>
                       <div className="flex-1">
-                        {item.time && (
+                        {(item as any).time && (
                           <span className="flex items-center space-x-1 text-gray-500 text-xs">
                             <Clock className="h-3 w-3" />
-                            <span>{item.time}</span>
+                            <span>{(item as any).time}</span>
                           </span>
                         )}
                         <p
@@ -288,12 +304,12 @@ function SchedulesPage() {
                         >
                           {item.activity}
                         </p>
-                        {item.isFirstThen && (
+                        {(item as any).isFirstThen && (
                           <span className="font-medium text-purple-600 text-xs">
                             First Then
                           </span>
                         )}
-                        {item.isChoice && (
+                        {(item as any).isChoice && (
                           <span className="font-medium text-orange-600 text-xs">
                             Choice Board
                           </span>
@@ -314,7 +330,10 @@ function SchedulesPage() {
               </div>
 
               <div className="mt-4 flex items-center justify-end space-x-3 border-gray-100 border-t pt-4">
-                <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700">
+                <button
+                  onClick={() => handleDuplicateSchedule(schedule)}
+                  className="flex items-center space-x-1 rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+                >
                   <Copy className="h-4 w-4" />
                   <span className="text-sm">Duplicate</span>
                 </button>
@@ -322,7 +341,10 @@ function SchedulesPage() {
                   <Edit className="h-4 w-4" />
                   <span className="text-sm">Edit</span>
                 </button>
-                <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700">
+                <button
+                  onClick={() => handleDeleteSchedule(schedule.id)}
+                  className="flex items-center space-x-1 rounded-lg px-3 py-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
+                >
                   <Trash className="h-4 w-4" />
                   <span className="text-sm">Delete</span>
                 </button>

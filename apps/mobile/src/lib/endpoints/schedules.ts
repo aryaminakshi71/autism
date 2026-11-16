@@ -2,7 +2,7 @@
  * Visual Schedules API Endpoints
  */
 
-import { apiClient } from '../api-client';
+import { apiClient } from "../api-client";
 
 export interface ScheduleItem {
   time: string;
@@ -17,7 +17,7 @@ export interface VisualSchedule {
   patientId: string;
   name: string;
   description?: string;
-  type: 'daily' | 'therapy' | 'bedtime' | 'school' | 'custom';
+  type: "daily" | "therapy" | "bedtime" | "school" | "custom";
   schedule: ScheduleItem[];
   isTemplate: boolean;
   isDefault: boolean;
@@ -29,7 +29,7 @@ export interface CreateScheduleInput {
   patientId: string;
   name: string;
   description?: string;
-  type: 'daily' | 'therapy' | 'bedtime' | 'school' | 'custom';
+  type: "daily" | "therapy" | "bedtime" | "school" | "custom";
   schedule: ScheduleItem[];
   isTemplate?: boolean;
   isDefault?: boolean;
@@ -49,20 +49,28 @@ export const schedulesApi = {
   /**
    * Get all schedules with pagination
    */
-  list: async (page = 1, limit = 20, filters?: {
-    patientId?: string;
-    type?: string;
-    isTemplate?: boolean;
-  }): Promise<SchedulesListResponse> => {
+  list: async (
+    page = 1,
+    limit = 20,
+    filters?: {
+      patientId?: string;
+      type?: string;
+      isTemplate?: boolean;
+    },
+  ): Promise<SchedulesListResponse> => {
     const params: Record<string, string> = {
       page: String(page),
       limit: String(limit),
     };
     if (filters?.patientId) params.patientId = filters.patientId;
     if (filters?.type) params.type = filters.type;
-    if (filters?.isTemplate !== undefined) params.isTemplate = String(filters.isTemplate);
+    if (filters?.isTemplate !== undefined)
+      params.isTemplate = String(filters.isTemplate);
 
-    const response = await apiClient.get<SchedulesListResponse>('/schedules', params);
+    const response = await apiClient.get<SchedulesListResponse>(
+      "/schedules",
+      params,
+    );
     return response.data;
   },
 
@@ -78,25 +86,34 @@ export const schedulesApi = {
    * Create new schedule
    */
   create: async (input: CreateScheduleInput): Promise<VisualSchedule> => {
-    const response = await apiClient.post<VisualSchedule>('/schedules', input);
+    const response = await apiClient.post<VisualSchedule>("/schedules", input);
     return response.data;
   },
 
   /**
    * Update existing schedule
    */
-  update: async (id: string, input: UpdateScheduleInput): Promise<VisualSchedule> => {
-    const response = await apiClient.patch<VisualSchedule>(`/schedules/${id}`, input);
+  update: async (
+    id: string,
+    input: UpdateScheduleInput,
+  ): Promise<VisualSchedule> => {
+    const response = await apiClient.patch<VisualSchedule>(
+      `/schedules/${id}`,
+      input,
+    );
     return response.data;
   },
 
   /**
    * Mark schedule item as completed
    */
-  toggleItemComplete: async (scheduleId: string, itemIndex: number): Promise<VisualSchedule> => {
+  toggleItemComplete: async (
+    scheduleId: string,
+    itemIndex: number,
+  ): Promise<VisualSchedule> => {
     const response = await apiClient.patch<VisualSchedule>(
       `/schedules/${scheduleId}/item/${itemIndex}/toggle`,
-      {}
+      {},
     );
     return response.data;
   },
@@ -112,7 +129,9 @@ export const schedulesApi = {
    * Get templates
    */
   templates: async (): Promise<VisualSchedule[]> => {
-    const response = await apiClient.get<VisualSchedule[]>('/schedules/templates');
+    const response = await apiClient.get<VisualSchedule[]>(
+      "/schedules/templates",
+    );
     return response.data;
   },
 
@@ -120,7 +139,9 @@ export const schedulesApi = {
    * Get schedules for a patient
    */
   byPatient: async (patientId: string): Promise<VisualSchedule[]> => {
-    const response = await apiClient.get<VisualSchedule[]>('/schedules', { patientId });
+    const response = await apiClient.get<VisualSchedule[]>("/schedules", {
+      patientId,
+    });
     return response.data;
   },
 };

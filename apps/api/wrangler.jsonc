@@ -20,11 +20,10 @@
     "port": 8787
   },
 
-  "d1_databases": [
+  "hyperdrive": [
     {
       "binding": "DATABASE",
-      "database_name": "autism",
-      "database_id": "dev-autism"
+      "id": "placeholder-create-hyperdrive-first"
     }
   ]
 }

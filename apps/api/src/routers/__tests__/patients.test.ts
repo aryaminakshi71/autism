@@ -1,8 +1,3 @@
-/**
- * Patients Router Tests
- */
-
-import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 import { schema } from "../../procedures";
 import { patientsRouter } from "../patients";
@@ -154,32 +149,29 @@ describe("Patients Router", () => {
   });
 
   describe("delete", () => {
-    it.skipIf(!hasDatabase || !testDb)(
-      "should delete patient",
-      async () => {
-        // Create a test patient first
-        const { patients } = schema;
-        const [patient] = await testDb
-          .insert(patients)
-          .values({
-            id: crypto.randomUUID(),
-            organizationId: testOrgId,
-            firstName: "ToDelete",
-            lastName: "Patient",
-            status: "active",
-            primaryLanguage: "en",
-            preferredCommunication: "verbal",
-          })
-          .returning();
+    it.skipIf(!hasDatabase || !testDb)("should delete patient", async () => {
+      // Create a test patient first
+      const { patients } = schema;
+      const [patient] = await testDb
+        .insert(patients)
+        .values({
+          id: crypto.randomUUID(),
+          organizationId: testOrgId,
+          firstName: "ToDelete",
+          lastName: "Patient",
+          status: "active",
+          primaryLanguage: "en",
+          preferredCommunication: "verbal",
+        })
+        .returning();
 
-        const result = await patientsRouter.delete.handler({
-          context,
-          input: { id: patient.id },
-        });
+      const result = await patientsRouter.delete.handler({
+        context,
+        input: { id: patient.id },
+      });
 
-        expect(result.success).toBe(true);
-      },
-    );
+      expect(result.success).toBe(true);
+    });
   });
 
   describe("stats", () => {

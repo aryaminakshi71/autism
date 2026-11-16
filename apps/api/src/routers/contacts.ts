@@ -68,23 +68,35 @@ export const contactsRouter = {
           cacheKey,
           async () => {
             // Get total count
-            const allContacts = await trackQuery("listContactsCount", () =>
-              db
-                .select()
-                .from(contacts)
-                .where(eq(contacts.organizationId, context.organization.id)),
+            const allContacts: any[] = await trackQuery(
+              "listContactsCount",
+              () =>
+                db
+                  .select()
+                  .from(contacts)
+                  .where(
+                    eq(
+                      (contacts as any).organizationId,
+                      context.organization.id,
+                    ),
+                  ),
             );
             const total = allContacts.length;
 
             // Get paginated results
-            const paginatedContacts = await trackQuery(
+            const paginatedContacts: any[] = await trackQuery(
               "listContactsPaginated",
               () =>
                 db
                   .select()
                   .from(contacts)
-                  .where(eq(contacts.organizationId, context.organization.id))
-                  .orderBy(desc(contacts.createdAt))
+                  .where(
+                    eq(
+                      (contacts as any).organizationId,
+                      context.organization.id,
+                    ),
+                  )
+                  .orderBy(desc((contacts as any).createdAt))
                   .limit(input.limit)
                   .offset(offset),
             );
@@ -195,7 +207,7 @@ export const contactsRouter = {
           });
         }
         const db = getDb(context);
-        const [contact] = await trackQuery("createContact", () =>
+        const result = await trackQuery("createContact", () =>
           db
             .insert(contacts)
             .values({
@@ -206,9 +218,11 @@ export const contactsRouter = {
               companyName: input.companyName || null,
               organizationId: context.organization.id,
               createdBy: context.user.id,
-            })
+            } as any)
             .returning(),
         );
+        const contact =
+          Array.isArray(result) && result.length > 0 ? result[0] : null;
 
         // Invalidate contacts list cache
         await invalidateCache(`contacts:list:${context.organization.id}`);

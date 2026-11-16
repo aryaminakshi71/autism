@@ -2,13 +2,19 @@
  * Button Component
  */
 
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  size?: "sm" | "md" | "lg";
   disabled?: boolean;
   loading?: boolean;
   className?: string;
@@ -18,8 +24,8 @@ interface ButtonProps {
 export function Button({
   title,
   onPress,
-  variant = 'primary',
-  size = 'md',
+  variant = "primary",
+  size = "md",
   disabled = false,
   loading = false,
   style,
@@ -48,7 +54,9 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === 'primary' || variant === 'danger' ? '#fff' : '#7C3AED'}
+          color={
+            variant === "primary" || variant === "danger" ? "#fff" : "#7C3AED"
+          }
           size="small"
         />
       ) : (
@@ -61,25 +69,25 @@ export function Button({
 const styles = StyleSheet.create({
   base: {
     borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   primary: {
-    backgroundColor: '#7C3AED',
+    backgroundColor: "#7C3AED",
   },
   secondary: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: "#F3F4F6",
   },
   outline: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: '#7C3AED',
+    borderColor: "#7C3AED",
   },
   ghost: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   danger: {
-    backgroundColor: '#EF4444',
+    backgroundColor: "#EF4444",
   },
   sm: {
     paddingVertical: 10,
@@ -97,22 +105,22 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   text: {
-    fontWeight: '600',
+    fontWeight: "600",
   },
   primaryText: {
-    color: '#fff',
+    color: "#fff",
   },
   secondaryText: {
-    color: '#374151',
+    color: "#374151",
   },
   outlineText: {
-    color: '#7C3AED',
+    color: "#7C3AED",
   },
   ghostText: {
-    color: '#7C3AED',
+    color: "#7C3AED",
   },
   dangerText: {
-    color: '#fff',
+    color: "#fff",
   },
   smText: {
     fontSize: 14,

@@ -3,8 +3,8 @@
  * Shows animated placeholder while loading
  */
 
-import { StyleSheet, View, Animated } from 'react-native';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
+import { Animated, StyleSheet, View } from "react-native";
 
 interface SkeletonProps {
   width?: number | string;
@@ -13,7 +13,12 @@ interface SkeletonProps {
   style?: object;
 }
 
-export function Skeleton({ width = '100%', height = 20, borderRadius = 8, style }: SkeletonProps) {
+export function Skeleton({
+  width = "100%",
+  height = 20,
+  borderRadius = 8,
+  style,
+}: SkeletonProps) {
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -29,7 +34,7 @@ export function Skeleton({ width = '100%', height = 20, borderRadius = 8, style 
           duration: 1000,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     );
     animation.start();
     return () => animation.stop();
@@ -42,11 +47,7 @@ export function Skeleton({ width = '100%', height = 20, borderRadius = 8, style 
 
   return (
     <Animated.View
-      style={[
-        styles.skeleton,
-        { width, height, borderRadius, opacity },
-        style,
-      ]}
+      style={[styles.skeleton, { width, height, borderRadius, opacity }, style]}
     />
   );
 }
@@ -79,17 +80,17 @@ export function SkeletonList({ count = 3 }: { count?: number }) {
 
 const styles = StyleSheet.create({
   skeleton: {
-    backgroundColor: '#E5E7EB',
+    backgroundColor: "#E5E7EB",
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
   },
   cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   cardHeaderText: {
     marginLeft: 12,

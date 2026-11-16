@@ -85,6 +85,22 @@ function CommunicationPage() {
     ]);
   };
 
+  const handleDeleteBoard = (id: string) => {
+    if (confirm("Are you sure you want to delete this communication board?")) {
+      setCardSets((prev) => prev.filter((s) => s.id !== id));
+    }
+  };
+
+  const handleDuplicateBoard = (board: (typeof defaultCardSets)[0]) => {
+    const newBoard = {
+      ...board,
+      id: String(cardSets.length + 1),
+      name: `${board.name} (Copy)`,
+      isTemplate: false,
+    };
+    setCardSets((prev) => [newBoard, ...prev]);
+  };
+
   const filteredSets = cardSets.filter(
     (set) =>
       set.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -195,7 +211,10 @@ function CommunicationPage() {
             </div>
 
             <div className="flex items-center justify-between border-gray-100 border-t pt-4 opacity-0 transition-opacity group-hover:opacity-100">
-              <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700">
+              <button
+                onClick={() => handleDuplicateBoard(set)}
+                className="flex items-center space-x-1 rounded-lg px-3 py-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+              >
                 <Copy className="h-4 w-4" />
                 <span className="text-sm">Duplicate</span>
               </button>
@@ -203,7 +222,10 @@ function CommunicationPage() {
                 <Edit className="h-4 w-4" />
                 <span className="text-sm">Edit</span>
               </button>
-              <button className="flex items-center space-x-1 rounded-lg px-3 py-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700">
+              <button
+                onClick={() => handleDeleteBoard(set.id)}
+                className="flex items-center space-x-1 rounded-lg px-3 py-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
+              >
                 <Trash className="h-4 w-4" />
                 <span className="text-sm">Delete</span>
               </button>

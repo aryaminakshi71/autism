@@ -2,19 +2,19 @@
  * Children (Patients) Screen
  */
 
-import { useCallback } from 'react';
+import { useRouter } from "expo-router";
+import { useCallback } from "react";
 import {
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  RefreshControl,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { Card, Button, EmptyState, ProgressBar, Spinner } from '../../src/components';
-import { SkeletonList } from '../../src/components/Skeleton';
-import { usePatients, Patient } from '../../src/hooks/use-api';
+} from "react-native";
+import { Button, EmptyState, ProgressBar } from "../../src/components";
+import { SkeletonList } from "../../src/components/Skeleton";
+import { Patient, usePatients } from "../../src/hooks/use-api";
 
 // Calculate progress (placeholder)
 const calculateProgress = (): number => Math.floor(Math.random() * 40) + 50;
@@ -25,7 +25,10 @@ const calculateAge = (dateOfBirth?: string): number => {
   const birthDate = new Date(dateOfBirth);
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+  if (
+    monthDiff < 0 ||
+    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+  ) {
     age--;
   }
   return age;
@@ -33,7 +36,13 @@ const calculateAge = (dateOfBirth?: string): number => {
 
 export default function ChildrenScreen() {
   const router = useRouter();
-  const { data: patients, isLoading, error, refetch, isRefetching } = usePatients(1, 50);
+  const {
+    data: patients,
+    isLoading,
+    error,
+    refetch,
+    isRefetching,
+  } = usePatients(1, 50);
 
   const onRefresh = useCallback(async () => {
     await refetch();
@@ -48,7 +57,8 @@ export default function ChildrenScreen() {
       >
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>
-            {item.firstName.charAt(0)}{item.lastName.charAt(0)}
+            {item.firstName.charAt(0)}
+            {item.lastName.charAt(0)}
           </Text>
         </View>
         <View style={styles.patientInfo}>
@@ -56,7 +66,9 @@ export default function ChildrenScreen() {
             {item.firstName} {item.lastName}
           </Text>
           {item.dateOfBirth && (
-            <Text style={styles.patientAge}>Age: {calculateAge(item.dateOfBirth)} years</Text>
+            <Text style={styles.patientAge}>
+              Age: {calculateAge(item.dateOfBirth)} years
+            </Text>
           )}
           {item.diagnosis && (
             <Text style={styles.diagnosis}>{item.diagnosis}</Text>
@@ -81,7 +93,7 @@ export default function ChildrenScreen() {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push('/children/add')}
+        onPress={() => router.push("/children/add")}
       >
         <Text style={styles.addButtonText}>+ Add Patient</Text>
       </TouchableOpacity>
@@ -105,7 +117,7 @@ export default function ChildrenScreen() {
             <RefreshControl
               refreshing={isRefetching}
               onRefresh={onRefresh}
-              colors={['#8B5CF6']}
+              colors={["#8B5CF6"]}
             />
           }
           ListEmptyComponent={
@@ -114,7 +126,7 @@ export default function ChildrenScreen() {
               description="Add your first patient to get started"
               icon="👶"
               actionLabel="Add Patient"
-              onAction={() => router.push('/children/add')}
+              onAction={() => router.push("/children/add")}
             />
           }
         />
@@ -126,44 +138,44 @@ export default function ChildrenScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: "#F9FAFB",
   },
   header: {
     padding: 20,
     paddingTop: 60,
-    backgroundColor: '#8B5CF6',
+    backgroundColor: "#8B5CF6",
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: "bold",
+    color: "#fff",
   },
   subtitle: {
     fontSize: 14,
-    color: '#EDE9FE',
+    color: "#EDE9FE",
     marginTop: 4,
   },
   addButton: {
-    backgroundColor: '#8B5CF6',
+    backgroundColor: "#8B5CF6",
     marginHorizontal: 16,
     marginVertical: 12,
     padding: 14,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   addButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   list: {
     paddingHorizontal: 16,
     paddingBottom: 40,
   },
   patientCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     marginVertical: 4,
     padding: 16,
     borderRadius: 12,
@@ -172,14 +184,14 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#8B5CF6',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#8B5CF6",
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatarText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   patientInfo: {
     flex: 1,
@@ -187,39 +199,39 @@ const styles = StyleSheet.create({
   },
   patientName: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1F2937',
+    fontWeight: "600",
+    color: "#1F2937",
   },
   patientAge: {
     fontSize: 14,
-    color: '#6B7280',
+    color: "#6B7280",
     marginTop: 2,
   },
   diagnosis: {
     fontSize: 12,
-    color: '#8B5CF6',
+    color: "#8B5CF6",
     marginTop: 2,
   },
   progressContainer: {
     marginTop: 8,
   },
   progressBadge: {
-    backgroundColor: '#EDE9FE',
+    backgroundColor: "#EDE9FE",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   progressText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#8B5CF6',
+    fontWeight: "600",
+    color: "#8B5CF6",
   },
   errorContainer: {
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   errorText: {
-    color: '#EF4444',
+    color: "#EF4444",
     marginBottom: 12,
   },
 });

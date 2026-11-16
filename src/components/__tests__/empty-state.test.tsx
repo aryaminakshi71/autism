@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import React from "react";
 import { describe, expect, it } from "vitest";
-import { EmptyState } from "../ui/EmptyState";
+import { EmptyState } from "../ui/index";
 
 describe("EmptyState Component", () => {
   it("renders title", () => {
@@ -14,9 +13,11 @@ describe("EmptyState Component", () => {
       <EmptyState
         title="No items"
         description="There are no items to display"
-      />
+      />,
     );
-    expect(screen.getByText("There are no items to display")).toBeInTheDocument();
+    expect(
+      screen.getByText("There are no items to display"),
+    ).toBeInTheDocument();
   });
 
   it("renders icon when provided", () => {
@@ -25,13 +26,10 @@ describe("EmptyState Component", () => {
   });
 
   it("renders action button when provided", () => {
-    render(
-      <EmptyState
-        title="Empty"
-        action={<button>Add Item</button>}
-      />
-    );
-    expect(screen.getByRole("button", { name: "Add Item" })).toBeInTheDocument();
+    render(<EmptyState title="Empty" action={<button>Add Item</button>} />);
+    expect(
+      screen.getByRole("button", { name: "Add Item" }),
+    ).toBeInTheDocument();
   });
 
   it("renders without description when not provided", () => {
@@ -53,6 +51,8 @@ describe("EmptyState Component", () => {
 
   it("applies custom className", () => {
     render(<EmptyState title="Custom" className="custom-empty" />);
-    expect(screen.getByText("Custom").closest("div")).toHaveClass("custom-empty");
+    expect(screen.getByText("Custom").closest("div")).toHaveClass(
+      "custom-empty",
+    );
   });
 });

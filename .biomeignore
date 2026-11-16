@@ -1,0 +1,19 @@
+# Biome ignore patterns
+# Generated files
+src/routeTree.gen.ts
+
+# Test files
+**/__tests__/**
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Build output
+dist/
+node_modules/
+
+# Lock files
+bun.lock
+package-lock.json
+yarn.lock

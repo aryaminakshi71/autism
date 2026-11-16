@@ -2,17 +2,33 @@
  * Home Screen (Dashboard)
  */
 
-import { useCallback } from 'react';
-import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Card, Spinner } from '../../src/components';
-import { Skeleton, SkeletonCard } from '../../src/components/Skeleton';
-import { usePatientStats, useSessions, useGoals, Session } from '../../src/hooks/use-api';
-import { authStore } from '../../src/stores/auth-store';
+import { useRouter } from "expo-router";
+import { useCallback } from "react";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { Card } from "../../src/components";
+import { Skeleton, SkeletonCard } from "../../src/components/Skeleton";
+import {
+  Session,
+  useGoals,
+  usePatientStats,
+  useSessions,
+} from "../../src/hooks/use-api";
+import { authStore } from "../../src/stores/auth-store";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { data: stats, isLoading: statsLoading, refetch: refetchStats, isRefetching: statsRefetching } = usePatientStats();
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    refetch: refetchStats,
+    isRefetching: statsRefetching,
+  } = usePatientStats();
   const { data: sessions, isLoading: sessionsLoading } = useSessions();
   const { data: goals } = useGoals();
 
@@ -23,28 +39,52 @@ export default function HomeScreen() {
   const sessionsData = sessions?.data || [];
   const goalsData = goals?.data || [];
   const upcomingSessions = sessionsData.slice(0, 3);
-  const activeGoals = goalsData.filter((g: any) => g.status === 'active').length || 0;
+  const activeGoals =
+    goalsData.filter((g: any) => g.status === "active").length || 0;
 
   // Format stats for display
   const statsData = [
-    { label: 'Active Patients', value: String(stats?.active || 0), icon: '👶', color: '#8B5CF6' },
-    { label: 'Goals in Progress', value: String(activeGoals), icon: '🎯', color: '#10B981' },
-    { label: 'Sessions This Week', value: String(upcomingSessions.length), icon: '📅', color: '#F59E0B' },
-    { label: 'Assessments Due', value: '0', icon: '📋', color: '#EF4444' },
+    {
+      label: "Active Patients",
+      value: String(stats?.active || 0),
+      icon: "👶",
+      color: "#8B5CF6",
+    },
+    {
+      label: "Goals in Progress",
+      value: String(activeGoals),
+      icon: "🎯",
+      color: "#10B981",
+    },
+    {
+      label: "Sessions This Week",
+      value: String(upcomingSessions.length),
+      icon: "📅",
+      color: "#F59E0B",
+    },
+    { label: "Assessments Due", value: "0", icon: "📋", color: "#EF4444" },
   ];
 
   const formatSessionTime = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
   };
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'Scheduled';
-      case 'in-progress': return 'In Progress';
-      case 'completed': return 'Completed';
-      case 'cancelled': return 'Cancelled';
-      default: return status;
+      case "scheduled":
+        return "Scheduled";
+      case "in-progress":
+        return "In Progress";
+      case "completed":
+        return "Completed";
+      case "cancelled":
+        return "Cancelled";
+      default:
+        return status;
     }
   };
 
@@ -54,26 +94,37 @@ export default function HomeScreen() {
     <ScrollView
       style={styles.container}
       refreshControl={
-        <RefreshControl refreshing={statsRefetching} onRefresh={onRefresh} colors={['#8B5CF6']} />
+        <RefreshControl
+          refreshing={statsRefetching}
+          onRefresh={onRefresh}
+          colors={["#8B5CF6"]}
+        />
       }
     >
       <View style={styles.header}>
         <Text style={styles.title}>Autism Care</Text>
-        <Text style={styles.subtitle}>Welcome back, {user?.name || 'User'}</Text>
+        <Text style={styles.subtitle}>
+          Welcome back, {user?.name || "User"}
+        </Text>
       </View>
 
       <View style={styles.statsGrid}>
         {statsLoading ? (
           <>
-            <Skeleton height={100} style={{ margin: 8, width: '46%' }} />
-            <Skeleton height={100} style={{ margin: 8, width: '46%' }} />
-            <Skeleton height={100} style={{ margin: 8, width: '46%' }} />
-            <Skeleton height={100} style={{ margin: 8, width: '46%' }} />
+            <Skeleton height={100} style={{ margin: 8, width: "46%" }} />
+            <Skeleton height={100} style={{ margin: 8, width: "46%" }} />
+            <Skeleton height={100} style={{ margin: 8, width: "46%" }} />
+            <Skeleton height={100} style={{ margin: 8, width: "46%" }} />
           </>
         ) : (
           statsData.map((stat, index) => (
             <View key={index} style={styles.statCard}>
-              <View style={[styles.statIconContainer, { backgroundColor: stat.color + '20' }]}>
+              <View
+                style={[
+                  styles.statIconContainer,
+                  { backgroundColor: stat.color + "20" },
+                ]}
+              >
                 <Text style={styles.statIcon}>{stat.icon}</Text>
               </View>
               <Text style={styles.statValue}>{stat.value}</Text>
@@ -94,12 +145,18 @@ export default function HomeScreen() {
         upcomingSessions.map((session: Session) => (
           <Card key={session.id} style={styles.sessionCard}>
             <View style={styles.sessionInfo}>
-              <Text style={styles.childName}>{session.patientName || 'Unknown Patient'}</Text>
+              <Text style={styles.childName}>
+                {session.patientName || "Unknown Patient"}
+              </Text>
               <Text style={styles.activity}>{session.type}</Text>
-              <Text style={styles.time}>{formatSessionTime(session.scheduledStart)}</Text>
+              <Text style={styles.time}>
+                {formatSessionTime(session.scheduledStart)}
+              </Text>
             </View>
             <View style={styles.statusBadge}>
-              <Text style={styles.statusText}>{getStatusText(session.status)}</Text>
+              <Text style={styles.statusText}>
+                {getStatusText(session.status)}
+              </Text>
             </View>
           </Card>
         ))
@@ -117,36 +174,36 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: "#F9FAFB",
   },
   header: {
     padding: 20,
     paddingTop: 60,
-    backgroundColor: '#8B5CF6',
+    backgroundColor: "#8B5CF6",
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: "bold",
+    color: "#fff",
   },
   subtitle: {
     fontSize: 14,
-    color: '#EDE9FE',
+    color: "#EDE9FE",
     marginTop: 4,
   },
   statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     padding: 12,
   },
   statCard: {
-    width: '46%',
-    margin: '2%',
-    backgroundColor: '#fff',
+    width: "46%",
+    margin: "2%",
+    backgroundColor: "#fff",
     padding: 16,
     borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
@@ -156,8 +213,8 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 8,
   },
   statIcon: {
@@ -165,26 +222,26 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1F2937',
+    fontWeight: "bold",
+    color: "#1F2937",
   },
   statLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: "#6B7280",
     marginTop: 4,
-    textAlign: 'center',
+    textAlign: "center",
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#1F2937',
+    fontWeight: "600",
+    color: "#1F2937",
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
   },
   sessionCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginHorizontal: 16,
     marginVertical: 4,
   },
@@ -193,37 +250,37 @@ const styles = StyleSheet.create({
   },
   childName: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1F2937',
+    fontWeight: "600",
+    color: "#1F2937",
   },
   activity: {
     fontSize: 14,
-    color: '#6B7280',
+    color: "#6B7280",
     marginTop: 2,
   },
   time: {
     fontSize: 12,
-    color: '#8B5CF6',
+    color: "#8B5CF6",
     marginTop: 2,
   },
   statusBadge: {
-    backgroundColor: '#EDE9FE',
+    backgroundColor: "#EDE9FE",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 8,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   statusText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#8B5CF6',
+    fontWeight: "600",
+    color: "#8B5CF6",
   },
   emptyCard: {
     marginHorizontal: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyText: {
-    color: '#6B7280',
+    color: "#6B7280",
   },
   bottomPadding: {
     height: 40,

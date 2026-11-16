@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import React from "react";
 import { describe, expect, it } from "vitest";
-import { Spinner } from "../ui/Spinner";
+import { Spinner } from "../ui/index";
 
 describe("Spinner Component", () => {
   it("renders spinner element", () => {
@@ -25,7 +24,7 @@ describe("Spinner Component", () => {
   });
 
   it("renders with medium size", () => {
-    render(<Spinner size="md" />);
+    render(<Spinner size="default" />);
     const spinner = screen.getByRole("status");
     expect(spinner).toHaveClass("h-6");
     expect(spinner).toHaveClass("w-6");
@@ -38,6 +37,13 @@ describe("Spinner Component", () => {
     expect(spinner).toHaveClass("w-8");
   });
 
+  it("renders with extra large size", () => {
+    render(<Spinner size="xl" />);
+    const spinner = screen.getByRole("status");
+    expect(spinner).toHaveClass("h-12");
+    expect(spinner).toHaveClass("w-12");
+  });
+
   it("renders with custom className", () => {
     render(<Spinner className="custom-spinner" />);
     expect(screen.getByRole("status")).toHaveClass("custom-spinner");
@@ -48,9 +54,33 @@ describe("Spinner Component", () => {
     expect(screen.getByRole("status")).toHaveAttribute("role", "status");
   });
 
-  it("contains aria-label", () => {
+  it("contains screen reader text", () => {
     render(<Spinner />);
     const spinner = screen.getByRole("status");
-    expect(spinner.getAttribute("aria-label")).toBeTruthy();
+    expect(spinner.textContent).toContain("Loading");
+  });
+
+  it("applies default variant", () => {
+    render(<Spinner />);
+    const spinner = screen.getByRole("status");
+    expect(spinner).toHaveClass("text-gray-400");
+  });
+
+  it("applies primary variant", () => {
+    render(<Spinner variant="primary" />);
+    const spinner = screen.getByRole("status");
+    expect(spinner).toHaveClass("text-indigo-600");
+  });
+
+  it("applies white variant", () => {
+    render(<Spinner variant="white" />);
+    const spinner = screen.getByRole("status");
+    expect(spinner).toHaveClass("text-white");
+  });
+
+  it("has animate-spin class", () => {
+    render(<Spinner />);
+    const spinner = screen.getByRole("status");
+    expect(spinner).toHaveClass("animate-spin");
   });
 });

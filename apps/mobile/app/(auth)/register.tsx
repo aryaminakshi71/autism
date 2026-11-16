@@ -2,34 +2,44 @@
  * Register Screen
  */
 
-import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useAuth } from '../../src/hooks/use-auth';
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useAuth } from "../../src/hooks/use-auth";
 
 export default function RegisterScreen() {
   const router = useRouter();
   const { signUp, isLoading } = useAuth();
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      Alert.alert("Error", "Passwords do not match");
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+      Alert.alert("Error", "Password must be at least 6 characters");
       return;
     }
 
@@ -38,16 +48,16 @@ export default function RegisterScreen() {
     setLoading(false);
 
     if (result.success) {
-      router.replace('/(tabs)');
+      router.replace("/(tabs)");
     } else {
-      Alert.alert('Registration Failed', result.error || 'Please try again');
+      Alert.alert("Registration Failed", result.error || "Please try again");
     }
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
@@ -115,7 +125,7 @@ export default function RegisterScreen() {
             disabled={loading}
           >
             <Text style={styles.buttonText}>
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? "Creating account..." : "Create Account"}
             </Text>
           </TouchableOpacity>
 
@@ -130,7 +140,7 @@ export default function RegisterScreen() {
             onPress={() => router.back()}
           >
             <Text style={styles.loginText}>
-              Already have an account?{' '}
+              Already have an account?{" "}
               <Text style={styles.loginLink}>Sign In</Text>
             </Text>
           </TouchableOpacity>
@@ -143,39 +153,39 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 24,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 40,
   },
   logo: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#7C3AED',
+    fontWeight: "bold",
+    color: "#7C3AED",
   },
   tagline: {
     fontSize: 16,
-    color: '#6B7280',
+    color: "#6B7280",
     marginTop: 4,
   },
   form: {
-    width: '100%',
+    width: "100%",
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#111827',
+    fontWeight: "bold",
+    color: "#111827",
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
+    color: "#6B7280",
     marginBottom: 32,
   },
   inputContainer: {
@@ -183,58 +193,58 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: "#D1D5DB",
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    color: '#111827',
-    backgroundColor: '#F9FAFB',
+    color: "#111827",
+    backgroundColor: "#F9FAFB",
   },
   button: {
-    backgroundColor: '#7C3AED',
+    backgroundColor: "#7C3AED",
     borderRadius: 12,
     padding: 18,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 8,
   },
   buttonDisabled: {
     opacity: 0.6,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 24,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: "#E5E7EB",
   },
   dividerText: {
-    color: '#9CA3AF',
+    color: "#9CA3AF",
     paddingHorizontal: 16,
     fontSize: 14,
   },
   loginButton: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   loginText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: "#6B7280",
   },
   loginLink: {
-    color: '#7C3AED',
-    fontWeight: '600',
+    color: "#7C3AED",
+    fontWeight: "600",
   },
 });

@@ -51,7 +51,7 @@ export default defineConfig({
   webServer: {
     // Start only the web app; it already serves /api/* via integrated server routes.
     command: `SKIP_CLOUDFLARE=true DISABLE_TANSTACK_DEVTOOLS=true HOST=${host} PORT=${port} bun run dev:web`,
-    url: baseURL,
+    url: `${baseURL}/api/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 180000,
     gracefulShutdown: {

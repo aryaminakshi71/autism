@@ -73,3 +73,5 @@ exports/
 generated-envs/
 *-SECURE.csv
 *-SECURE.json
+test-reports/
+browser_test_results/

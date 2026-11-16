@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Calendar, Filter, Plus, Search } from "lucide-react";
+import { Calendar, Edit, Filter, Plus, Search, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
 import { loadEntityList, saveEntityList } from "~/lib/dashboard-local-store";
@@ -79,6 +79,12 @@ function PatientsPage() {
       },
       ...prev,
     ]);
+  };
+
+  const handleDeletePatient = (id: string) => {
+    if (confirm("Are you sure you want to delete this patient?")) {
+      setPatients((prev) => prev.filter((p) => p.id !== id));
+    }
   };
 
   const filteredPatients = patients.filter(
@@ -196,9 +202,17 @@ function PatientsPage() {
                   {patient.lastSession}
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button className="font-medium text-indigo-600 text-sm hover:text-indigo-800">
-                    View Details
-                  </button>
+                  <div className="flex items-center justify-end space-x-2">
+                    <button className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700">
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeletePatient(patient.id)}
+                      className="rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
+                    >
+                      <Trash className="h-4 w-4" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

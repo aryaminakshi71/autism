@@ -8,9 +8,10 @@ import {
   getOrCache,
   invalidateCache,
 } from "@autism-legacy-20260205/storage/redis";
-import { desc, eq, and, gte, lte } from "drizzle-orm";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { z } from "zod";
 import type { OrgContext } from "../context";
+import { writeAuditEvent } from "../lib/audit";
 import { trackQuery } from "../lib/db-performance";
 import { isDemoRequest } from "../lib/demo";
 import {
@@ -20,7 +21,7 @@ import {
   getDemoSessions,
   updateDemoSession,
 } from "../lib/demo-data";
-import { getDb, orgAuthed, schema } from "../procedures";
+import { adminOnly, getDb, orgAuthed, schema } from "../procedures";
 
 const { sessions } = schema;
 
@@ -70,23 +71,38 @@ export const sessionsRouter = {
         };
       }) => {
         if (isDemoRequest(context)) {
-          return getDemoSessions(input.page, input.limit, input.patientId, input.status);
+          return getDemoSessions(
+            input.page,
+            input.limit,
+            input.patientId,
+            input.status,
+          );
         }
         const db = getDb(context);
         const offset = (input.page - 1) * input.limit;
 
-        const conditions = [eq(sessions.organizationId, context.organization.id)];
+        const conditions = [
+          eq(
+            (sessions as any).organizationId ||
+              (sessions as any).activeOrganizationId,
+            context.organization.id,
+          ),
+        ];
         if (input.patientId) {
-          conditions.push(eq(sessions.patientId, input.patientId));
+          conditions.push(eq((sessions as any).patientId, input.patientId));
         }
         if (input.status) {
-          conditions.push(eq(sessions.status, input.status));
+          conditions.push(eq((sessions as any).status, input.status));
         }
         if (input.startDate) {
-          conditions.push(gte(sessions.scheduledStart, new Date(input.startDate)));
+          conditions.push(
+            gte((sessions as any).scheduledStart, new Date(input.startDate)),
+          );
         }
         if (input.endDate) {
-          conditions.push(lte(sessions.scheduledStart, new Date(input.endDate)));
+          conditions.push(
+            lte((sessions as any).scheduledStart, new Date(input.endDate)),
+          );
         }
 
         const cacheKey = `sessions:list:${context.organization.id}:${input.page}:${input.limit}:${input.patientId || "none"}:${input.status || "none"}`;
@@ -95,7 +111,10 @@ export const sessionsRouter = {
           cacheKey,
           async () => {
             const allSessions = await trackQuery("listSessionsCount", () =>
-              db.select().from(sessions).where(and(...conditions)),
+              db
+                .select()
+                .from(sessions)
+                .where(and(...conditions)),
             );
             const total = allSessions.length;
 
@@ -106,7 +125,7 @@ export const sessionsRouter = {
                   .select()
                   .from(sessions)
                   .where(and(...conditions))
-                  .orderBy(desc(sessions.scheduledStart))
+                  .orderBy(desc((sessions as any).scheduledStart))
                   .limit(input.limit)
                   .offset(offset),
             );
@@ -137,7 +156,10 @@ export const sessionsRouter = {
     .input(z.object({ id: z.string() }))
     .output(z.any())
     .handler(
-      async ({ context, input }: { context: OrgContext; input: { id: string } }) => {
+      async ({
+        context,
+        input,
+      }: { context: OrgContext; input: { id: string } }) => {
         if (isDemoRequest(context)) {
           return getDemoSession(input.id);
         }
@@ -161,6 +183,13 @@ export const sessionsRouter = {
             },
             3600,
           );
+        });
+
+        await writeAuditEvent(context, {
+          action: "read",
+          resourceType: "session",
+          resourceId: session.id,
+          patientId: session.patientId,
         });
 
         return session;
@@ -218,7 +247,9 @@ export const sessionsRouter = {
 
         const startDate = new Date(input.scheduledStart);
         const endDate = new Date(input.scheduledEnd);
-        const durationMinutes = Math.round((endDate.getTime() - startDate.getTime()) / 60000);
+        const durationMinutes = Math.round(
+          (endDate.getTime() - startDate.getTime()) / 60000,
+        );
 
         const [session] = await trackQuery("createSession", () =>
           db
@@ -242,6 +273,14 @@ export const sessionsRouter = {
         );
 
         await invalidateCache(`sessions:list:${context.organization.id}`);
+
+        await writeAuditEvent(context, {
+          action: "create",
+          resourceType: "session",
+          resourceId: session.id,
+          patientId: input.patientId,
+          metadata: { type: input.type, telehealth: input.telehealth },
+        });
 
         return session;
       },
@@ -310,7 +349,12 @@ export const sessionsRouter = {
         const filteredData: Record<string, unknown> = {};
         Object.entries(updateData).forEach(([key, value]) => {
           if (value !== undefined) {
-            if (key === "scheduledStart" || key === "scheduledEnd" || key === "actualStart" || key === "actualEnd") {
+            if (
+              key === "scheduledStart" ||
+              key === "scheduledEnd" ||
+              key === "actualStart" ||
+              key === "actualEnd"
+            ) {
               filteredData[key] = new Date(value);
             } else {
               filteredData[key] = value;
@@ -333,6 +377,14 @@ export const sessionsRouter = {
         await invalidateCache(`session:${input.id}`);
         await invalidateCache(`sessions:list:${context.organization.id}`);
 
+        await writeAuditEvent(context, {
+          action: "update",
+          resourceType: "session",
+          resourceId: session.id,
+          patientId: session.patientId,
+          metadata: { changedFields: Object.keys(filteredData) },
+        });
+
         return session;
       },
     ),
@@ -350,9 +402,15 @@ export const sessionsRouter = {
     .input(z.object({ id: z.string() }))
     .output(z.any())
     .handler(
-      async ({ context, input }: { context: OrgContext; input: { id: string } }) => {
+      async ({
+        context,
+        input,
+      }: { context: OrgContext; input: { id: string } }) => {
         if (isDemoRequest(context)) {
-          return updateDemoSession(input.id, { status: "in-progress", actualStart: new Date().toISOString() });
+          return updateDemoSession(input.id, {
+            status: "in-progress",
+            actualStart: new Date().toISOString(),
+          });
         }
         const db = getDb(context);
 
@@ -373,6 +431,13 @@ export const sessionsRouter = {
 
         await invalidateCache(`session:${input.id}`);
         await invalidateCache(`sessions:list:${context.organization.id}`);
+
+        await writeAuditEvent(context, {
+          action: "start",
+          resourceType: "session",
+          resourceId: session.id,
+          patientId: session.patientId,
+        });
 
         return session;
       },
@@ -403,7 +468,12 @@ export const sessionsRouter = {
         input,
       }: {
         context: OrgContext;
-        input: { id: string; mood?: string; energyLevel?: string; notes?: string };
+        input: {
+          id: string;
+          mood?: string;
+          energyLevel?: string;
+          notes?: string;
+        };
       }) => {
         if (isDemoRequest(context)) {
           return updateDemoSession(input.id, {
@@ -416,7 +486,11 @@ export const sessionsRouter = {
         }
         const db = getDb(context);
 
-        const [existing] = await db.select().from(sessions).where(eq(sessions.id, input.id)).limit(1);
+        const [existing] = await db
+          .select()
+          .from(sessions)
+          .where(eq(sessions.id, input.id))
+          .limit(1);
         if (!existing) {
           throw new Error("Session not found");
         }
@@ -424,7 +498,10 @@ export const sessionsRouter = {
         const actualEnd = new Date();
         let durationMinutes = existing.durationMinutes;
         if (existing.actualStart) {
-          durationMinutes = Math.round((actualEnd.getTime() - new Date(existing.actualStart).getTime()) / 60000);
+          durationMinutes = Math.round(
+            (actualEnd.getTime() - new Date(existing.actualStart).getTime()) /
+              60000,
+          );
         }
 
         const [session] = await trackQuery("completeSession", () =>
@@ -445,6 +522,14 @@ export const sessionsRouter = {
         await invalidateCache(`session:${input.id}`);
         await invalidateCache(`sessions:list:${context.organization.id}`);
 
+        await writeAuditEvent(context, {
+          action: "complete",
+          resourceType: "session",
+          resourceId: session.id,
+          patientId: session.patientId,
+          metadata: { durationMinutes: session.durationMinutes ?? null },
+        });
+
         return session;
       },
     ),
@@ -452,7 +537,7 @@ export const sessionsRouter = {
   /**
    * Delete a session
    */
-  delete: orgAuthed
+  delete: adminOnly
     .route({
       method: "DELETE",
       path: "/sessions/:id",
@@ -462,17 +547,35 @@ export const sessionsRouter = {
     .input(z.object({ id: z.string() }))
     .output(z.object({ success: z.boolean() }))
     .handler(
-      async ({ context, input }: { context: OrgContext; input: { id: string } }) => {
+      async ({
+        context,
+        input,
+      }: { context: OrgContext; input: { id: string } }) => {
         if (isDemoRequest(context)) {
           return deleteDemoSession(input.id);
         }
         const db = getDb(context);
+        const [existing] = await db
+          .select({ patientId: sessions.patientId })
+          .from(sessions)
+          .where(eq(sessions.id, input.id))
+          .limit(1);
+        if (!existing) {
+          throw new Error("Session not found");
+        }
         await trackQuery("deleteSession", () =>
           db.delete(sessions).where(eq(sessions.id, input.id)),
         );
 
         await invalidateCache(`session:${input.id}`);
         await invalidateCache(`sessions:list:${context.organization.id}`);
+
+        await writeAuditEvent(context, {
+          action: "delete",
+          resourceType: "session",
+          resourceId: input.id,
+          patientId: existing.patientId,
+        });
 
         return { success: true };
       },

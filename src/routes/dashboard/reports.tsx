@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BarChart3, Download, FileText, Loader2 } from "lucide-react";
+import { BarChart3, Download, FileText, Loader2, Trash } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { DashboardLayout } from "~/components/dashboard/dashboard-layout";
@@ -79,6 +79,13 @@ function ReportsPage() {
       toast.success(`Downloading report: ${report.name}`);
     } else {
       toast.error("Report is not ready for download yet.");
+    }
+  };
+
+  const handleDeleteReport = (reportId: string) => {
+    if (confirm("Are you sure you want to delete this report?")) {
+      setReports((prev) => prev.filter((r) => r.id !== reportId));
+      toast.success("Report deleted successfully");
     }
   };
 
@@ -164,22 +171,31 @@ function ReportsPage() {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-center">
-                  {report.status === "Generated" ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    {report.status === "Generated" ? (
+                      <button
+                        onClick={() => handleDownloadReport(report.id)}
+                        className="flex items-center justify-center gap-1 text-blue-600 text-sm hover:text-blue-800"
+                      >
+                        <Download className="h-4 w-4" /> Download
+                      </button>
+                    ) : report.status === "Processing" ? (
+                      <span className="flex items-center justify-center gap-1 text-sm text-yellow-600">
+                        <Loader2 className="h-4 w-4 animate-spin" /> Processing
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1 text-red-600 text-sm">
+                        Failed
+                      </span>
+                    )}
                     <button
-                      onClick={() => handleDownloadReport(report.id)}
-                      className="mx-auto flex items-center justify-center gap-1 text-blue-600 text-sm hover:text-blue-800"
+                      onClick={() => handleDeleteReport(report.id)}
+                      className="rounded p-1 text-red-500 hover:bg-red-50 hover:text-red-700"
+                      title="Delete"
                     >
-                      <Download className="h-4 w-4" /> Download
+                      <Trash className="h-4 w-4" />
                     </button>
-                  ) : report.status === "Processing" ? (
-                    <span className="mx-auto flex items-center justify-center gap-1 text-sm text-yellow-600">
-                      <Loader2 className="h-4 w-4 animate-spin" /> Processing
-                    </span>
-                  ) : (
-                    <span className="mx-auto flex items-center justify-center gap-1 text-red-600 text-sm">
-                      Failed
-                    </span>
-                  )}
+                  </div>
                 </td>
               </tr>
             ))}

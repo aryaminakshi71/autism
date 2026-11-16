@@ -989,7 +989,12 @@ export function deleteDemoPatient(id: string) {
 }
 
 // Goal functions
-export function getDemoGoals(page: number, limit: number, patientId?: string, status?: string) {
+export function getDemoGoals(
+  page: number,
+  limit: number,
+  patientId?: string,
+  status?: string,
+) {
   let filtered = demoGoals;
   if (patientId) {
     filtered = filtered.filter((g) => g.patientId === patientId);

@@ -8,7 +8,7 @@ import {
   getOrCache,
   invalidateCache,
 } from "@autism-legacy-20260205/storage/redis";
-import { desc, eq, and } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import type { OrgContext } from "../context";
 import { trackQuery } from "../lib/db-performance";
@@ -58,10 +58,20 @@ export const goalsRouter = {
         input,
       }: {
         context: OrgContext;
-        input: { page: number; limit: number; patientId?: string; status?: string };
+        input: {
+          page: number;
+          limit: number;
+          patientId?: string;
+          status?: string;
+        };
       }) => {
         if (isDemoRequest(context)) {
-          return getDemoGoals(input.page, input.limit, input.patientId, input.status);
+          return getDemoGoals(
+            input.page,
+            input.limit,
+            input.patientId,
+            input.status,
+          );
         }
         const db = getDb(context);
         const offset = (input.page - 1) * input.limit;
@@ -79,25 +89,28 @@ export const goalsRouter = {
         return getOrCache(
           cacheKey,
           async () => {
-            const allGoals = await trackQuery("listGoalsCount", () =>
-              db.select().from(goals).where(and(...conditions)),
+            const allGoals: any[] = await trackQuery("listGoalsCount", () =>
+              db
+                .select()
+                .from(goals)
+                .where(and(...conditions)),
             );
             const total = allGoals.length;
 
-            const paginatedGoals = await trackQuery(
+            const paginatedGoals: any[] = await trackQuery(
               "listGoalsPaginated",
               () =>
                 db
                   .select()
                   .from(goals)
                   .where(and(...conditions))
-                  .orderBy(desc(goals.createdAt))
+                  .orderBy(desc((goals as any).createdAt))
                   .limit(input.limit)
                   .offset(offset),
             );
 
             return {
-              data: paginatedGoals,
+              data: paginatedGoals as any[],
               total,
               page: input.page,
               limit: input.limit,
@@ -122,7 +135,10 @@ export const goalsRouter = {
     .input(z.object({ id: z.string() }))
     .output(z.any())
     .handler(
-      async ({ context, input }: { context: OrgContext; input: { id: string } }) => {
+      async ({
+        context,
+        input,
+      }: { context: OrgContext; input: { id: string } }) => {
         if (isDemoRequest(context)) {
           return getDemoGoal(input.id);
         }
@@ -212,7 +228,7 @@ export const goalsRouter = {
           });
         }
         const db = getDb(context);
-        const [goal] = await trackQuery("createGoal", () =>
+        const result = await trackQuery("createGoal", () =>
           db
             .insert(goals)
             .values({
@@ -235,9 +251,11 @@ export const goalsRouter = {
               domain: input.domain || null,
               organizationId: context.organization.id,
               createdBy: context.user.id,
-            })
+            } as any)
             .returning(),
         );
+        const goal =
+          Array.isArray(result) && result.length > 0 ? result[0] : null;
 
         await invalidateCache(`goals:list:${context.organization.id}`);
 
@@ -318,13 +336,15 @@ export const goalsRouter = {
           }
         });
 
-        const [goal] = await trackQuery("updateGoal", () =>
+        const result = await trackQuery("updateGoal", () =>
           db
             .update(goals)
-            .set(filteredData)
-            .where(eq(goals.id, id))
+            .set(filteredData as any)
+            .where(eq((goals as any).id, id))
             .returning(),
         );
+        const goal =
+          Array.isArray(result) && result.length > 0 ? result[0] : null;
 
         if (!goal) {
           throw new Error("Goal not found");
@@ -350,7 +370,10 @@ export const goalsRouter = {
     .input(z.object({ id: z.string() }))
     .output(z.object({ success: z.boolean() }))
     .handler(
-      async ({ context, input }: { context: OrgContext; input: { id: string } }) => {
+      async ({
+        context,
+        input,
+      }: { context: OrgContext; input: { id: string } }) => {
         if (isDemoRequest(context)) {
           return deleteDemoGoal(input.id);
         }

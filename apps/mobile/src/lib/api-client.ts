@@ -3,11 +3,11 @@
  * Handles all API requests with proper authentication
  */
 
-import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 // Base API URL - should be configured via environment
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:8787";
 
 export interface ApiResponse<T> {
   data: T;
@@ -27,11 +27,11 @@ class ApiClient {
   private async getToken(): Promise<string | null> {
     try {
       // First try secure store
-      const token = await SecureStore.getItemAsync('auth_token');
+      const token = await SecureStore.getItemAsync("auth_token");
       if (token) return token;
 
       // Fallback to AsyncStorage
-      const stored = await AsyncStorage.getItem('auth_state');
+      const stored = await AsyncStorage.getItem("auth_state");
       if (stored) {
         const parsed = JSON.parse(stored);
         return parsed.token || null;
@@ -47,19 +47,19 @@ class ApiClient {
    */
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
     const token = await this.getToken();
 
     const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      'x-demo-mode': 'true', // Enable demo mode for testing
+      "Content-Type": "application/json",
+      "x-demo-mode": "true", // Enable demo mode for testing
       ...options.headers,
     };
 
     if (token) {
-      (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+      (headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
     }
 
     try {
@@ -81,7 +81,7 @@ class ApiClient {
     } catch (error) {
       return {
         data: null as unknown as T,
-        error: error instanceof Error ? error.message : 'Network error',
+        error: error instanceof Error ? error.message : "Network error",
       };
     }
   }
@@ -89,13 +89,16 @@ class ApiClient {
   /**
    * GET request
    */
-  async get<T>(endpoint: string, params?: Record<string, string>): Promise<ApiResponse<T>> {
+  async get<T>(
+    endpoint: string,
+    params?: Record<string, string>,
+  ): Promise<ApiResponse<T>> {
     let url = endpoint;
     if (params) {
       const searchParams = new URLSearchParams(params);
       url += `?${searchParams.toString()}`;
     }
-    return this.request<T>(url, { method: 'GET' });
+    return this.request<T>(url, { method: "GET" });
   }
 
   /**
@@ -103,7 +106,7 @@ class ApiClient {
    */
   async post<T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
-      method: 'POST',
+      method: "POST",
       body: body ? JSON.stringify(body) : undefined,
     });
   }
@@ -113,7 +116,7 @@ class ApiClient {
    */
   async patch<T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
-      method: 'PATCH',
+      method: "PATCH",
       body: body ? JSON.stringify(body) : undefined,
     });
   }
@@ -123,7 +126,7 @@ class ApiClient {
    */
   async put<T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
-      method: 'PUT',
+      method: "PUT",
       body: body ? JSON.stringify(body) : undefined,
     });
   }
@@ -132,7 +135,7 @@ class ApiClient {
    * DELETE request
    */
   async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
+    return this.request<T>(endpoint, { method: "DELETE" });
   }
 
   /**
@@ -140,14 +143,14 @@ class ApiClient {
    */
   async setToken(token: string): Promise<void> {
     try {
-      await SecureStore.setItemAsync('auth_token', token);
+      await SecureStore.setItemAsync("auth_token", token);
     } catch {
       // Fallback - also store in AsyncStorage
       try {
-        const stored = await AsyncStorage.getItem('auth_state');
+        const stored = await AsyncStorage.getItem("auth_state");
         const parsed = stored ? JSON.parse(stored) : {};
         parsed.token = token;
-        await AsyncStorage.setItem('auth_state', JSON.stringify(parsed));
+        await AsyncStorage.setItem("auth_state", JSON.stringify(parsed));
       } catch {
         // Ignore errors
       }
@@ -159,7 +162,7 @@ class ApiClient {
    */
   async clearToken(): Promise<void> {
     try {
-      await SecureStore.deleteItemAsync('auth_token');
+      await SecureStore.deleteItemAsync("auth_token");
     } catch {
       // Ignore errors
     }

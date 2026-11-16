@@ -2,7 +2,7 @@
  * EmptyState Component
  */
 
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface EmptyStateProps {
   title: string;
@@ -36,8 +36,8 @@ export function EmptyState({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 40,
   },
   icon: {
@@ -46,26 +46,26 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-    textAlign: 'center',
+    fontWeight: "600",
+    color: "#111827",
+    textAlign: "center",
     marginBottom: 8,
   },
   description: {
     fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
+    color: "#6B7280",
+    textAlign: "center",
     marginBottom: 24,
   },
   button: {
-    backgroundColor: '#7C3AED',
+    backgroundColor: "#7C3AED",
     borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 32,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

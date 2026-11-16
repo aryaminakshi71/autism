@@ -2,21 +2,17 @@
  * Card Component
  */
 
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from "react-native";
 
 interface CardProps {
   children: React.ReactNode;
-  padding?: 'none' | 'sm' | 'md' | 'lg';
+  padding?: "none" | "sm" | "md" | "lg";
   hover?: boolean;
   style?: ViewStyle;
 }
 
-export function Card({ children, padding = 'md', style }: CardProps) {
-  return (
-    <View style={[styles.card, styles[padding], style]}>
-      {children}
-    </View>
-  );
+export function Card({ children, padding = "md", style }: CardProps) {
+  return <View style={[styles.card, styles[padding], style]}>{children}</View>;
 }
 
 interface CardHeaderProps {
@@ -34,10 +30,14 @@ interface CardTitleProps {
 }
 
 export function CardTitle({ children, style }: CardTitleProps) {
-  return <View style={style}><Text style={styles.title}>{children}</Text></View>;
+  return (
+    <View style={style}>
+      <Text style={styles.title}>{children}</Text>
+    </View>
+  );
 }
 
-import { Text } from 'react-native';
+import { Text } from "react-native";
 
 interface CardDescriptionProps {
   children: React.ReactNode;
@@ -68,10 +68,10 @@ export function CardFooter({ children, style }: CardFooterProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: "#E5E7EB",
   },
   none: {
     padding: 0,
@@ -90,12 +90,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
   },
   description: {
     fontSize: 14,
-    color: '#6B7280',
+    color: "#6B7280",
     marginTop: 4,
   },
   content: {

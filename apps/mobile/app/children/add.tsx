@@ -2,26 +2,33 @@
  * Add Patient Screen
  */
 
-import { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Card, Input, Button } from '../../src/components';
-import { useCreatePatient } from '../../src/hooks/use-api';
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Button, Card, Input } from "../../src/components";
+import { useCreatePatient } from "../../src/hooks/use-api";
 
 export default function AddPatientScreen() {
   const router = useRouter();
   const { createPatient, loading, error } = useCreatePatient();
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [gender, setGender] = useState('');
-  const [diagnosis, setDiagnosis] = useState('');
-  const [severityLevel, setSeverityLevel] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [gender, setGender] = useState("");
+  const [diagnosis, setDiagnosis] = useState("");
+  const [severityLevel, setSeverityLevel] = useState("");
 
   const handleSave = async () => {
     if (!firstName || !lastName) {
-      Alert.alert('Error', 'First name and last name are required');
+      Alert.alert("Error", "First name and last name are required");
       return;
     }
 
@@ -32,22 +39,25 @@ export default function AddPatientScreen() {
       gender: gender || undefined,
       diagnosis: diagnosis || undefined,
       severityLevel: severityLevel || undefined,
-      status: 'active',
+      status: "active",
     });
 
     if (result) {
-      Alert.alert('Success', 'Patient added successfully', [
-        { text: 'OK', onPress: () => router.back() }
+      Alert.alert("Success", "Patient added successfully", [
+        { text: "OK", onPress: () => router.back() },
       ]);
     } else if (error) {
-      Alert.alert('Error', error);
+      Alert.alert("Error", error);
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
           <Text style={styles.backText}>← Cancel</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Add Patient</Text>
@@ -77,13 +87,21 @@ export default function AddPatientScreen() {
           <View style={styles.genderSelector}>
             <Text style={styles.label}>Gender</Text>
             <View style={styles.genderOptions}>
-              {['Male', 'Female', 'Other'].map((option) => (
+              {["Male", "Female", "Other"].map((option) => (
                 <TouchableOpacity
                   key={option}
-                  style={[styles.genderOption, gender === option && styles.genderOptionActive]}
+                  style={[
+                    styles.genderOption,
+                    gender === option && styles.genderOptionActive,
+                  ]}
                   onPress={() => setGender(option)}
                 >
-                  <Text style={[styles.genderText, gender === option && styles.genderTextActive]}>
+                  <Text
+                    style={[
+                      styles.genderText,
+                      gender === option && styles.genderTextActive,
+                    ]}
+                  >
                     {option}
                   </Text>
                 </TouchableOpacity>
@@ -103,13 +121,21 @@ export default function AddPatientScreen() {
           <View style={styles.genderSelector}>
             <Text style={styles.label}>Severity Level</Text>
             <View style={styles.genderOptions}>
-              {['Level 1', 'Level 2', 'Level 3'].map((option) => (
+              {["Level 1", "Level 2", "Level 3"].map((option) => (
                 <TouchableOpacity
                   key={option}
-                  style={[styles.genderOption, severityLevel === option && styles.genderOptionActive]}
+                  style={[
+                    styles.genderOption,
+                    severityLevel === option && styles.genderOptionActive,
+                  ]}
                   onPress={() => setSeverityLevel(option)}
                 >
-                  <Text style={[styles.genderText, severityLevel === option && styles.genderTextActive]}>
+                  <Text
+                    style={[
+                      styles.genderText,
+                      severityLevel === option && styles.genderTextActive,
+                    ]}
+                  >
                     {option}
                   </Text>
                 </TouchableOpacity>
@@ -129,21 +155,33 @@ export default function AddPatientScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F9FAFB' },
-  header: { padding: 20, paddingTop: 60, backgroundColor: '#8B5CF6' },
+  container: { flex: 1, backgroundColor: "#F9FAFB" },
+  header: { padding: 20, paddingTop: 60, backgroundColor: "#8B5CF6" },
   backButton: { marginBottom: 12 },
-  backText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#fff' },
+  backText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  title: { fontSize: 28, fontWeight: "bold", color: "#fff" },
   content: { flex: 1, padding: 16 },
   card: { marginBottom: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: '600', color: '#1F2937', marginBottom: 16 },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#1F2937",
+    marginBottom: 16,
+  },
   genderSelector: { marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '600', color: '#374151', marginBottom: 8 },
-  genderOptions: { flexDirection: 'row', gap: 12 },
-  genderOption: { flex: 1, padding: 12, borderRadius: 8, borderWidth: 1, borderColor: '#D1D5DB', alignItems: 'center' },
-  genderOptionActive: { backgroundColor: '#8B5CF6', borderColor: '#8B5CF6' },
-  genderText: { fontSize: 14, color: '#6B7280' },
-  genderTextActive: { color: '#fff', fontWeight: '600' },
+  label: { fontSize: 14, fontWeight: "600", color: "#374151", marginBottom: 8 },
+  genderOptions: { flexDirection: "row", gap: 12 },
+  genderOption: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    alignItems: "center",
+  },
+  genderOptionActive: { backgroundColor: "#8B5CF6", borderColor: "#8B5CF6" },
+  genderText: { fontSize: 14, color: "#6B7280" },
+  genderTextActive: { color: "#fff", fontWeight: "600" },
   buttonContainer: { marginTop: 8 },
   bottomPadding: { height: 40 },
 });

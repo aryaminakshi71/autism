@@ -4,6 +4,7 @@ import {
   Plus,
   Search,
   Target,
+  Trash,
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
@@ -115,6 +116,12 @@ function GoalsPage() {
       },
       ...prev,
     ]);
+  };
+
+  const handleDeleteGoal = (id: string) => {
+    if (confirm("Are you sure you want to delete this goal?")) {
+      setGoals((prev) => prev.filter((g) => g.id !== id));
+    }
   };
 
   const filteredGoals = goals.filter((goal) => {
@@ -249,17 +256,25 @@ function GoalsPage() {
                     {progressPercent.toFixed(0)}%
                   </span>
                 </div>
-                <span
-                  className={`rounded-full px-3 py-1 font-medium text-xs ${
-                    goal.status === "active"
-                      ? "bg-blue-100 text-blue-700"
-                      : goal.status === "mastered"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-700"
-                  }`}
-                >
-                  {goal.status}
-                </span>
+                <div className="flex items-center space-x-2">
+                  <span
+                    className={`rounded-full px-3 py-1 font-medium text-xs ${
+                      goal.status === "active"
+                        ? "bg-blue-100 text-blue-700"
+                        : goal.status === "mastered"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {goal.status}
+                  </span>
+                  <button
+                    onClick={() => handleDeleteGoal(goal.id)}
+                    className="rounded-lg p-1 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </div>
           );

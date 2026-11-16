@@ -2,7 +2,7 @@
  * Goals API Endpoints
  */
 
-import { apiClient } from '../api-client';
+import { apiClient } from "../api-client";
 
 export interface Goal {
   id: string;
@@ -18,8 +18,8 @@ export interface Goal {
   currentValue: number;
   unit: string;
   masteryCriteria?: string;
-  status: 'active' | 'mastered' | 'inactive';
-  priority: 'high' | 'medium' | 'low';
+  status: "active" | "mastered" | "inactive";
+  priority: "high" | "medium" | "low";
   startDate: string;
   targetDate?: string;
   domain?: string;
@@ -38,7 +38,7 @@ export interface CreateGoalInput {
   targetValue: number;
   unit: string;
   masteryCriteria?: string;
-  priority?: 'high' | 'medium' | 'low';
+  priority?: "high" | "medium" | "low";
   startDate: string;
   targetDate?: string;
   domain?: string;
@@ -46,7 +46,7 @@ export interface CreateGoalInput {
 
 export interface UpdateGoalInput extends Partial<CreateGoalInput> {
   currentValue?: number;
-  status?: 'active' | 'mastered' | 'inactive';
+  status?: "active" | "mastered" | "inactive";
 }
 
 export interface GoalsListResponse {
@@ -62,18 +62,22 @@ export interface GoalProgress {
   currentValue: number;
   targetValue: number;
   progress: number; // percentage
-  trend: 'improving' | 'stable' | 'declining';
+  trend: "improving" | "stable" | "declining";
 }
 
 export const goalsApi = {
   /**
    * Get all goals with pagination
    */
-  list: async (page = 1, limit = 20, filters?: {
-    patientId?: string;
-    status?: string;
-    priority?: string;
-  }): Promise<GoalsListResponse> => {
+  list: async (
+    page = 1,
+    limit = 20,
+    filters?: {
+      patientId?: string;
+      status?: string;
+      priority?: string;
+    },
+  ): Promise<GoalsListResponse> => {
     const params: Record<string, string> = {
       page: String(page),
       limit: String(limit),
@@ -82,7 +86,7 @@ export const goalsApi = {
     if (filters?.status) params.status = filters.status;
     if (filters?.priority) params.priority = filters.priority;
 
-    const response = await apiClient.get<GoalsListResponse>('/goals', params);
+    const response = await apiClient.get<GoalsListResponse>("/goals", params);
     return response.data;
   },
 
@@ -98,7 +102,7 @@ export const goalsApi = {
    * Create new goal
    */
   create: async (input: CreateGoalInput): Promise<Goal> => {
-    const response = await apiClient.post<Goal>('/goals', input);
+    const response = await apiClient.post<Goal>("/goals", input);
     return response.data;
   },
 
@@ -114,7 +118,9 @@ export const goalsApi = {
    * Update goal progress (current value)
    */
   updateProgress: async (id: string, currentValue: number): Promise<Goal> => {
-    const response = await apiClient.patch<Goal>(`/goals/${id}/progress`, { currentValue });
+    const response = await apiClient.patch<Goal>(`/goals/${id}/progress`, {
+      currentValue,
+    });
     return response.data;
   },
 
@@ -129,7 +135,7 @@ export const goalsApi = {
    * Get goals for a specific patient
    */
   byPatient: async (patientId: string): Promise<Goal[]> => {
-    const response = await apiClient.get<Goal[]>('/goals', { patientId });
+    const response = await apiClient.get<Goal[]>("/goals", { patientId });
     return response.data;
   },
 };
