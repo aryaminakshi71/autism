@@ -8,7 +8,8 @@
     "deploy": "wrangler deploy --minify src/index.ts",
     "test:integration": "vitest run src/integration --passWithNoTests",
     "test": "vitest run --passWithNoTests",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "db:push": "cd ../../packages/storage && bunx drizzle-kit push --force"
   },
   "exports": {
     ".": "./src/index.ts",
