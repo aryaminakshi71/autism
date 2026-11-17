@@ -15,6 +15,7 @@ import { dataCollectionTemplatesRouter } from "./data-collection-templates";
 import { dealsRouter } from "./deals";
 import { goalsRouter } from "./goals";
 import { healthRouter } from "./health";
+import { metricsRouter } from "./metrics";
 import { leadsRouter } from "./leads";
 import { parentPortalRouter } from "./parent-portal";
 import { patientsRouter } from "./patients";
@@ -25,6 +26,7 @@ import { assetsRouter } from "./assets";
 
 export const appRouter = {
   health: healthRouter,
+  metrics: metricsRouter,
   contacts: contactsRouter,
   compliance: complianceRouter,
   deals: dealsRouter,
