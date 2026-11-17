@@ -1,10 +1,10 @@
 /**
- * Unit Tests for Autism Platform API Client
+ * Unit Tests for SpectrumOS API Client
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-describe("Autism Platform API Client", () => {
+describe("SpectrumOS API Client", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

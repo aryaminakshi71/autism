@@ -89,11 +89,11 @@ export function generateBreadcrumbSchema(data: BreadcrumbSchema): object {
 }
 
 /**
- * Get default organization schema for Autism Platform
+ * Get default organization schema for SpectrumOS
  */
 export function getAutismOrganizationSchema(): OrganizationSchema {
   return {
-    name: "Autism Platform",
+    name: "SpectrumOS",
     url: import.meta.env.VITE_PUBLIC_SITE_URL || "https://autism.app",
     description:
       "Autism care and ecosystem platform for schedules, AAC communication, and outcomes tracking.",

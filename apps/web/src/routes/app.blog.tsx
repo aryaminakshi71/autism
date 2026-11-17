@@ -51,7 +51,7 @@ const INITIAL_POSTS = [
   },
   {
     id: 2,
-    title: "New Autism Platform Features Released",
+    title: "New SpectrumOS Features Released",
     excerpt:
       "We've shipped new care plan templates, faster learner search, and better session note workflows for clinical teams.",
     author: {

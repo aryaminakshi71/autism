@@ -10,7 +10,7 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!post) {
       return {
         meta: [
-          { title: "Article Not Found | Autism Platform" },
+          { title: "Article Not Found | SpectrumOS" },
           {
             name: "description",
             content: "The requested article could not be found.",
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/blog/$slug")({
 
     return {
       meta: [
-        { title: `${post.seoTitle} | Autism Platform` },
+        { title: `${post.seoTitle} | SpectrumOS` },
         { name: "description", content: post.seoDescription },
         { property: "og:title", content: post.seoTitle },
         { property: "og:description", content: post.seoDescription },

@@ -1,7 +1,7 @@
 /**
  * Accessibility Utilities
  *
- * Provides accessibility helpers for the Autism Platform web app.
+ * Provides accessibility helpers for the SpectrumOS web app.
  */
 
 /**

@@ -6,7 +6,7 @@ import { ArrowRight, Calendar, Clock } from "lucide-react";
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog | Autism Platform" },
+      { title: "Blog | SpectrumOS" },
       {
         name: "description",
         content:
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/blog")({
       },
       {
         property: "og:title",
-        content: "Blog | Autism Platform",
+        content: "Blog | SpectrumOS",
       },
       {
         property: "og:description",
@@ -34,7 +34,7 @@ function BlogPage() {
       <section className="bg-gradient-to-b from-blue-50 to-white px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="mb-4 font-bold text-5xl text-gray-900">
-            Autism Platform Blog
+            SpectrumOS Blog
           </h1>
           <p className="text-gray-600 text-xl">
             Field-tested playbooks and product updates for clinical teams.

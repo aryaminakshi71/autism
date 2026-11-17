@@ -44,7 +44,7 @@ function DemoPage() {
         <div className="rounded-2xl bg-white p-8 shadow-xl md:p-12">
           <div className="mb-8 text-center">
             <h1 className="mb-4 font-bold text-4xl text-gray-900">
-              Try Autism Platform Demo
+              Try SpectrumOS Demo
             </h1>
             <p className="text-gray-600 text-xl">
               Experience autism care coordination with sample data

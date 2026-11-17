@@ -28,7 +28,7 @@ export const Route = createRootRoute({
       getAutismOrganizationSchema(),
     );
     const websiteSchema = generateWebSiteSchema({
-      name: "Autism Platform",
+      name: "SpectrumOS",
       url: import.meta.env.VITE_PUBLIC_SITE_URL || "https://autism.app",
       description:
         "Autism care and ecosystem platform for clinics, therapists, schools, families, and insurers.",
@@ -38,7 +38,7 @@ export const Route = createRootRoute({
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { title: "Autism Platform - Care Coordination & Outcomes" },
+        { title: "SpectrumOS - Care Coordination & Outcomes" },
         {
           name: "description",
           content:
@@ -51,7 +51,7 @@ export const Route = createRootRoute({
         },
         {
           property: "og:title",
-          content: "Autism Platform - Care Coordination & Outcomes",
+          content: "SpectrumOS - Care Coordination & Outcomes",
         },
         {
           property: "og:description",

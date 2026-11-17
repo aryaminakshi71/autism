@@ -6,15 +6,15 @@ import { Check } from "lucide-react";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing | Autism Platform" },
+      { title: "Pricing | SpectrumOS" },
       {
         name: "description",
         content:
-          "Compare Autism Platform plans for clinics, schools, and care teams. Start with a free trial and scale with confidence.",
+          "Compare SpectrumOS plans for clinics, schools, and care teams. Start with a free trial and scale with confidence.",
       },
       {
         property: "og:title",
-        content: "Pricing | Autism Platform",
+        content: "Pricing | SpectrumOS",
       },
       {
         property: "og:description",

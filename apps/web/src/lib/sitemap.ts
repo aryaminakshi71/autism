@@ -46,7 +46,7 @@ ${urlset}
 }
 
 /**
- * Get public routes for Autism Platform
+ * Get public routes for SpectrumOS
  */
 export function getAutismRoutes(): SitemapRoute[] {
   const staticRoutes: SitemapRoute[] = [

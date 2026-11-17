@@ -38,7 +38,7 @@ export const ROUTES_TO_TEST = {
 
 export const LINKS_TO_VERIFY = {
   "/": [
-    { selector: 'a[href="/"]', text: "Autism Platform", type: "logo" },
+    { selector: 'a[href="/"]', text: "SpectrumOS", type: "logo" },
     { selector: 'a[href="/login"]', text: "Sign In", type: "header" },
     {
       selector: 'a[href="/register"]',
