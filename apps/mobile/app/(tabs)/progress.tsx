@@ -121,7 +121,7 @@ export default function ProgressScreen() {
         </View>
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
+          <Text style={styles.errorText}>{error.message}</Text>
           <Button title="Retry" onPress={refetch} variant="outline" />
         </View>
       ) : (

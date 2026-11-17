@@ -73,7 +73,7 @@ export default function PatientDetailScreen() {
         </View>
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>
-            {patientError || "Patient not found"}
+            {patientError?.message || "Patient not found"}
           </Text>
         </View>
       </View>
@@ -155,8 +155,8 @@ export default function PatientDetailScreen() {
               <Text style={styles.addLink}>+ Add Goal</Text>
             </TouchableOpacity>
           </View>
-          {goals && goals.length > 0 ? (
-            goals.map((goal) => (
+          {goals && goals.data.length > 0 ? (
+            goals.data.map((goal) => (
               <View key={goal.id} style={styles.goalItem}>
                 <View style={styles.goalHeader}>
                   <Text style={styles.goalName}>{goal.name}</Text>

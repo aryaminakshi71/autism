@@ -47,7 +47,7 @@ export default function AddPatientScreen() {
         { text: "OK", onPress: () => router.back() },
       ]);
     } else if (error) {
-      Alert.alert("Error", error);
+      Alert.alert("Error", error.message);
     }
   };
 

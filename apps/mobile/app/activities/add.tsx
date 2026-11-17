@@ -63,7 +63,7 @@ export default function AddSessionScreen() {
         { text: "OK", onPress: () => router.back() },
       ]);
     } else if (error) {
-      Alert.alert("Error", error);
+      Alert.alert("Error", error.message);
     }
   };
 
@@ -105,11 +105,11 @@ export default function AddSessionScreen() {
           </View>
         </Card>
 
-        {patients && patients.length > 0 && (
+        {patients && patients.data.length > 0 && (
           <Card style={styles.card}>
             <Text style={styles.sectionTitle}>Patient</Text>
             <View style={styles.typeGrid}>
-              {patients.slice(0, 5).map((patient) => (
+              {patients.data.slice(0, 5).map((patient) => (
                 <TouchableOpacity
                   key={patient.id}
                   style={[

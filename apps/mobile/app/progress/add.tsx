@@ -60,7 +60,7 @@ export default function AddGoalScreen() {
         { text: "OK", onPress: () => router.back() },
       ]);
     } else if (error) {
-      Alert.alert("Error", error);
+      Alert.alert("Error", error.message);
     }
   };
 
@@ -119,11 +119,11 @@ export default function AddGoalScreen() {
           </View>
         </Card>
 
-        {patients && patients.length > 0 && (
+        {patients && patients.data.length > 0 && (
           <Card style={styles.card}>
             <Text style={styles.sectionTitle}>Patient</Text>
             <View style={styles.categoryGrid}>
-              {patients.slice(0, 5).map((patient) => (
+              {patients.data.slice(0, 5).map((patient: { id: string; firstName?: string; lastName?: string }) => (
                 <TouchableOpacity
                   key={patient.id}
                   style={[

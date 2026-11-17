@@ -172,16 +172,13 @@ export default function CommunicationScreen() {
           <View
             style={[
               styles.boardGrid,
-              {
-                gridTemplateColumns: `repeat(${activeBoard.gridSize === "4x4" ? 4 : 3}, 1fr)`,
-              },
             ]}
           >
             {activeBoard.cards.map((card) => (
               <TouchableOpacity
                 key={card.id}
                 style={[
-                  styles.boardCard,
+                  styles.boardGridCard,
                   selectedCards.includes(card.label) && styles.boardCardActive,
                 ]}
                 onPress={() => handleCardPress(card)}
@@ -438,7 +435,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 8,
   },
-  boardCard: {
+  boardGridCard: {
     aspectRatio: 1,
     alignItems: "center",
     justifyContent: "center",
