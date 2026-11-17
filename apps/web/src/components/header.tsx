@@ -42,7 +42,7 @@ export function Header({ showTryDemo = true }: HeaderProps) {
         <div className="flex min-h-16 items-center justify-between gap-4 py-2">
           <div className="flex items-center gap-8">
             <Link to="/" className="font-bold text-2xl text-blue-600">
-              SpectrumOS
+              SpectrumAI
             </Link>
             <div className="flex items-center gap-3 md:gap-5">
               {navLinks.map((item) => (

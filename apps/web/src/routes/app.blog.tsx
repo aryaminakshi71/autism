@@ -51,7 +51,7 @@ const INITIAL_POSTS = [
   },
   {
     id: 2,
-    title: "New SpectrumOS Features Released",
+    title: "New SpectrumAI Features Released",
     excerpt:
       "We've shipped new care plan templates, faster learner search, and better session note workflows for clinical teams.",
     author: {

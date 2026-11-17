@@ -1,10 +1,10 @@
 /**
- * Unit Tests for SpectrumOS API Client
+ * Unit Tests for SpectrumAI API Client
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-describe("SpectrumOS API Client", () => {
+describe("SpectrumAI API Client", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

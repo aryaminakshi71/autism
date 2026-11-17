@@ -101,7 +101,7 @@ function LoginPage() {
         <div>
           <Link to="/" className="flex justify-center">
             <h1 className="font-bold text-3xl text-blue-600">
-              SpectrumOS
+              SpectrumAI
             </h1>
           </Link>
           <div className="mt-4 text-center">

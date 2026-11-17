@@ -28,7 +28,7 @@ const docCategories = [
     title: "Getting Started",
     description: "Quick start guides and setup instructions",
     articles: [
-      "Introduction to SpectrumOS",
+      "Introduction to SpectrumAI",
       "Creating Your First Account",
       "Setting Up Your Organization",
       "Inviting Team Members",
@@ -106,7 +106,7 @@ function DocsPage() {
             Documentation
           </h1>
           <p className="mb-8 text-gray-600 text-xl">
-            Everything you need to know about using SpectrumOS effectively.
+            Everything you need to know about using SpectrumAI effectively.
           </p>
           <div className="relative mx-auto max-w-xl">
             <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 transform text-gray-400" />

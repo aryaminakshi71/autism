@@ -54,7 +54,7 @@ const features = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SpectrumOS | Care Coordination and Outcomes" },
+      { title: "SpectrumAI | Care Coordination and Outcomes" },
       {
         name: "description",
         content:
@@ -62,7 +62,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "SpectrumOS | Care Coordination and Outcomes",
+        content: "SpectrumAI | Care Coordination and Outcomes",
       },
       {
         property: "og:description",
@@ -210,7 +210,7 @@ function LandingPage() {
             Ready to Build Better Outcomes?
           </h2>
           <p className="mb-8 text-blue-100 text-xl">
-            Join care teams using SpectrumOS to coordinate services and
+            Join care teams using SpectrumAI to coordinate services and
             progress.
           </p>
           <Link
@@ -234,7 +234,7 @@ function LandingPage() {
                 Is this platform suitable for clinics and schools?
               </h3>
               <p className="mt-2 text-gray-600">
-                Yes. SpectrumOS supports multidisciplinary workflows across
+                Yes. SpectrumAI supports multidisciplinary workflows across
                 clinics, schools, and family teams.
               </p>
             </div>
@@ -322,7 +322,7 @@ function LandingPage() {
           </div>
           <div className="mt-8 border-gray-800 border-t pt-8 text-center">
             <p>
-              &copy; {new Date().getFullYear()} SpectrumOS. All rights
+              &copy; {new Date().getFullYear()} SpectrumAI. All rights
               reserved.
             </p>
           </div>

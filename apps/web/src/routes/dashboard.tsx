@@ -421,7 +421,7 @@ function DashboardLayout() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <aside className="w-64 border-gray-200 border-r bg-white p-4">
-        <p className="mb-4 font-bold text-blue-600 text-lg">SpectrumOS</p>
+        <p className="mb-4 font-bold text-blue-600 text-lg">SpectrumAI</p>
         <nav className="space-y-1">
           {navItems.map((item) => (
             <Link

@@ -40,7 +40,7 @@ function TermsPage() {
               </h2>
               <div className="space-y-3 text-gray-700">
                 <p>
-                  By accessing or using SpectrumOS ("the Service"), you
+                  By accessing or using SpectrumAI ("the Service"), you
                   agree to be bound by these Terms of Service ("Terms"). If you
                   disagree with any part of these terms, you may not access the
                   Service.
@@ -60,7 +60,7 @@ function TermsPage() {
               <div className="space-y-3 text-gray-700">
                 <p>
                   Permission is granted to temporarily access the materials on
-                  SpectrumOS for personal or commercial transitory viewing
+                  SpectrumAI for personal or commercial transitory viewing
                   only. This is the grant of a license, not a transfer of title,
                   and under this license you may not:
                 </p>
@@ -324,7 +324,7 @@ function TermsPage() {
                   us:
                 </p>
                 <div className="rounded-lg bg-gray-50 p-4">
-                  <p className="font-semibold">SpectrumOS Legal Team</p>
+                  <p className="font-semibold">SpectrumAI Legal Team</p>
                   <p>
                     Email:{" "}
                     <a

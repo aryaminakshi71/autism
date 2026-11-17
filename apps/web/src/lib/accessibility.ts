@@ -1,7 +1,7 @@
 /**
  * Accessibility Utilities
  *
- * Provides accessibility helpers for the SpectrumOS web app.
+ * Provides accessibility helpers for the SpectrumAI web app.
  */
 
 /**

@@ -15,7 +15,7 @@ function AboutPage() {
       <section className="bg-gradient-to-b from-blue-50 to-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="mb-6 font-bold text-5xl text-gray-900">
-            About SpectrumOS
+            About SpectrumAI
           </h1>
           <p className="mb-8 text-gray-600 text-xl">
             We're on a mission to help clinics, therapists, schools, and
@@ -31,14 +31,14 @@ function AboutPage() {
           <h2 className="mb-6 font-bold text-3xl text-gray-900">Our Story</h2>
           <div className="space-y-4 text-gray-600 leading-relaxed">
             <p>
-              Founded in 2024, SpectrumOS was born from a simple
+              Founded in 2024, SpectrumAI was born from a simple
               observation: autism services are often fragmented across
               providers, settings, and tools. We set out to build a unified
               platform that keeps teams aligned while honoring each learner's
               unique plan of care.
             </p>
             <p>
-              Today, SpectrumOS supports interdisciplinary teams with
+              Today, SpectrumAI supports interdisciplinary teams with
               schedules, AAC communication, therapy data collection, and family
               collaboration. Our platform combines modern technology with a deep
               understanding of clinical workflows and educational settings.

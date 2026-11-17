@@ -99,7 +99,7 @@ function RegisterPage() {
         <div>
           <Link to="/" className="flex justify-center">
             <h1 className="font-bold text-3xl text-blue-600">
-              SpectrumOS
+              SpectrumAI
             </h1>
           </Link>
           <h2 className="mt-6 text-center font-extrabold text-3xl text-gray-900">

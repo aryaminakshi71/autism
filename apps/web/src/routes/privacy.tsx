@@ -211,7 +211,7 @@ function PrivacyPage() {
                   contact us:
                 </p>
                 <div className="rounded-lg bg-gray-50 p-4">
-                  <p className="font-semibold">SpectrumOS Privacy Team</p>
+                  <p className="font-semibold">SpectrumAI Privacy Team</p>
                   <p>
                     Email:{" "}
                     <a
