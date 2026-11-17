@@ -24,6 +24,13 @@ export function createAuthFromEnv(db: Database, env: AppEnv) {
       "http://localhost:3001",
       "http://localhost:3002",
       "http://127.0.0.1:5180",
+      "http://localhost:3003",
+      "http://localhost:3005",
+      "http://localhost:3080",
+      "http://127.0.0.1:3003",
+      "http://127.0.0.1:3005",
+      "http://127.0.0.1:3080",
+      "http://127.0.0.1:5173",
     ],
     oauth: {
       google: env.GOOGLE_CLIENT_ID

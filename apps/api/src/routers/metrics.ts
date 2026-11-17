@@ -5,7 +5,7 @@
 import { z } from 'zod'
 import { count, eq } from 'drizzle-orm'
 import { ORPCError } from '@orpc/server'
-import { db, schema } from '@autism-legacy-20260205/storage/db'
+import { createDb, schema } from '@autism-legacy-20260205/storage/db'
 import { pub } from '../procedures'
 
 const PLAN_PRICES: Record<string, number> = { free: 0, starter: 29, growth: 79, pro: 149, enterprise: 499 }
@@ -21,6 +21,12 @@ export const metricsRouter = {
       if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN) {
         throw new ORPCError('UNAUTHORIZED', { message: 'Invalid admin token' })
       }
+      const connectionString =
+        (env as any)?.DATABASE?.connectionString ||
+        (env as any)?.DATABASE_URL ||
+        process.env.DATABASE_URL ||
+        ''
+      const db = createDb({ connectionString })
       const [tenants] = await db.select({ n: count() }).from(schema.organizations)
       const [users] = await db.select({ n: count() }).from(schema.users)
       let activeSubscriptions = 0

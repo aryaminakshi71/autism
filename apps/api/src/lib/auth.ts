@@ -22,6 +22,18 @@ export function createAuth(connectionString: string) {
     }),
     baseURL: env.VITE_PUBLIC_SITE_URL || "http://localhost:5173",
     basePath: "/api/auth",
+    trustedOrigins: [
+      env.VITE_PUBLIC_SITE_URL,
+      env.BETTER_AUTH_URL,
+      "http://localhost:3003",
+      "http://localhost:3005",
+      "http://localhost:3080",
+      "http://localhost:5173",
+      "http://127.0.0.1:3003",
+      "http://127.0.0.1:3005",
+      "http://127.0.0.1:3080",
+      "http://127.0.0.1:5173",
+    ].filter((o): o is string => Boolean(o)),
     secret: env.BETTER_AUTH_SECRET || "change-me-in-production-min-32-chars",
     emailAndPassword: {
       enabled: true,
