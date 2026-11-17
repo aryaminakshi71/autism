@@ -5,6 +5,7 @@
  * Split into separate files to avoid TypeScript TS7056 limits.
  */
 
+import { brandingRouter } from "./branding";
 import { billingRouter } from "./billing";
 import { claimsRouter } from "./claims";
 import { activitiesRouter } from "./activities";
@@ -27,6 +28,7 @@ import { sessionsRouter } from "./sessions";
 import { assetsRouter } from "./assets";
 
 export const appRouter = {
+  branding: brandingRouter,
   billing: billingRouter,
   claims: claimsRouter,
   health: healthRouter,
