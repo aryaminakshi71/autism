@@ -1,5 +1,8 @@
 export type FinanceScenarioKey = "ten_clients" | "fifteen_clients";
-export type BackOfficeModelKey = "us_rcm" | "india_contractor" | "india_company";
+export type BackOfficeModelKey =
+  | "us_rcm"
+  | "india_contractor"
+  | "india_company";
 
 export interface FinanceAssumptions {
   clients: number;
@@ -155,7 +158,8 @@ export function calculateFinanceScenario(
     weeksPerMonth *
     (assumptions.directHoursPerClientWeek *
       assumptions.collectedDirectRatePerHour +
-      assumptions.bcbaHoursPerClientWeek * assumptions.collectedBcbaRatePerHour);
+      assumptions.bcbaHoursPerClientWeek *
+        assumptions.collectedBcbaRatePerHour);
   const collectibleRevenue = grossRevenue * assumptions.collectionRate;
   const directLaborCost =
     assumptions.clients *
@@ -290,7 +294,8 @@ export function buildTimeZoneOperatingWindows(): TimeZoneOperatingWindow[] {
     {
       state: "ND",
       location: "North Dakota",
-      currentSummerTimeZone: "Mostly Central Daylight Time; some Mountain Time areas",
+      currentSummerTimeZone:
+        "Mostly Central Daylight Time; some Mountain Time areas",
       indiaOffset: "India is usually 10.5 to 11.5 hours ahead",
       operatingUse:
         "Useful middle block for payer calls and parent/RBT follow-up after CT morning.",
@@ -610,7 +615,9 @@ export function buildHighHourRetentionScenarios(): HighHourRetentionScenario[] {
       rbtPaidHoursPerWeek,
       rbtBillableHoursPerWeek,
       rbtUtilizationRate:
-        rbtPaidHoursPerWeek > 0 ? rbtBillableHoursPerWeek / rbtPaidHoursPerWeek : 0,
+        rbtPaidHoursPerWeek > 0
+          ? rbtBillableHoursPerWeek / rbtPaidHoursPerWeek
+          : 0,
       bcbaPaidHoursPerWeek,
       bcbaBillableHoursPerWeek,
       bcbaUtilizationRate: bcbaBillableHoursPerWeek / bcbaPaidHoursPerWeek,

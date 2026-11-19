@@ -1,7 +1,7 @@
 "use client";
 
-import { CenterOperationsCommand } from "@/components/operations/CenterOperationsCommand";
 import { SessionNoteWorkspace } from "@/components/notes/SessionNoteWorkspace";
+import { CenterOperationsCommand } from "@/components/operations/CenterOperationsCommand";
 import { Link, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
@@ -123,8 +123,14 @@ function DashboardLayout() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[
               { label: "Active Patients", value: String(stats.activePatients) },
-              { label: "Goals in Progress", value: String(stats.goalsInProgress) },
-              { label: "Sessions This Week", value: String(stats.sessionsThisWeek) },
+              {
+                label: "Goals in Progress",
+                value: String(stats.goalsInProgress),
+              },
+              {
+                label: "Sessions This Week",
+                value: String(stats.sessionsThisWeek),
+              },
               { label: "Assessments Due", value: String(stats.assessmentsDue) },
             ].map((stat) => (
               <div

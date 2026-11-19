@@ -342,7 +342,8 @@ export const companyStateConfigurations: CompanyStateConfiguration[] = [
     workersCompStatus: "watch",
     telehealthRuleStatus: "watch",
     claimReadinessStatus: "watch",
-    nextAction: "Confirm Apple Health effective date and MCO billing path before expanding beyond one client.",
+    nextAction:
+      "Confirm Apple Health effective date and MCO billing path before expanding beyond one client.",
   },
   {
     state: "ND",
@@ -356,7 +357,8 @@ export const companyStateConfigurations: CompanyStateConfiguration[] = [
     workersCompStatus: "watch",
     telehealthRuleStatus: "blocked",
     claimReadinessStatus: "watch",
-    nextAction: "Store ND Medicaid authorization, telehealth mode approval, and payment cycle evidence.",
+    nextAction:
+      "Store ND Medicaid authorization, telehealth mode approval, and payment cycle evidence.",
   },
   {
     state: "CT",
@@ -370,7 +372,8 @@ export const companyStateConfigurations: CompanyStateConfiguration[] = [
     workersCompStatus: "watch",
     telehealthRuleStatus: "blocked",
     claimReadinessStatus: "blocked",
-    nextAction: "Finish CMAP/HUSKY provider path, supervision rule evidence, and documentation-signature workflow.",
+    nextAction:
+      "Finish CMAP/HUSKY provider path, supervision rule evidence, and documentation-signature workflow.",
   },
   {
     state: "MO",
@@ -384,7 +387,8 @@ export const companyStateConfigurations: CompanyStateConfiguration[] = [
     workersCompStatus: "watch",
     telehealthRuleStatus: "blocked",
     claimReadinessStatus: "blocked",
-    nextAction: "Validate MO HealthNet/MCO auth number, technician documentation, and remote-supervision billing rule.",
+    nextAction:
+      "Validate MO HealthNet/MCO auth number, technician documentation, and remote-supervision billing rule.",
   },
 ];
 
@@ -398,7 +402,8 @@ export const companyPayerConfigurations: CompanyPayerConfiguration[] = [
     claimTemplate: "watch",
     eftEra: "watch",
     timelyFilingDays: 365,
-    nextAction: "Store effective date, ProviderOne billing provider ID, ERA route, and tested claim example.",
+    nextAction:
+      "Store effective date, ProviderOne billing provider ID, ERA route, and tested claim example.",
   },
   {
     state: "ND",
@@ -409,7 +414,8 @@ export const companyPayerConfigurations: CompanyPayerConfiguration[] = [
     claimTemplate: "watch",
     eftEra: "blocked",
     timelyFilingDays: null,
-    nextAction: "Confirm timely filing, service-code units, ERA setup, and payer call reference workflow.",
+    nextAction:
+      "Confirm timely filing, service-code units, ERA setup, and payer call reference workflow.",
   },
   {
     state: "CT",
@@ -420,7 +426,8 @@ export const companyPayerConfigurations: CompanyPayerConfiguration[] = [
     claimTemplate: "blocked",
     eftEra: "blocked",
     timelyFilingDays: null,
-    nextAction: "Complete CMAP/Gainwell enrollment and verify ASD CPT, modifier, POS, and supervision requirements.",
+    nextAction:
+      "Complete CMAP/Gainwell enrollment and verify ASD CPT, modifier, POS, and supervision requirements.",
   },
   {
     state: "MO",
@@ -431,7 +438,8 @@ export const companyPayerConfigurations: CompanyPayerConfiguration[] = [
     claimTemplate: "watch",
     eftEra: "watch",
     timelyFilingDays: null,
-    nextAction: "Add authorization number capture, documentation-timeliness hold, and ERA matching workflow.",
+    nextAction:
+      "Add authorization number capture, documentation-timeliness hold, and ERA matching workflow.",
   },
 ];
 
@@ -440,36 +448,43 @@ export const companySetupGates: CompanySetupGate[] = [
     domain: "Company identity",
     owner: "Owner/admin",
     status: "watch",
-    requiredEvidence: "Legal name, DBA, EIN, Type 2 NPI, taxonomy, liability insurance, service addresses.",
+    requiredEvidence:
+      "Legal name, DBA, EIN, Type 2 NPI, taxonomy, liability insurance, service addresses.",
     blocks: "Payer enrollment, EFT/ERA, claim submission, and contracts.",
   },
   {
     domain: "State operating authority",
     owner: "Credentialing",
     status: "blocked",
-    requiredEvidence: "BCBA/LBA permissions, agency enrollment, service location approvals, and renewal dates by state.",
-    blocks: "Scheduling billable services in states without verified provider authority.",
+    requiredEvidence:
+      "BCBA/LBA permissions, agency enrollment, service location approvals, and renewal dates by state.",
+    blocks:
+      "Scheduling billable services in states without verified provider authority.",
   },
   {
     domain: "Payroll and workers comp",
     owner: "CPA/payroll admin",
     status: "watch",
-    requiredEvidence: "Employer registration, withholding, unemployment, workers comp, wage notices, pay frequency by work state.",
+    requiredEvidence:
+      "Employer registration, withholding, unemployment, workers comp, wage notices, pay frequency by work state.",
     blocks: "Hiring RBTs and issuing compliant biweekly payroll.",
   },
   {
     domain: "Payer operations",
     owner: "India RCM",
     status: "blocked",
-    requiredEvidence: "Payer portal, credentialing effective date, auth template, claim template, EFT/ERA, timely filing.",
+    requiredEvidence:
+      "Payer portal, credentialing effective date, auth template, claim template, EFT/ERA, timely filing.",
     blocks: "Clean claim release and reliable cash collection.",
   },
   {
     domain: "HIPAA/security",
     owner: "Software Engineer A",
     status: "blocked",
-    requiredEvidence: "BAAs, MFA, audit logs, minimum-necessary roles, encryption, video vendor risk review.",
-    blocks: "India team access, parent portal, video monitoring, and multi-company SaaS sales.",
+    requiredEvidence:
+      "BAAs, MFA, audit logs, minimum-necessary roles, encryption, video vendor risk review.",
+    blocks:
+      "India team access, parent portal, video monitoring, and multi-company SaaS sales.",
   },
 ];
 
@@ -478,41 +493,65 @@ export const companyRoleAccess: CompanyRoleAccess[] = [
     role: "owner",
     users: 1,
     allowedStates: "All configured company states",
-    allowedData: "Clinical, finance, payroll, claims, credentialing, audit, and expansion dashboards.",
+    allowedData:
+      "Clinical, finance, payroll, claims, credentialing, audit, and expansion dashboards.",
     blockedData: "None by role, but break-glass access should still be logged.",
-    requiredControls: ["MFA", "Audit log", "Quarterly access review", "BAA oversight"],
+    requiredControls: [
+      "MFA",
+      "Audit log",
+      "Quarterly access review",
+      "BAA oversight",
+    ],
   },
   {
     role: "bcba",
     users: 1,
     allowedStates: "Assigned clinical states",
-    allowedData: "Assigned clients, RBT supervision, clinical notes, parent training, authorization utilization.",
-    blockedData: "Full company payroll, other BCBA payroll, unrestricted RCM downloads.",
+    allowedData:
+      "Assigned clients, RBT supervision, clinical notes, parent training, authorization utilization.",
+    blockedData:
+      "Full company payroll, other BCBA payroll, unrestricted RCM downloads.",
     requiredControls: ["MFA", "Clinical signature", "Supervision attestation"],
   },
   {
     role: "rbt",
     users: 4,
     allowedStates: "Own work state",
-    allowedData: "Assigned client schedule, data sheets, session notes, own timesheet, own training.",
-    blockedData: "Other clients, payer contracts, claim payment amounts, company P&L.",
+    allowedData:
+      "Assigned client schedule, data sheets, session notes, own timesheet, own training.",
+    blockedData:
+      "Other clients, payer contracts, claim payment amounts, company P&L.",
     requiredControls: ["MFA", "Device lock", "Session-note signature"],
   },
   {
     role: "parent",
     users: 4,
     allowedStates: "Own child only",
-    allowedData: "Child schedule, progress, parent training, home practice, documents requiring signature.",
-    blockedData: "Staff pay, other children, internal claim notes, payer credentialing.",
-    requiredControls: ["MFA or verified OTP", "Guardian relationship", "Consent record"],
+    allowedData:
+      "Child schedule, progress, parent training, home practice, documents requiring signature.",
+    blockedData:
+      "Staff pay, other children, internal claim notes, payer credentialing.",
+    requiredControls: [
+      "MFA or verified OTP",
+      "Guardian relationship",
+      "Consent record",
+    ],
   },
   {
     role: "india_rcm",
     users: 3,
     allowedStates: "Company states assigned by owner",
-    allowedData: "Credentialing tasks, claim queue, payer call scripts, ERA posting, denial follow-up.",
-    blockedData: "Treatment plan editing, unrestricted video, clinical decision fields, payroll bank details.",
-    requiredControls: ["BAA", "MFA", "IP/session review", "Minimum necessary PHI", "Export restrictions"],
+    allowedData:
+      "Credentialing tasks, claim queue, payer call scripts, ERA posting, denial follow-up.",
+    blockedData:
+      "Treatment plan editing, unrestricted video, clinical decision fields, payroll bank details.",
+    requiredControls: [
+      "BAA",
+      "MFA",
+      "IP/session review",
+      "Minimum necessary PHI",
+      "Export restrictions",
+    ],
   },
 ];
 
@@ -535,7 +574,11 @@ export const companyConfigurationTasks: CompanyConfigurationTask[] = [
     owner: "Credentialing",
     status: "blocked",
     dueWindow: "Before intake in each state",
-    blocks: ["Billable scheduling", "remote supervision", "parent training claims"],
+    blocks: [
+      "Billable scheduling",
+      "remote supervision",
+      "parent training claims",
+    ],
     evidence:
       "State license path, Medicaid provider path, RBT/technician rules, supervision rules, telehealth policy evidence.",
   },
@@ -590,7 +633,11 @@ export const companyConfigurationTasks: CompanyConfigurationTask[] = [
     owner: "Clinical governance",
     status: "watch",
     dueWindow: "Before independent work",
-    blocks: ["RBT documentation", "parent portal use", "India RCM claim handling"],
+    blocks: [
+      "RBT documentation",
+      "parent portal use",
+      "India RCM claim handling",
+    ],
     evidence:
       "Training modules, competency checks, due dates, certificates, supervisor sign-off, renewal cadence.",
   },
@@ -601,7 +648,11 @@ export const companyConfigurationTasks: CompanyConfigurationTask[] = [
     owner: "Software Engineer A",
     status: "blocked",
     dueWindow: "Before production PHI",
-    blocks: ["Video monitoring", "India operations", "multi-company SaaS sales"],
+    blocks: [
+      "Video monitoring",
+      "India operations",
+      "multi-company SaaS sales",
+    ],
     evidence:
       "BAAs, MFA, encryption, audit logs, role review, export restriction, incident response, vendor risk review.",
   },
@@ -632,7 +683,8 @@ export const companyConfigurationTasks: CompanyConfigurationTask[] = [
 export const companyLaunchPhases: CompanyLaunchPhase[] = [
   {
     phase: "1. Company foundation",
-    target: "Provider identity, HIPAA controls, bank/EFT policy, payroll vendor, owner/admin access.",
+    target:
+      "Provider identity, HIPAA controls, bank/EFT policy, payroll vendor, owner/admin access.",
     status: "watch",
     exitCriteria: [
       "Provider identity evidence uploaded",
@@ -642,7 +694,8 @@ export const companyLaunchPhases: CompanyLaunchPhase[] = [
   },
   {
     phase: "2. State activation",
-    target: "Activate only states with license, payroll, workers comp, payer path, and telehealth rule evidence.",
+    target:
+      "Activate only states with license, payroll, workers comp, payer path, and telehealth rule evidence.",
     status: "blocked",
     exitCriteria: [
       "State credentialing ready",
@@ -652,7 +705,8 @@ export const companyLaunchPhases: CompanyLaunchPhase[] = [
   },
   {
     phase: "3. Client/RBT launch",
-    target: "Assign RBTs to authorized clients, protect 30-hour retention target, and start parent portal.",
+    target:
+      "Assign RBTs to authorized clients, protect 30-hour retention target, and start parent portal.",
     status: "watch",
     exitCriteria: [
       "Client auth packet complete",
@@ -662,7 +716,8 @@ export const companyLaunchPhases: CompanyLaunchPhase[] = [
   },
   {
     phase: "4. Claims and cash cycle",
-    target: "Release only clean claims, post ERA/payment, follow denials, and reconcile payroll to collections.",
+    target:
+      "Release only clean claims, post ERA/payment, follow denials, and reconcile payroll to collections.",
     status: "blocked",
     exitCriteria: [
       "Claim templates configured",
@@ -672,7 +727,8 @@ export const companyLaunchPhases: CompanyLaunchPhase[] = [
   },
   {
     phase: "5. Multi-company SaaS",
-    target: "Turn the operating model into configurable tenants for other ABA companies.",
+    target:
+      "Turn the operating model into configurable tenants for other ABA companies.",
     status: "blocked",
     exitCriteria: [
       "Tenant isolation tested",
@@ -705,10 +761,12 @@ export const recordRetentionPolicies: RecordRetentionPolicy[] = [
   {
     id: "clinical-minor-aba-record",
     category: "clinical",
-    recordSet: "Client clinical chart, assessment, treatment plan, session notes, supervision logs",
+    recordSet:
+      "Client clinical chart, assessment, treatment plan, session notes, supervision logs",
     appliesToStates: ["WA", "ND", "CT", "MO"],
     retentionYears: 10,
-    retentionTrigger: "Later of last service date, payer final action, or minor reaching age of majority plus configured buffer",
+    retentionTrigger:
+      "Later of last service date, payer final action, or minor reaching age of majority plus configured buffer",
     authorityBasis:
       "Conservative company rule because ABA clients are commonly minors and state/payer rules differ.",
     owner: "Clinical governance",
@@ -720,10 +778,12 @@ export const recordRetentionPolicies: RecordRetentionPolicy[] = [
   {
     id: "medicaid-billing-record",
     category: "billing",
-    recordSet: "Medicaid claims, authorizations, signed notes, remittance, denial, appeal, payer call logs",
+    recordSet:
+      "Medicaid claims, authorizations, signed notes, remittance, denial, appeal, payer call logs",
     appliesToStates: ["WA", "ND", "CT", "MO"],
     retentionYears: 6,
-    retentionTrigger: "Date of service, payment, final claim determination, or payer contract rule, whichever is later",
+    retentionTrigger:
+      "Date of service, payment, final claim determination, or payer contract rule, whichever is later",
     authorityBasis:
       "Medicaid and payer audit defense baseline; Missouri and Connecticut Medicaid materials identify six-year retention in relevant contexts.",
     owner: "India RCM / US compliance",
@@ -735,10 +795,12 @@ export const recordRetentionPolicies: RecordRetentionPolicy[] = [
   {
     id: "hipaa-compliance-documentation",
     category: "hipaa",
-    recordSet: "HIPAA policies, risk assessments, BAAs, access reviews, incident logs, training attestations",
+    recordSet:
+      "HIPAA policies, risk assessments, BAAs, access reviews, incident logs, training attestations",
     appliesToStates: ["WA", "ND", "CT", "MO", "All future states"],
     retentionYears: 6,
-    retentionTrigger: "Creation date or last effective date, whichever is later",
+    retentionTrigger:
+      "Creation date or last effective date, whichever is later",
     authorityBasis:
       "HIPAA documentation retention baseline under 45 CFR 164.316(b)(2)(i).",
     owner: "Security officer",
@@ -750,10 +812,12 @@ export const recordRetentionPolicies: RecordRetentionPolicy[] = [
   {
     id: "payroll-employment-record",
     category: "payroll",
-    recordSet: "Timesheets, wage rates, payroll runs, tax filings, unemployment, workers comp, contractor invoices",
+    recordSet:
+      "Timesheets, wage rates, payroll runs, tax filings, unemployment, workers comp, contractor invoices",
     appliesToStates: ["WA", "ND", "CT", "MO"],
     retentionYears: 7,
-    retentionTrigger: "Pay period end, tax filing date, audit final action, or employment termination, whichever is later",
+    retentionTrigger:
+      "Pay period end, tax filing date, audit final action, or employment termination, whichever is later",
     authorityBasis:
       "Conservative operating rule for payroll, tax, wage, unemployment, and workers comp audit defense.",
     owner: "CPA/payroll admin",
@@ -765,10 +829,12 @@ export const recordRetentionPolicies: RecordRetentionPolicy[] = [
   {
     id: "credentialing-provider-record",
     category: "credentialing",
-    recordSet: "BCBA/RBT credentials, licenses, background checks, payer credentialing, CAQH/portal submissions",
+    recordSet:
+      "BCBA/RBT credentials, licenses, background checks, payer credentialing, CAQH/portal submissions",
     appliesToStates: ["WA", "ND", "CT", "MO"],
     retentionYears: 7,
-    retentionTrigger: "Later of credential expiration, payer termination, provider termination, or last billed service",
+    retentionTrigger:
+      "Later of credential expiration, payer termination, provider termination, or last billed service",
     authorityBasis:
       "Conservative credentialing and payer audit rule; exact payer contracts may require longer retention.",
     owner: "Credentialing",
@@ -780,10 +846,12 @@ export const recordRetentionPolicies: RecordRetentionPolicy[] = [
   {
     id: "video-safety-monitoring",
     category: "video",
-    recordSet: "AI video alerts, reviewed clips, incident clips, human confirmation notes",
+    recordSet:
+      "AI video alerts, reviewed clips, incident clips, human confirmation notes",
     appliesToStates: ["WA", "ND", "CT", "MO"],
     retentionYears: 6,
-    retentionTrigger: "Alert date, incident closure, complaint closure, or payer/legal final action, whichever is later",
+    retentionTrigger:
+      "Alert date, incident closure, complaint closure, or payer/legal final action, whichever is later",
     authorityBasis:
       "Conservative HIPAA/security and incident-defense rule; routine non-incident video should have a shorter configurable policy.",
     owner: "BCBA / security officer",
@@ -795,25 +863,28 @@ export const recordRetentionPolicies: RecordRetentionPolicy[] = [
   {
     id: "parent-training-documentation",
     category: "training",
-    recordSet: "Parent training plans, attendance, home-practice assignments, competency checks, signatures",
+    recordSet:
+      "Parent training plans, attendance, home-practice assignments, competency checks, signatures",
     appliesToStates: ["WA", "ND", "CT", "MO"],
     retentionYears: 6,
-    retentionTrigger: "Training date, plan update, or final claim/payment action, whichever is later",
+    retentionTrigger:
+      "Training date, plan update, or final claim/payment action, whichever is later",
     authorityBasis:
       "Claim support and clinical documentation retention rule when parent training is billed or tied to treatment plan.",
     owner: "BCBA",
     storageSystem: "Parent portal and clinical chart",
-    destructionRule:
-      "Hold with associated clinical chart and claims records.",
+    destructionRule: "Hold with associated clinical chart and claims records.",
     status: "watch",
   },
   {
     id: "corporate-contract-record",
     category: "corporate",
-    recordSet: "Payer contracts, BAAs, vendor agreements, India contractor agreements, insurance policies",
+    recordSet:
+      "Payer contracts, BAAs, vendor agreements, India contractor agreements, insurance policies",
     appliesToStates: ["WA", "ND", "CT", "MO", "All future states"],
     retentionYears: 7,
-    retentionTrigger: "Contract termination, final payment, or audit closure, whichever is later",
+    retentionTrigger:
+      "Contract termination, final payment, or audit closure, whichever is later",
     authorityBasis:
       "Conservative corporate, payer, insurance, and BAA audit-defense rule.",
     owner: "Owner/admin",
@@ -834,7 +905,8 @@ export const retentionInventoryItems: RetentionInventoryItem[] = [
     retainUntil: "2036-07-05",
     legalHold: false,
     location: "Encrypted EHR/document vault",
-    nextAction: "Attach authorization, signed treatment plan, session notes, supervision logs, and parent-training records.",
+    nextAction:
+      "Attach authorization, signed treatment plan, session notes, supervision logs, and parent-training records.",
     status: "watch",
   },
   {
@@ -846,7 +918,8 @@ export const retentionInventoryItems: RetentionInventoryItem[] = [
     retainUntil: "2032-07-05",
     legalHold: false,
     location: "Billing vault and accounting ledger",
-    nextAction: "Confirm ND payer timely filing and final-payment trigger before marking destruction date final.",
+    nextAction:
+      "Confirm ND payer timely filing and final-payment trigger before marking destruction date final.",
     status: "watch",
   },
   {
@@ -858,7 +931,8 @@ export const retentionInventoryItems: RetentionInventoryItem[] = [
     retainUntil: "2032-07-05",
     legalHold: true,
     location: "Billing vault and denial queue",
-    nextAction: "Legal/audit hold because denial and documentation deficiency are unresolved.",
+    nextAction:
+      "Legal/audit hold because denial and documentation deficiency are unresolved.",
     status: "blocked",
   },
   {
@@ -870,7 +944,8 @@ export const retentionInventoryItems: RetentionInventoryItem[] = [
     retainUntil: "2032-07-05",
     legalHold: true,
     location: "Encrypted video evidence vault",
-    nextAction: "Keep until BCBA closes incident review and payer/legal risk is cleared.",
+    nextAction:
+      "Keep until BCBA closes incident review and payer/legal risk is cleared.",
     status: "blocked",
   },
   {
@@ -882,7 +957,8 @@ export const retentionInventoryItems: RetentionInventoryItem[] = [
     retainUntil: "2032-07-05",
     legalHold: false,
     location: "Compliance vault",
-    nextAction: "Add India RCM BAA, vendor list, access review export, and incident response policy.",
+    nextAction:
+      "Add India RCM BAA, vendor list, access review export, and incident response policy.",
     status: "blocked",
   },
 ];
@@ -891,9 +967,13 @@ export function summarizeRetentionReadiness(
   policies = recordRetentionPolicies,
   inventory = retentionInventoryItems,
 ) {
-  const blockedPolicies = policies.filter((policy) => policy.status === "blocked").length;
+  const blockedPolicies = policies.filter(
+    (policy) => policy.status === "blocked",
+  ).length;
   const legalHolds = inventory.filter((item) => item.legalHold).length;
-  const readyPolicies = policies.filter((policy) => policy.status === "ready").length;
+  const readyPolicies = policies.filter(
+    (policy) => policy.status === "ready",
+  ).length;
 
   return {
     policies: policies.length,
@@ -1099,25 +1179,29 @@ export const indiaCallCenterQaMetrics: IndiaCallCenterQaMetric[] = [
   {
     metric: "BAA and role access complete",
     target: "100% before PHI access",
-    evidence: "Signed BAA/subcontractor BAA, MFA, role assignment, access review.",
+    evidence:
+      "Signed BAA/subcontractor BAA, MFA, role assignment, access review.",
     status: "blocked",
   },
   {
     metric: "Calls with reference number",
     target: "95%+ payer calls",
-    evidence: "Claim event or auth event includes payer representative and reference number.",
+    evidence:
+      "Claim event or auth event includes payer representative and reference number.",
     status: "watch",
   },
   {
     metric: "Minimum necessary access",
     target: "100% sampled calls",
-    evidence: "QA confirms caller viewed only claim/auth fields needed for the task.",
+    evidence:
+      "QA confirms caller viewed only claim/auth fields needed for the task.",
     status: "blocked",
   },
   {
     metric: "Same-day escalation",
     target: "100% high-risk issues",
-    evidence: "Medical necessity, audit, complaint, safety, and legal issues routed to owner/BCBA same day.",
+    evidence:
+      "Medical necessity, audit, complaint, safety, and legal issues routed to owner/BCBA same day.",
     status: "watch",
   },
   {
@@ -1158,7 +1242,8 @@ export const usCallingInfrastructure: UsCallingInfrastructureItem[] = [
   },
   {
     domain: "Manual dialing policy",
-    requirement: "No autodialed, prerecorded, AI voice, or marketing calls without consent/legal review",
+    requirement:
+      "No autodialed, prerecorded, AI voice, or marketing calls without consent/legal review",
     whyNeeded:
       "Healthcare admin calls are lower risk when manually dialed and purpose-limited; automated outreach has TCPA/FCC risk.",
     implementation:
@@ -1167,7 +1252,8 @@ export const usCallingInfrastructure: UsCallingInfrastructureItem[] = [
   },
   {
     domain: "Call recording",
-    requirement: "Recording disabled by default or all-party notice/consent workflow",
+    requirement:
+      "Recording disabled by default or all-party notice/consent workflow",
     whyNeeded:
       "Call recording consent rules vary by state and some payer calls may contain PHI.",
     implementation:
@@ -1203,7 +1289,8 @@ export const usCallingInfrastructure: UsCallingInfrastructureItem[] = [
   },
   {
     domain: "Training and scripts",
-    requirement: "Approved scripts, identity verification, and escalation rules",
+    requirement:
+      "Approved scripts, identity verification, and escalation rules",
     whyNeeded:
       "India staff must know what they may say, what they must not say, and when BCBA/owner approval is required.",
     implementation:
@@ -1252,7 +1339,8 @@ export const usCallingVendorReadiness: UsCallingVendorReadiness[] = [
   },
   {
     vendorType: "Identity and access",
-    requiredContract: "Internal security policy plus vendor terms/BAA where PHI is processed",
+    requiredContract:
+      "Internal security policy plus vendor terms/BAA where PHI is processed",
     mustSupport: [
       "MFA",
       "SSO or named users",
@@ -1291,7 +1379,8 @@ export const offshoreDeviceControls: OffshoreDeviceControl[] = [
   },
   {
     control: "No local PHI storage",
-    requirement: "Disable downloads, screenshots where possible, USB copy, and local print",
+    requirement:
+      "Disable downloads, screenshots where possible, USB copy, and local print",
     enforcement:
       "DLP policy blocks exports; every attempted download becomes an audit event.",
     owner: "Security/admin",
@@ -1307,7 +1396,8 @@ export const offshoreDeviceControls: OffshoreDeviceControl[] = [
   },
   {
     control: "Quiet workspace and headset",
-    requirement: "Private call area, wired headset, no family/shared-space PHI exposure",
+    requirement:
+      "Private call area, wired headset, no family/shared-space PHI exposure",
     enforcement:
       "Supervisor attestation, random QA checks, and failed-call incident log.",
     owner: "India supervisor",
@@ -1355,15 +1445,18 @@ export const callRecordingConsentRules: CallRecordingConsentRule[] = [
 
 export const offshoreEscalationRoutes: OffshoreEscalationRoute[] = [
   {
-    trigger: "Medical necessity denial, peer review, or payer asks clinical questions",
-    indiaAction: "Stop clinical discussion; record payer question and reference number.",
+    trigger:
+      "Medical necessity denial, peer review, or payer asks clinical questions",
+    indiaAction:
+      "Stop clinical discussion; record payer question and reference number.",
     usOwner: "BCBA/owner",
     sla: "Same business day",
     status: "blocked",
   },
   {
     trigger: "Audit, recoupment, overpayment, fraud/waste/abuse language",
-    indiaAction: "Do not answer substantively; capture notice details and documents requested.",
+    indiaAction:
+      "Do not answer substantively; capture notice details and documents requested.",
     usOwner: "Owner plus compliance/attorney if needed",
     sla: "Immediate escalation",
     status: "blocked",
@@ -1376,8 +1469,10 @@ export const offshoreEscalationRoutes: OffshoreEscalationRoute[] = [
     status: "watch",
   },
   {
-    trigger: "Portal access problem blocks claim, auth, or credentialing deadline",
-    indiaAction: "Log portal screenshot metadata without PHI download and assign owner.",
+    trigger:
+      "Portal access problem blocks claim, auth, or credentialing deadline",
+    indiaAction:
+      "Log portal screenshot metadata without PHI download and assign owner.",
     usOwner: "Software Engineer A / admin",
     sla: "4 business hours",
     status: "watch",
@@ -1387,7 +1482,8 @@ export const offshoreEscalationRoutes: OffshoreEscalationRoute[] = [
 export const appImprovementRoadmap: AppImprovementRoadmapItem[] = [
   {
     area: "Production RBAC and audit logs",
-    improvement: "Move role permissions from dashboard display into enforced backend middleware.",
+    improvement:
+      "Move role permissions from dashboard display into enforced backend middleware.",
     whyItMatters:
       "India RCM, parent, RBT, BCBA, owner, and admin users must be technically prevented from over-accessing PHI.",
     nextImplementation:
@@ -1405,7 +1501,8 @@ export const appImprovementRoadmap: AppImprovementRoadmapItem[] = [
   },
   {
     area: "Real payer templates",
-    improvement: "Convert payer/state templates into editable database records with effective dates.",
+    improvement:
+      "Convert payer/state templates into editable database records with effective dates.",
     whyItMatters:
       "Rates, modifiers, timely filing, EFT/ERA, and auth rules change by state and payer.",
     nextImplementation:
@@ -1414,7 +1511,8 @@ export const appImprovementRoadmap: AppImprovementRoadmapItem[] = [
   },
   {
     area: "AI safety and claim QA",
-    improvement: "Add human-reviewed AI alerts for video safety, note completeness, and claim rejection risk.",
+    improvement:
+      "Add human-reviewed AI alerts for video safety, note completeness, and claim rejection risk.",
     whyItMatters:
       "AI can reduce owner workload only if every alert has human confirmation, audit trail, and no autonomous clinical decision.",
     nextImplementation:
@@ -1423,7 +1521,8 @@ export const appImprovementRoadmap: AppImprovementRoadmapItem[] = [
   },
   {
     area: "Payroll and profitability",
-    improvement: "Tie scheduled hours, clock-in/out, claim status, payment, and payroll ledger together.",
+    improvement:
+      "Tie scheduled hours, clock-in/out, claim status, payment, and payroll ledger together.",
     whyItMatters:
       "Profit/loss depends on attendance, denial rate, RBT utilization, BCBA supervision, and payment timing.",
     nextImplementation:
@@ -1432,7 +1531,8 @@ export const appImprovementRoadmap: AppImprovementRoadmapItem[] = [
   },
   {
     area: "Parent and training portals",
-    improvement: "Make parent home practice, RBT training, competency checks, and signatures transactional.",
+    improvement:
+      "Make parent home practice, RBT training, competency checks, and signatures transactional.",
     whyItMatters:
       "Portals should produce claim-supporting documentation, not only display information.",
     nextImplementation:
@@ -1557,7 +1657,8 @@ export const competitorFeatureGaps: AbaSoftwareFeatureGap[] = [
 export const portalExperiences: PortalExperience[] = [
   {
     role: "parent",
-    dashboard: "Child progress, next sessions, parent-training due items, documents, and home practice.",
+    dashboard:
+      "Child progress, next sessions, parent-training due items, documents, and home practice.",
     weeklySchedule: [
       "Upcoming RBT sessions",
       "BCBA parent-training appointment",
@@ -1578,7 +1679,8 @@ export const portalExperiences: PortalExperience[] = [
   },
   {
     role: "rbt",
-    dashboard: "Weekly client schedule, data collection, session notes, supervision status, training, and timesheet.",
+    dashboard:
+      "Weekly client schedule, data collection, session notes, supervision status, training, and timesheet.",
     weeklySchedule: [
       "Direct treatment blocks",
       "Supervision observation windows",
@@ -1600,7 +1702,8 @@ export const portalExperiences: PortalExperience[] = [
   },
   {
     role: "bcba",
-    dashboard: "Caseload, supervision percentage, protocols, parent training, auth utilization, and claim holds.",
+    dashboard:
+      "Caseload, supervision percentage, protocols, parent training, auth utilization, and claim holds.",
     weeklySchedule: [
       "Supervision blocks by RBT/client",
       "Protocol modification",
@@ -1623,7 +1726,8 @@ export const portalExperiences: PortalExperience[] = [
   },
   {
     role: "admin",
-    dashboard: "Credentialing, authorizations, claims, payroll, payer calls, intake, referrals, and compliance.",
+    dashboard:
+      "Credentialing, authorizations, claims, payroll, payer calls, intake, referrals, and compliance.",
     weeklySchedule: [
       "Staff utilization",
       "Authorization expirations",
@@ -1654,7 +1758,8 @@ export const trainingModules: TrainingModule[] = [
     title: "Home practice and generalization",
     minutes: 18,
     required: true,
-    competencyCheck: "Parent selects correct prompting and reinforcement steps.",
+    competencyCheck:
+      "Parent selects correct prompting and reinforcement steps.",
     renewalCadence: "Every treatment-plan update",
   },
   {
@@ -1672,7 +1777,8 @@ export const trainingModules: TrainingModule[] = [
     title: "RBT data collection and session documentation",
     minutes: 45,
     required: true,
-    competencyCheck: "RBT completes a mock session with data, note, and claim-ready checklist.",
+    competencyCheck:
+      "RBT completes a mock session with data, note, and claim-ready checklist.",
     renewalCadence: "Quarterly",
   },
   {
@@ -1681,7 +1787,8 @@ export const trainingModules: TrainingModule[] = [
     title: "Video safety alerts and escalation",
     minutes: 25,
     required: true,
-    competencyCheck: "RBT responds to out-of-frame, distress, and parent-interruption scenarios.",
+    competencyCheck:
+      "RBT responds to out-of-frame, distress, and parent-interruption scenarios.",
     renewalCadence: "Semiannual",
   },
   {
@@ -1690,7 +1797,8 @@ export const trainingModules: TrainingModule[] = [
     title: "Multi-state supervision and remote-service review",
     minutes: 40,
     required: true,
-    competencyCheck: "BCBA validates supervision percentage, mode, payer authorization, and note signature.",
+    competencyCheck:
+      "BCBA validates supervision percentage, mode, payer authorization, and note signature.",
     renewalCadence: "Quarterly",
   },
   {
@@ -1699,7 +1807,8 @@ export const trainingModules: TrainingModule[] = [
     title: "Claims, ERA, denials, and payer call scripts",
     minutes: 50,
     required: true,
-    competencyCheck: "Admin posts a sample payment, logs denial reference number, and queues next action.",
+    competencyCheck:
+      "Admin posts a sample payment, logs denial reference number, and queues next action.",
     renewalCadence: "Quarterly",
   },
   {
@@ -1708,7 +1817,8 @@ export const trainingModules: TrainingModule[] = [
     title: "HIPAA minimum necessary access for US and India teams",
     minutes: 35,
     required: true,
-    competencyCheck: "Admin assigns correct role access to parent, RBT, BCBA, and India RCM users.",
+    competencyCheck:
+      "Admin assigns correct role access to parent, RBT, BCBA, and India RCM users.",
     renewalCadence: "Annual",
   },
 ];
@@ -1720,9 +1830,16 @@ export const childProgressSnapshots: ChildProgressSnapshot[] = [
     goalsInTreatmentPlan: 18,
     masteredGoals: 6,
     improvingGoals: 8,
-    highPriorityBarriers: ["Transition refusal after tablet removal", "Parent prompt fading inconsistent"],
-    homePractice: ["Two 5-minute manding routines daily", "Use first-then board before dinner"],
-    parentTrainingDue: "Review generalization module before next BCBA parent-training session",
+    highPriorityBarriers: [
+      "Transition refusal after tablet removal",
+      "Parent prompt fading inconsistent",
+    ],
+    homePractice: [
+      "Two 5-minute manding routines daily",
+      "Use first-then board before dinner",
+    ],
+    parentTrainingDue:
+      "Review generalization module before next BCBA parent-training session",
   },
   {
     child: "Client ND-01",
@@ -1731,8 +1848,12 @@ export const childProgressSnapshots: ChildProgressSnapshot[] = [
     masteredGoals: 4,
     improvingGoals: 7,
     highPriorityBarriers: ["RBT coverage not yet at 30-hour retention target"],
-    homePractice: ["Practice functional communication during snack", "Record one short caregiver observation"],
-    parentTrainingDue: "Confirm telehealth/parent-training authorization before online session",
+    homePractice: [
+      "Practice functional communication during snack",
+      "Record one short caregiver observation",
+    ],
+    parentTrainingDue:
+      "Confirm telehealth/parent-training authorization before online session",
   },
   {
     child: "Client CT-01",
@@ -1740,8 +1861,14 @@ export const childProgressSnapshots: ChildProgressSnapshot[] = [
     goalsInTreatmentPlan: 20,
     masteredGoals: 5,
     improvingGoals: 9,
-    highPriorityBarriers: ["Unsigned session note", "Supervision mode requires payer verification"],
-    homePractice: ["Complete toileting routine tracker", "Upload caregiver note after bedtime routine"],
+    highPriorityBarriers: [
+      "Unsigned session note",
+      "Supervision mode requires payer verification",
+    ],
+    homePractice: [
+      "Complete toileting routine tracker",
+      "Upload caregiver note after bedtime routine",
+    ],
     parentTrainingDue: "Complete session-note signature module",
   },
   {
@@ -1750,8 +1877,15 @@ export const childProgressSnapshots: ChildProgressSnapshot[] = [
     goalsInTreatmentPlan: 15,
     masteredGoals: 3,
     improvingGoals: 6,
-    highPriorityBarriers: ["Authorization number missing", "Remote supervision not confirmed"],
-    homePractice: ["Run two matching trials with natural reinforcement", "Confirm availability for makeup block"],
-    parentTrainingDue: "BCBA to schedule parent-training block after authorization update",
+    highPriorityBarriers: [
+      "Authorization number missing",
+      "Remote supervision not confirmed",
+    ],
+    homePractice: [
+      "Run two matching trials with natural reinforcement",
+      "Confirm availability for makeup block",
+    ],
+    parentTrainingDue:
+      "BCBA to schedule parent-training block after authorization update",
   },
 ];

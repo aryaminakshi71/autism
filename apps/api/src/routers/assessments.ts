@@ -380,7 +380,7 @@ export const assessmentsRouter = {
         scheduledDate: z.string().optional(),
         completedDate: z.string().optional(),
         administeredBy: z.string().optional(),
-        results: z.record(z.any()).optional(),
+        results: z.record(z.string(), z.any()).optional(),
         recommendations: z.string().optional(),
         goalsRecommended: z.string().optional(),
         nextAssessmentDate: z.string().optional(),
@@ -411,9 +411,9 @@ export const assessmentsRouter = {
       }) => {
         if (isDemoRequest(context)) {
           return {
+            ...input,
             id: input.id,
             organizationId: context.organization.id,
-            ...input,
             updatedAt: new Date().toISOString(),
           };
         }

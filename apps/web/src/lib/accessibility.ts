@@ -132,6 +132,6 @@ export function addSkipLink(
       skipLink.style.width = "1px";
       skipLink.style.height = "1px";
     };
-    document.body.prepend(skipLink);
+    document.body.appendChild(skipLink);
   }
 }

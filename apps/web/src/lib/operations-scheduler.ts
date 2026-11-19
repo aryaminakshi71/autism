@@ -1,5 +1,8 @@
 export type ScheduleState = "WA" | "ND" | "CT" | "MO";
-export type ServiceMode = "in_person" | "telehealth_allowed" | "verify_before_use";
+export type ServiceMode =
+  | "in_person"
+  | "telehealth_allowed"
+  | "verify_before_use";
 export type ScheduleRole = "rbt" | "bcba";
 export type ScheduleServiceType =
   | "rbt_direct_treatment"
@@ -90,7 +93,8 @@ export const stateSchedulingRules: StateSchedulingRule[] = [
       "2-3 hours/week for a 30-hour direct program, adjusted by acuity and authorization.",
     schedulingRisk:
       "Direct RBT treatment should default to in-person unless the authorization and payer rule clearly allow telehealth.",
-    verificationSource: "Washington Apple Health ABA billing guide/WAC telemedicine references.",
+    verificationSource:
+      "Washington Apple Health ABA billing guide/WAC telemedicine references.",
   },
   {
     state: "ND",
@@ -110,7 +114,8 @@ export const stateSchedulingRules: StateSchedulingRule[] = [
       "2-3 hours/week planning placeholder until ND authorization specifies units.",
     schedulingRisk:
       "Do not bill remote treatment or supervision until ND Medicaid/payer authorization confirms allowed mode and code.",
-    verificationSource: "ND Medicaid Autism ABA service policy and payer authorization.",
+    verificationSource:
+      "ND Medicaid Autism ABA service policy and payer authorization.",
   },
   {
     state: "CT",
@@ -130,7 +135,8 @@ export const stateSchedulingRules: StateSchedulingRule[] = [
       "About 3 hours/week for a 30-hour direct program under the 1:10 planning rule.",
     schedulingRisk:
       "CT has ASD and telehealth bulletins, but mode must be verified for the exact HUSKY/CMAP code and authorization.",
-    verificationSource: "CT HUSKY/CMAP ASD provider bulletins and authorization.",
+    verificationSource:
+      "CT HUSKY/CMAP ASD provider bulletins and authorization.",
   },
   {
     state: "MO",
@@ -150,7 +156,8 @@ export const stateSchedulingRules: StateSchedulingRule[] = [
       "2-3 hours/week planning placeholder until MO HealthNet/MCO authorization specifies units.",
     schedulingRisk:
       "Do not assume online treatment or remote supervision is billable unless MO HealthNet/MCO contract and authorization allow it.",
-    verificationSource: "MO HealthNet ABA rule, documentation guidance, and MCO authorization.",
+    verificationSource:
+      "MO HealthNet ABA rule, documentation guidance, and MCO authorization.",
   },
 ];
 
@@ -234,22 +241,35 @@ function getRule(state: ScheduleState) {
   return stateSchedulingRules.find((rule) => rule.state === state);
 }
 
-function getRuleStatus(state: ScheduleState, serviceType: ScheduleServiceType, mode: ServiceMode) {
+function getRuleStatus(
+  state: ScheduleState,
+  serviceType: ScheduleServiceType,
+  mode: ServiceMode,
+) {
   const rule = getRule(state);
   if (!rule) return "verify" as const;
 
   if (serviceType === "rbt_direct_treatment") {
-    if (mode === "telehealth_allowed" && rule.directTreatmentMode !== "telehealth_allowed") {
+    if (
+      mode === "telehealth_allowed" &&
+      rule.directTreatmentMode !== "telehealth_allowed"
+    ) {
       return "verify" as const;
     }
-    return rule.directTreatmentMode === "verify_before_use" ? "verify" as const : "ok" as const;
+    return rule.directTreatmentMode === "verify_before_use"
+      ? ("verify" as const)
+      : ("ok" as const);
   }
 
   if (serviceType === "bcba_parent_training") {
-    return rule.parentTrainingMode === "verify_before_use" ? "verify" as const : "ok" as const;
+    return rule.parentTrainingMode === "verify_before_use"
+      ? ("verify" as const)
+      : ("ok" as const);
   }
 
-  return rule.remoteSupervisionMode === "verify_before_use" ? "verify" as const : "ok" as const;
+  return rule.remoteSupervisionMode === "verify_before_use"
+    ? ("verify" as const)
+    : ("ok" as const);
 }
 
 export function buildWeeklyScheduleBlocks(): WeeklyScheduleBlock[] {
@@ -264,7 +284,11 @@ export function buildWeeklyScheduleBlocks(): WeeklyScheduleBlock[] {
       mode: client.preferredMode,
       hours: client.targetDeliveredDirectHoursPerWeek,
       billable: true,
-      ruleStatus: getRuleStatus(client.state, "rbt_direct_treatment", client.preferredMode),
+      ruleStatus: getRuleStatus(
+        client.state,
+        "rbt_direct_treatment",
+        client.preferredMode,
+      ),
     },
     {
       id: `${client.client}-bcba-supervision`,
@@ -276,7 +300,11 @@ export function buildWeeklyScheduleBlocks(): WeeklyScheduleBlock[] {
       mode: getRule(client.state)?.remoteSupervisionMode ?? "verify_before_use",
       hours: client.bcbaSupervisionHoursPerWeek,
       billable: true,
-      ruleStatus: getRuleStatus(client.state, "bcba_supervision", getRule(client.state)?.remoteSupervisionMode ?? "verify_before_use"),
+      ruleStatus: getRuleStatus(
+        client.state,
+        "bcba_supervision",
+        getRule(client.state)?.remoteSupervisionMode ?? "verify_before_use",
+      ),
     },
     {
       id: `${client.client}-bcba-treatment`,
@@ -334,10 +362,14 @@ export function buildStaffScheduleSummaries(): StaffScheduleSummary[] {
     const notes: string[] = [];
 
     if (verificationCount > 0) {
-      notes.push(`${verificationCount} block(s) need state/payer mode verification`);
+      notes.push(
+        `${verificationCount} block(s) need state/payer mode verification`,
+      );
     }
     if (status === "underfilled") {
-      notes.push("Add billable blocks or adjust paid hours to protect retention");
+      notes.push(
+        "Add billable blocks or adjust paid hours to protect retention",
+      );
     }
     if (status === "overbooked") {
       notes.push("Add another qualified provider or reduce assignment");

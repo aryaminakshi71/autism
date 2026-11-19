@@ -7,9 +7,15 @@ export type PendingClinicalEvent = {
 
 const key = "care-offline-clinical-events";
 
-export function queueClinicalEvent(event: Omit<PendingClinicalEvent, "id" | "createdAt">) {
+export function queueClinicalEvent(
+  event: Omit<PendingClinicalEvent, "id" | "createdAt">,
+) {
   const events = readClinicalEvents();
-  const next = { ...event, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+  const next = {
+    ...event,
+    id: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+  };
   localStorage.setItem(key, JSON.stringify([...events, next]));
   return next;
 }
@@ -25,7 +31,12 @@ export function readClinicalEvents(): PendingClinicalEvent[] {
 
 export function removeClinicalEvents(ids: string[]) {
   const removable = new Set(ids);
-  localStorage.setItem(key, JSON.stringify(readClinicalEvents().filter((event) => !removable.has(event.id))));
+  localStorage.setItem(
+    key,
+    JSON.stringify(
+      readClinicalEvents().filter((event) => !removable.has(event.id)),
+    ),
+  );
 }
 
 export async function replayClinicalEvents(
@@ -42,5 +53,8 @@ export async function replayClinicalEvents(
     }
   }
   if (delivered.length) removeClinicalEvents(delivered);
-  return { delivered: delivered.length, remaining: events.length - delivered.length };
+  return {
+    delivered: delivered.length,
+    remaining: events.length - delivered.length,
+  };
 }

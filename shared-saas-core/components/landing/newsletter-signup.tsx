@@ -57,7 +57,10 @@ export function NewsletterSignup({
           body: JSON.stringify({ email }),
         });
 
-        const data = await response.json();
+        const data = (await response.json()) as {
+          success?: boolean;
+          error?: { message?: string };
+        };
 
         if (!data.success) {
           throw new Error(data.error?.message || "Failed to subscribe");

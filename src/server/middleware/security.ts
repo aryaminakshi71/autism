@@ -44,7 +44,7 @@ export const corsHeaders = createMiddleware(async (c, next) => {
   c.header("Access-Control-Max-Age", "86400");
 
   if (c.req.method === "OPTIONS") {
-    return c.text("", 204);
+    return c.body(null, 204);
   }
 
   await next();

@@ -1,5 +1,10 @@
 export type PayerState = "WA" | "ND" | "CT" | "MO";
-export type PayerCategory = "medicaid_ffs" | "medicaid_mco" | "aso" | "commercial" | "private_pay";
+export type PayerCategory =
+  | "medicaid_ffs"
+  | "medicaid_mco"
+  | "aso"
+  | "commercial"
+  | "private_pay";
 
 export interface PayerTemplate {
   id: string;
@@ -154,20 +159,25 @@ export const payerTemplates: PayerTemplate[] = [
     followUpTemplate: defaultFollowUp,
     status: "needs_verification" as const,
   })),
-  ...["Aetna", "Anthem/Elevance", "Cigna/Evernorth", "UnitedHealthcare Commercial", "Blue Cross/Blue Shield local plan"].flatMap(
-    (payer) =>
-      (["WA", "ND", "CT", "MO"] as const).map((state) => ({
-        id: `${state.toLowerCase()}-${payer.toLowerCase().replaceAll("/", "-").replaceAll(" ", "-")}`,
-        state,
-        payerName: payer,
-        category: "commercial" as const,
-        portal: "Commercial payer/provider portal",
-        enrollmentTemplate: defaultEnrollment,
-        authorizationTemplate: defaultAuthorization,
-        claimTemplate: defaultClaim,
-        followUpTemplate: defaultFollowUp,
-        status: "needs_verification" as const,
-      })),
+  ...[
+    "Aetna",
+    "Anthem/Elevance",
+    "Cigna/Evernorth",
+    "UnitedHealthcare Commercial",
+    "Blue Cross/Blue Shield local plan",
+  ].flatMap((payer) =>
+    (["WA", "ND", "CT", "MO"] as const).map((state) => ({
+      id: `${state.toLowerCase()}-${payer.toLowerCase().replaceAll("/", "-").replaceAll(" ", "-")}`,
+      state,
+      payerName: payer,
+      category: "commercial" as const,
+      portal: "Commercial payer/provider portal",
+      enrollmentTemplate: defaultEnrollment,
+      authorizationTemplate: defaultAuthorization,
+      claimTemplate: defaultClaim,
+      followUpTemplate: defaultFollowUp,
+      status: "needs_verification" as const,
+    })),
   ),
 ];
 

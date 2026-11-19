@@ -160,7 +160,7 @@ export function AssetPreviewModal({
               <Button
                 onClick={handleShare}
                 className="flex-1 gap-2"
-                variant="default"
+                variant="primary"
               >
                 <Copy className="h-4 w-4" />
                 Share Asset

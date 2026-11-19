@@ -32,7 +32,8 @@ export const medicaidRequirementSnapshots: MedicaidRequirementSnapshot[] = [
       "RBT/technician oversight must satisfy BACB, state license, payer, and treatment-plan requirements. Parent/caregiver training is also expected in the treatment plan.",
     billingRisk:
       "Do not rely on a managed care contract alone; verify ProviderOne and plan-specific ABA billing rules.",
-    source: "Washington HCA Apple Health ABA billing guide and provider ABA page",
+    source:
+      "Washington HCA Apple Health ABA billing guide and provider ABA page",
     status: "verify_before_billing",
   },
   {
@@ -52,7 +53,8 @@ export const medicaidRequirementSnapshots: MedicaidRequirementSnapshot[] = [
       "BCBA/state-licensed qualified professional oversight and RBT supervision must be documented.",
     billingRisk:
       "Small-state payer workflows can be manual; track every request, approval, and claim reference number.",
-    source: "North Dakota Medicaid Autism ABA service policy and fee schedule/provider resources",
+    source:
+      "North Dakota Medicaid Autism ABA service policy and fee schedule/provider resources",
     status: "verify_before_billing",
   },
   {
@@ -72,7 +74,8 @@ export const medicaidRequirementSnapshots: MedicaidRequirementSnapshot[] = [
       "Qualified healthcare professional/BCBA requirements vary by service; do not let RBTs deliver services outside approved scope.",
     billingRisk:
       "CT workflows can involve CMAP, ASO, and service-specific rules; verify the exact route before intake.",
-    source: "CT HUSKY Health ASD provider resources and CTDSSMAP provider portal",
+    source:
+      "CT HUSKY Health ASD provider resources and CTDSSMAP provider portal",
     status: "verify_before_billing",
   },
   {
@@ -92,7 +95,8 @@ export const medicaidRequirementSnapshots: MedicaidRequirementSnapshot[] = [
       "ABA technicians must meet credentialing/supervision requirements, and the supervisory relationship must be documented.",
     billingRisk:
       "Missouri managed care and fee-for-service paths differ; track plan, auth, modifier, and documentation deadline.",
-    source: "MO HealthNet ABA rule, provider resources, and ABA documentation guidance",
+    source:
+      "MO HealthNet ABA rule, provider resources, and ABA documentation guidance",
     status: "verify_before_billing",
   },
 ];

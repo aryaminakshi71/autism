@@ -21,7 +21,9 @@ const MAX_METRICS = 1000; // Keep last 1000 queries
  */
 export async function trackQuery<T>(
   queryName: string,
-  queryFn: () => Promise<T>,
+  // Drizzle query builders are thenables, not real Promises, so accept
+  // PromiseLike to keep the result type instead of falling back to unknown.
+  queryFn: () => PromiseLike<T>,
 ): Promise<T> {
   const startTime = Date.now();
   let error: string | undefined;

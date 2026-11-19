@@ -31,11 +31,13 @@ export async function platformFetch(
     const timer = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
 
     try {
+      // `credentials` is valid in the standard fetch API but missing from
+      // Cloudflare's RequestInit type, so widen the init object.
       const response = await fetch(input, {
         credentials: "include",
         ...init,
         signal: controller.signal,
-      });
+      } as RequestInit);
 
       if (
         (response.status >= 500 || response.status === 429) &&

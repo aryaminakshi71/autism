@@ -1,8 +1,14 @@
 export type PayrollState = "WA" | "ND" | "CT" | "MO";
 export type PayrollRole = "rbt" | "bcba";
 export type PayCycle = "weekly" | "biweekly" | "monthly" | "unknown";
-export type TreasuryRecommendation = "single_operating_with_state_ledgers" | "separate_state_account_optional";
-export type PayrollExportFormat = "gusto" | "adp" | "quickbooks" | "internal_ledger";
+export type TreasuryRecommendation =
+  | "single_operating_with_state_ledgers"
+  | "separate_state_account_optional";
+export type PayrollExportFormat =
+  | "gusto"
+  | "adp"
+  | "quickbooks"
+  | "internal_ledger";
 
 export interface PayrollTimeEntry {
   id: string;
@@ -16,7 +22,11 @@ export interface PayrollTimeEntry {
   clockOut: string;
   paidHours: number;
   billableHours: number;
-  serviceType: "rbt_direct_treatment" | "bcba_supervision" | "bcba_protocol" | "admin";
+  serviceType:
+    | "rbt_direct_treatment"
+    | "bcba_supervision"
+    | "bcba_protocol"
+    | "admin";
   noteSigned: boolean;
   claimReady: boolean;
 }
@@ -91,7 +101,10 @@ export interface InternalPayrollLedgerRow {
   loadedCost: number;
   claimReady: boolean;
   noteSigned: boolean;
-  revenueHoldStatus: "release_to_claims" | "documentation_hold" | "non_billable";
+  revenueHoldStatus:
+    | "release_to_claims"
+    | "documentation_hold"
+    | "non_billable";
 }
 
 export const payrollTimeEntries: PayrollTimeEntry[] = [
@@ -235,7 +248,8 @@ export const payerPaymentCycles: PayerPaymentCycle[] = [
     expectedPaymentCycle: "weekly",
     averageDaysToPay: 14,
     eftAccountStrategy: "single_operating_with_state_ledgers",
-    notes: "Use EFT into operating account; track WA receipts in the state ledger.",
+    notes:
+      "Use EFT into operating account; track WA receipts in the state ledger.",
   },
   {
     state: "ND",
@@ -251,7 +265,8 @@ export const payerPaymentCycles: PayerPaymentCycle[] = [
     expectedPaymentCycle: "weekly",
     averageDaysToPay: 14,
     eftAccountStrategy: "single_operating_with_state_ledgers",
-    notes: "Keep CT receipts separate in accounting classes even if EFT uses one bank account.",
+    notes:
+      "Keep CT receipts separate in accounting classes even if EFT uses one bank account.",
   },
   {
     state: "MO",
@@ -271,7 +286,9 @@ function findPayRate(entry: PayrollTimeEntry) {
         rate.state === entry.state &&
         rate.role === entry.role,
     ) ??
-    staffPayRates.find((rate) => rate.staff === entry.staff && rate.role === entry.role)
+    staffPayRates.find(
+      (rate) => rate.staff === entry.staff && rate.role === entry.role,
+    )
   );
 }
 
@@ -279,7 +296,7 @@ function escapeCsvValue(value: unknown) {
   if (value === null || value === undefined) return "";
   const text = String(value);
   if (/[",\n\r]/.test(text)) {
-    return `"${text.replaceAll("\"", "\"\"")}"`;
+    return `"${text.replaceAll('"', '""')}"`;
   }
   return text;
 }
@@ -330,9 +347,7 @@ export function buildInternalPayrollLedger(): InternalPayrollLedgerRow[] {
       entryId: entry.id,
       ledgerClass: getLedgerClass(entry),
       payrollAccount:
-        entry.role === "bcba"
-          ? "Payroll Expense:BCBA"
-          : "Payroll Expense:RBT",
+        entry.role === "bcba" ? "Payroll Expense:BCBA" : "Payroll Expense:RBT",
       revenueAccount:
         entry.serviceType === "rbt_direct_treatment"
           ? "Revenue:RBT Direct Treatment"
@@ -545,7 +560,10 @@ export function buildBiweeklyPayrollSummaries(): BiweeklyPayrollSummary[] {
   return [...grouped.entries()].map(([, entries]) => {
     const first = entries[0];
     const rate = findPayRate(first);
-    const paidHours = entries.reduce((total, entry) => total + entry.paidHours, 0);
+    const paidHours = entries.reduce(
+      (total, entry) => total + entry.paidHours,
+      0,
+    );
     const billableHours = entries.reduce(
       (total, entry) => total + entry.billableHours,
       0,
@@ -589,14 +607,17 @@ export function buildStateCashFlowSummaries(): StateCashFlowSummary[] {
     const statePayrollCost = payroll
       .filter((item) => item.state === payer.state)
       .reduce((total, item) => total + item.loadedCost, 0);
-    const stateEntries = payrollTimeEntries.filter((entry) => entry.state === payer.state);
+    const stateEntries = payrollTimeEntries.filter(
+      (entry) => entry.state === payer.state,
+    );
     const claimReadyHours = stateEntries
       .filter((entry) => entry.claimReady)
       .reduce((total, entry) => total + entry.billableHours, 0);
     const holdHours = stateEntries
       .filter((entry) => !entry.claimReady)
       .reduce((total, entry) => total + entry.billableHours, 0);
-    const blendedRevenueRate = payer.state === "CT" ? 72 : payer.state === "MO" ? 132 : 70;
+    const blendedRevenueRate =
+      payer.state === "CT" ? 72 : payer.state === "MO" ? 132 : 70;
     const claimReadyRevenue = claimReadyHours * blendedRevenueRate;
     const documentationHoldRevenue = holdHours * blendedRevenueRate;
     const cashRisk =

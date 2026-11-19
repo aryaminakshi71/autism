@@ -214,7 +214,11 @@ export async function createOperationsCallLog(input: {
   patientId?: string;
   state: string;
   payerName?: string;
-  callType: "claim_status" | "authorization_status" | "credentialing" | "parent_admin";
+  callType:
+    | "claim_status"
+    | "authorization_status"
+    | "credentialing"
+    | "parent_admin";
   callerName?: string;
   phoneNumberLabel?: string;
   payerRepresentative: string;
@@ -241,7 +245,11 @@ export async function createOperationsCallLog(input: {
 
 export async function reviewOperationsAiAlert(input: {
   alertId: string;
-  decision: "confirmed_safety_event" | "false_positive" | "monitor" | "training_issue";
+  decision:
+    | "confirmed_safety_event"
+    | "false_positive"
+    | "monitor"
+    | "training_issue";
   falsePositiveReason?: string;
   clinicalAction?: string;
   claimHoldAfterReview?: boolean;

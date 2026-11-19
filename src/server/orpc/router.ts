@@ -76,7 +76,13 @@ const OperationsPayrollTimeEntryInputSchema = z.object({
   role: z.enum(["bcba", "rbt", "admin", "biller"]),
   state: z.string().min(2),
   center: z.string().optional(),
-  serviceType: z.enum(["rbt_direct", "bcba_treatment", "bcba_supervision", "parent_training", "admin"]),
+  serviceType: z.enum([
+    "rbt_direct",
+    "bcba_treatment",
+    "bcba_supervision",
+    "parent_training",
+    "admin",
+  ]),
   clockIn: z.string(),
   clockOut: z.string().optional(),
   paidMinutes: z.number().int().nonnegative().default(0),
@@ -90,7 +96,12 @@ const OperationsCallLogInputSchema = z.object({
   patientId: z.string().optional(),
   state: z.string().min(2),
   payerName: z.string().optional(),
-  callType: z.enum(["claim_status", "authorization_status", "credentialing", "parent_admin"]),
+  callType: z.enum([
+    "claim_status",
+    "authorization_status",
+    "credentialing",
+    "parent_admin",
+  ]),
   callerName: z.string().optional(),
   phoneNumberLabel: z.string().optional(),
   payerRepresentative: z.string().min(2),
@@ -105,7 +116,12 @@ const OperationsCallLogInputSchema = z.object({
 });
 const OperationsAiAlertReviewInputSchema = z.object({
   alertId: z.string(),
-  decision: z.enum(["confirmed_safety_event", "false_positive", "monitor", "training_issue"]),
+  decision: z.enum([
+    "confirmed_safety_event",
+    "false_positive",
+    "monitor",
+    "training_issue",
+  ]),
   falsePositiveReason: z.string().optional(),
   clinicalAction: z.string().optional(),
   claimHoldAfterReview: z.boolean().default(true),
@@ -159,7 +175,9 @@ const dateOrNull = (value: unknown) =>
 const dateOrDefault = (value: unknown, fallback = new Date()) =>
   typeof value === "string" && value ? new Date(value) : fallback;
 const stringArrayOrNull = (value: unknown) =>
-  Array.isArray(value) ? value.filter((item) => typeof item === "string") : null;
+  Array.isArray(value)
+    ? value.filter((item) => typeof item === "string")
+    : null;
 
 async function enforceOperationsPermission(
   context: any,
@@ -167,11 +185,8 @@ async function enforceOperationsPermission(
   resourceType: string,
   state?: string | null,
 ) {
-  const {
-    providerProfiles,
-    operationsRolePermissionPolicies,
-    hipaaAuditLogs,
-  } = await import("../db/schema");
+  const { providerProfiles, operationsRolePermissionPolicies, hipaaAuditLogs } =
+    await import("../db/schema");
   const orgId = context.organizationId!;
   const userId = context.user?.id;
   const [provider] = userId
@@ -245,7 +260,9 @@ function buildOperationsCrudValues(
       serviceStates: stringArrayOrNull(record.serviceStates),
       status: stringOrDefault(record.status, "active"),
       maxClientLoad:
-        record.maxClientLoad === null ? null : numberOrDefault(record.maxClientLoad, 0),
+        record.maxClientLoad === null
+          ? null
+          : numberOrDefault(record.maxClientLoad, 0),
       notes: stringOrNull(record.notes),
     };
   }
@@ -296,7 +313,10 @@ function buildOperationsCrudValues(
       approvedUnits: numberOrDefault(record.approvedUnits, 0),
       usedUnits: numberOrDefault(record.usedUnits, 0),
       startDate: dateOrDefault(record.startDate),
-      endDate: dateOrDefault(record.endDate, new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)),
+      endDate: dateOrDefault(
+        record.endDate,
+        new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      ),
       status: stringOrDefault(record.status, "active"),
       documentUrl: stringOrNull(record.documentUrl),
     };
@@ -338,8 +358,11 @@ function buildOperationsCrudValues(
       submittedDate: dateOrNull(record.submittedDate),
       billedCents: numberOrDefault(record.billedCents, 0),
       allowedCents:
-        record.allowedCents === null ? null : numberOrDefault(record.allowedCents, 0),
-      paidCents: record.paidCents === null ? null : numberOrDefault(record.paidCents, 0),
+        record.allowedCents === null
+          ? null
+          : numberOrDefault(record.allowedCents, 0),
+      paidCents:
+        record.paidCents === null ? null : numberOrDefault(record.paidCents, 0),
       denialReason: stringOrNull(record.denialReason),
       nextFollowUpDate: dateOrNull(record.nextFollowUpDate),
       assignedRcmUserId: stringOrNull(record.assignedRcmUserId),
@@ -476,7 +499,7 @@ export const router = {
           .from(patientsTable)
           .where(eq(patientsTable.organizationId, context.organizationId!));
 
-        return patients.map((patient) => ({
+        return patients.map((patient: typeof patientsTable.$inferSelect) => ({
           ...patient,
           dateOfBirth: patient.dateOfBirth?.toISOString() ?? null,
           createdAt: patient.createdAt.toISOString(),
@@ -615,7 +638,7 @@ export const router = {
           .from(goalsTable)
           .where(condition);
 
-        return goals.map((goal) => ({
+        return goals.map((goal: typeof goalsTable.$inferSelect) => ({
           ...goal,
           startDate: goal.startDate?.toISOString() ?? null,
           targetDate: goal.targetDate?.toISOString() ?? null,
@@ -747,7 +770,7 @@ export const router = {
           .where(condition)
           .orderBy(desc(sessionsTable.scheduledStart));
 
-        return sessions.map((session) => ({
+        return sessions.map((session: typeof sessionsTable.$inferSelect) => ({
           ...session,
           scheduledStart: session.scheduledStart.toISOString(),
           scheduledEnd: session.scheduledEnd.toISOString(),
@@ -882,11 +905,13 @@ export const router = {
           .from(visualSchedules)
           .where(condition);
 
-        return schedules.map((schedule) => ({
-          ...schedule,
-          createdAt: schedule.createdAt.toISOString(),
-          updatedAt: schedule.updatedAt.toISOString(),
-        }));
+        return schedules.map(
+          (schedule: typeof visualSchedules.$inferSelect) => ({
+            ...schedule,
+            createdAt: schedule.createdAt.toISOString(),
+            updatedAt: schedule.updatedAt.toISOString(),
+          }),
+        );
       }),
     create: orgAuthed
       .route({
@@ -956,7 +981,7 @@ export const router = {
             .from(communicationCards)
             .where(condition);
 
-          return cards.map((card) => ({
+          return cards.map((card: typeof communicationCards.$inferSelect) => ({
             ...card,
             createdAt: card.createdAt.toISOString(),
             updatedAt: card.updatedAt.toISOString(),
@@ -1033,13 +1058,15 @@ export const router = {
           .where(condition)
           .orderBy(desc(assessmentsTable.scheduledDate));
 
-        return assessments.map((assessment) => ({
-          ...assessment,
-          scheduledDate: assessment.scheduledDate?.toISOString() ?? null,
-          completedDate: assessment.completedDate?.toISOString() ?? null,
-          createdAt: assessment.createdAt.toISOString(),
-          updatedAt: assessment.updatedAt.toISOString(),
-        }));
+        return assessments.map(
+          (assessment: typeof assessmentsTable.$inferSelect) => ({
+            ...assessment,
+            scheduledDate: assessment.scheduledDate?.toISOString() ?? null,
+            completedDate: assessment.completedDate?.toISOString() ?? null,
+            createdAt: assessment.createdAt.toISOString(),
+            updatedAt: assessment.updatedAt.toISOString(),
+          }),
+        );
       }),
     create: orgAuthed
       .route({
@@ -1260,10 +1287,16 @@ export const router = {
           scheduleBlocks: scheduleBlocks.map(serializeOperationRow),
           payrollTimeEntries: payrollTimeEntries.map(serializeOperationRow),
           payerPaymentCycles: payerPaymentCycles.map(serializeOperationRow),
-          complianceRequirements: complianceRequirements.map(serializeOperationRow),
+          complianceRequirements: complianceRequirements.map(
+            serializeOperationRow,
+          ),
           workItems: workItems.map(serializeOperationRow),
-          accountingLedgerEntries: accountingLedgerEntries.map(serializeOperationRow),
-          rolePermissionPolicies: rolePermissionPolicies.map(serializeOperationRow),
+          accountingLedgerEntries: accountingLedgerEntries.map(
+            serializeOperationRow,
+          ),
+          rolePermissionPolicies: rolePermissionPolicies.map(
+            serializeOperationRow,
+          ),
           callLogs: callLogs.map(serializeOperationRow),
           claimScrubberRules: claimScrubberRules.map(serializeOperationRow),
           aiAlertReviewEvents: aiAlertReviewEvents.map(serializeOperationRow),
@@ -1479,7 +1512,8 @@ export const router = {
             serviceStates: ["WA", "ND", "CT", "MO"],
             status: "active",
             maxClientLoad: 12,
-            notes: "Owner BCBA supervising four-state launch with restricted delegation.",
+            notes:
+              "Owner BCBA supervising four-state launch with restricted delegation.",
           },
           {
             id: `${idPrefix}-provider-india-rcm`,
@@ -1492,7 +1526,8 @@ export const router = {
             serviceStates: ["WA", "ND", "CT", "MO"],
             status: "pending",
             maxClientLoad: null,
-            notes: "Restricted minimum-necessary claim follow-up and payment posting team.",
+            notes:
+              "Restricted minimum-necessary claim follow-up and payment posting team.",
           },
           ...stateConfigs.map((config) => ({
             id: `${idPrefix}-provider-rbt-${config.state.toLowerCase()}`,
@@ -1539,11 +1574,17 @@ export const router = {
               licenseType: "BCBA/LBA permission",
               licenseNumber: null,
               status: config.state === "CT" ? "pending" : "active",
-              issuedDate: config.state === "CT" ? null : new Date("2026-07-01T00:00:00.000Z"),
+              issuedDate:
+                config.state === "CT"
+                  ? null
+                  : new Date("2026-07-01T00:00:00.000Z"),
               expirationDate: new Date("2027-07-01T00:00:00.000Z"),
               evidenceUrl: null,
               verifiedBy: config.state === "CT" ? null : userId,
-              verifiedAt: config.state === "CT" ? null : new Date("2026-07-05T00:00:00.000Z"),
+              verifiedAt:
+                config.state === "CT"
+                  ? null
+                  : new Date("2026-07-05T00:00:00.000Z"),
             },
             {
               id: `${idPrefix}-license-rbt-${config.state.toLowerCase()}`,
@@ -1576,7 +1617,8 @@ export const router = {
             effectiveDate: null,
             revalidationDate: null,
             portalUrl: null,
-            notes: "Seeded launch credentialing record; replace with payer portal evidence.",
+            notes:
+              "Seeded launch credentialing record; replace with payer portal evidence.",
           })),
         );
 
@@ -1715,7 +1757,9 @@ export const router = {
                 allowedCents: null,
                 paidCents: null,
                 denialReason:
-                  config.state === "MO" ? "Authorization units require review" : null,
+                  config.state === "MO"
+                    ? "Authorization units require review"
+                    : null,
                 nextFollowUpDate: new Date("2026-07-08T00:00:00.000Z"),
                 assignedRcmUserId: null,
               },
@@ -1723,125 +1767,135 @@ export const router = {
           }),
         );
 
-        await context.db.insert(schema.operationsAccountingLedgerEntries).values(
-          stateConfigs.flatMap((config) => {
-            const patientId = `${idPrefix}-patient-${config.state.toLowerCase()}-01`;
-            const directAmount = 6 * config.directRateCents;
-            const bcbaAmount = config.bcbaRateCents;
-            return [
-              {
-                id: `${idPrefix}-ledger-${config.state.toLowerCase()}-payroll-rbt`,
-                organizationId: orgId,
-                state: config.state,
-                center: config.center,
-                clientLabel: `${config.firstName} ${config.lastName}`,
-                providerId: `${idPrefix}-provider-rbt-${config.state.toLowerCase()}`,
-                patientId,
-                sourceType: "payroll",
-                sourceId: `${idPrefix}-time-${config.state.toLowerCase()}-rbt-001`,
-                account: "Payroll Expense:RBT",
-                debitCents: 6 * 2800,
-                creditCents: 0,
-                entryDate: new Date("2026-07-03T00:00:00.000Z"),
-                memo: "Seeded RBT payroll cost by state/client/provider.",
-                postedAt: null,
-              },
-              {
-                id: `${idPrefix}-ledger-${config.state.toLowerCase()}-ar-rbt`,
-                organizationId: orgId,
-                state: config.state,
-                center: config.center,
-                clientLabel: `${config.firstName} ${config.lastName}`,
-                providerId: `${idPrefix}-provider-rbt-${config.state.toLowerCase()}`,
-                patientId,
-                sourceType: "claim",
-                sourceId: `${idPrefix}-claim-${config.state.toLowerCase()}-rbt-001`,
-                account: config.claimStatus === "ready" ? "Accounts Receivable" : "Claim Hold",
-                debitCents: directAmount,
-                creditCents: 0,
-                entryDate: new Date("2026-07-03T00:00:00.000Z"),
-                memo: "Seeded RBT claim receivable or hold.",
-                postedAt: null,
-              },
-              {
-                id: `${idPrefix}-ledger-${config.state.toLowerCase()}-ar-bcba`,
-                organizationId: orgId,
-                state: config.state,
-                center: config.center,
-                clientLabel: `${config.firstName} ${config.lastName}`,
-                providerId: ownerProviderId,
-                patientId,
-                sourceType: "claim",
-                sourceId: `${idPrefix}-claim-${config.state.toLowerCase()}-bcba-001`,
-                account: config.claimStatus === "ready" ? "Accounts Receivable" : "Claim Hold",
-                debitCents: bcbaAmount,
-                creditCents: 0,
-                entryDate: new Date("2026-07-03T00:00:00.000Z"),
-                memo: "Seeded BCBA claim receivable or hold.",
-                postedAt: null,
-              },
-            ];
-          }),
-        );
+        await context.db
+          .insert(schema.operationsAccountingLedgerEntries)
+          .values(
+            stateConfigs.flatMap((config) => {
+              const patientId = `${idPrefix}-patient-${config.state.toLowerCase()}-01`;
+              const directAmount = 6 * config.directRateCents;
+              const bcbaAmount = config.bcbaRateCents;
+              return [
+                {
+                  id: `${idPrefix}-ledger-${config.state.toLowerCase()}-payroll-rbt`,
+                  organizationId: orgId,
+                  state: config.state,
+                  center: config.center,
+                  clientLabel: `${config.firstName} ${config.lastName}`,
+                  providerId: `${idPrefix}-provider-rbt-${config.state.toLowerCase()}`,
+                  patientId,
+                  sourceType: "payroll",
+                  sourceId: `${idPrefix}-time-${config.state.toLowerCase()}-rbt-001`,
+                  account: "Payroll Expense:RBT",
+                  debitCents: 6 * 2800,
+                  creditCents: 0,
+                  entryDate: new Date("2026-07-03T00:00:00.000Z"),
+                  memo: "Seeded RBT payroll cost by state/client/provider.",
+                  postedAt: null,
+                },
+                {
+                  id: `${idPrefix}-ledger-${config.state.toLowerCase()}-ar-rbt`,
+                  organizationId: orgId,
+                  state: config.state,
+                  center: config.center,
+                  clientLabel: `${config.firstName} ${config.lastName}`,
+                  providerId: `${idPrefix}-provider-rbt-${config.state.toLowerCase()}`,
+                  patientId,
+                  sourceType: "claim",
+                  sourceId: `${idPrefix}-claim-${config.state.toLowerCase()}-rbt-001`,
+                  account:
+                    config.claimStatus === "ready"
+                      ? "Accounts Receivable"
+                      : "Claim Hold",
+                  debitCents: directAmount,
+                  creditCents: 0,
+                  entryDate: new Date("2026-07-03T00:00:00.000Z"),
+                  memo: "Seeded RBT claim receivable or hold.",
+                  postedAt: null,
+                },
+                {
+                  id: `${idPrefix}-ledger-${config.state.toLowerCase()}-ar-bcba`,
+                  organizationId: orgId,
+                  state: config.state,
+                  center: config.center,
+                  clientLabel: `${config.firstName} ${config.lastName}`,
+                  providerId: ownerProviderId,
+                  patientId,
+                  sourceType: "claim",
+                  sourceId: `${idPrefix}-claim-${config.state.toLowerCase()}-bcba-001`,
+                  account:
+                    config.claimStatus === "ready"
+                      ? "Accounts Receivable"
+                      : "Claim Hold",
+                  debitCents: bcbaAmount,
+                  creditCents: 0,
+                  entryDate: new Date("2026-07-03T00:00:00.000Z"),
+                  memo: "Seeded BCBA claim receivable or hold.",
+                  postedAt: null,
+                },
+              ];
+            }),
+          );
 
-        await context.db.insert(schema.operationsRolePermissionPolicies).values([
-          {
-            id: `${idPrefix}-rbac-owner-all`,
-            organizationId: orgId,
-            role: "owner_bcba",
-            permission: "read",
-            resourceType: "all_operations_phi",
-            accessLevel: "full",
-            allowedStates: ["WA", "ND", "CT", "MO"],
-            requiresMfa: true,
-            requiresBaa: false,
-            phiAccess: "full",
-            status: "active",
-            reviewedAt: new Date("2026-07-05T00:00:00.000Z"),
-          },
-          {
-            id: `${idPrefix}-rbac-india-call-create`,
-            organizationId: orgId,
-            role: "rcm",
-            permission: "create",
-            resourceType: "operations_call_logs",
-            accessLevel: "minimum_necessary",
-            allowedStates: ["WA", "ND", "CT", "MO"],
-            requiresMfa: true,
-            requiresBaa: true,
-            phiAccess: "claim_auth_only",
-            status: "active",
-            reviewedAt: new Date("2026-07-05T00:00:00.000Z"),
-          },
-          {
-            id: `${idPrefix}-rbac-bcba-ai-review`,
-            organizationId: orgId,
-            role: "owner_bcba",
-            permission: "review",
-            resourceType: "ai_video_alerts",
-            accessLevel: "clinical_review",
-            allowedStates: ["WA", "ND", "CT", "MO"],
-            requiresMfa: true,
-            requiresBaa: false,
-            phiAccess: "clinical",
-            status: "active",
-            reviewedAt: new Date("2026-07-05T00:00:00.000Z"),
-          },
-          {
-            id: `${idPrefix}-rbac-training-update`,
-            organizationId: orgId,
-            role: "owner_bcba",
-            permission: "update",
-            resourceType: "operations_training_completions",
-            accessLevel: "signoff",
-            allowedStates: ["WA", "ND", "CT", "MO"],
-            requiresMfa: true,
-            requiresBaa: false,
-            phiAccess: "limited",
-            status: "active",
-            reviewedAt: new Date("2026-07-05T00:00:00.000Z"),
-          },
-        ]);
+        await context.db
+          .insert(schema.operationsRolePermissionPolicies)
+          .values([
+            {
+              id: `${idPrefix}-rbac-owner-all`,
+              organizationId: orgId,
+              role: "owner_bcba",
+              permission: "read",
+              resourceType: "all_operations_phi",
+              accessLevel: "full",
+              allowedStates: ["WA", "ND", "CT", "MO"],
+              requiresMfa: true,
+              requiresBaa: false,
+              phiAccess: "full",
+              status: "active",
+              reviewedAt: new Date("2026-07-05T00:00:00.000Z"),
+            },
+            {
+              id: `${idPrefix}-rbac-india-call-create`,
+              organizationId: orgId,
+              role: "rcm",
+              permission: "create",
+              resourceType: "operations_call_logs",
+              accessLevel: "minimum_necessary",
+              allowedStates: ["WA", "ND", "CT", "MO"],
+              requiresMfa: true,
+              requiresBaa: true,
+              phiAccess: "claim_auth_only",
+              status: "active",
+              reviewedAt: new Date("2026-07-05T00:00:00.000Z"),
+            },
+            {
+              id: `${idPrefix}-rbac-bcba-ai-review`,
+              organizationId: orgId,
+              role: "owner_bcba",
+              permission: "review",
+              resourceType: "ai_video_alerts",
+              accessLevel: "clinical_review",
+              allowedStates: ["WA", "ND", "CT", "MO"],
+              requiresMfa: true,
+              requiresBaa: false,
+              phiAccess: "clinical",
+              status: "active",
+              reviewedAt: new Date("2026-07-05T00:00:00.000Z"),
+            },
+            {
+              id: `${idPrefix}-rbac-training-update`,
+              organizationId: orgId,
+              role: "owner_bcba",
+              permission: "update",
+              resourceType: "operations_training_completions",
+              accessLevel: "signoff",
+              allowedStates: ["WA", "ND", "CT", "MO"],
+              requiresMfa: true,
+              requiresBaa: false,
+              phiAccess: "limited",
+              status: "active",
+              reviewedAt: new Date("2026-07-05T00:00:00.000Z"),
+            },
+          ]);
 
         await context.db.insert(schema.operationsClaimScrubberRules).values(
           stateConfigs.flatMap((config) => [
@@ -1858,7 +1912,8 @@ export const router = {
               severity: "error",
               requirement:
                 "Authorization number, effective dates, approved units, and remaining units must be present before claim release.",
-              failureMessage: "Hold claim: authorization packet is incomplete or exhausted.",
+              failureMessage:
+                "Hold claim: authorization packet is incomplete or exhausted.",
               effectiveDate: new Date("2026-07-01T00:00:00.000Z"),
               status: "active",
             },
@@ -1875,7 +1930,8 @@ export const router = {
               severity: "error",
               requirement:
                 "RBT session note, time in/out, data summary, provider identity, and signature must be complete.",
-              failureMessage: "Hold claim: signed session documentation is missing.",
+              failureMessage:
+                "Hold claim: signed session documentation is missing.",
               effectiveDate: new Date("2026-07-01T00:00:00.000Z"),
               status: "active",
             },
@@ -1913,7 +1969,8 @@ export const router = {
           reviewerRole: "bcba",
           decision: "monitor",
           falsePositiveReason: null,
-          clinicalAction: "BCBA reviewed clip; no incident, but RBT reminded to keep camera framing stable.",
+          clinicalAction:
+            "BCBA reviewed clip; no incident, but RBT reminded to keep camera framing stable.",
           claimHoldAfterReview: false,
           reviewedAt: new Date("2026-07-05T00:00:00.000Z"),
         });
@@ -1935,8 +1992,11 @@ export const router = {
             payerRepresentative: "Payer representative",
             referenceNumber: `REF-${config.state}-20260705`,
             disposition:
-              config.claimStatus === "ready" ? "accepted for processing" : "requires follow-up",
-            summary: "Seeded payer call log with required reference number and next action.",
+              config.claimStatus === "ready"
+                ? "accepted for processing"
+                : "requires follow-up",
+            summary:
+              "Seeded payer call log with required reference number and next action.",
             nextAction: "Verify ERA/EFT enrollment and update claim status.",
             followUpDate: new Date("2026-07-08T00:00:00.000Z"),
             minimumNecessaryFields: [
@@ -1967,11 +2027,17 @@ export const router = {
               audience: "rbt",
               assignedAt: new Date("2026-07-05T00:00:00.000Z"),
               dueDate: new Date("2026-07-12T00:00:00.000Z"),
-              completedAt: config.state === "WA" ? new Date("2026-07-05T00:00:00.000Z") : null,
+              completedAt:
+                config.state === "WA"
+                  ? new Date("2026-07-05T00:00:00.000Z")
+                  : null,
               competencyScore: config.state === "WA" ? 94 : null,
               signatureName: config.state === "WA" ? config.rbt : null,
               supervisorSignoffBy: config.state === "WA" ? userId : null,
-              supervisorSignoffAt: config.state === "WA" ? new Date("2026-07-05T00:00:00.000Z") : null,
+              supervisorSignoffAt:
+                config.state === "WA"
+                  ? new Date("2026-07-05T00:00:00.000Z")
+                  : null,
               status: config.state === "WA" ? "complete" : "assigned",
               evidenceUrl: null,
             },
@@ -2023,7 +2089,8 @@ export const router = {
               reconciliationStatus:
                 config.claimStatus === "ready" ? "awaiting_era" : "claim_hold",
               varianceCents: 0,
-              notes: "Claim receivable linked to service time and payroll cost.",
+              notes:
+                "Claim receivable linked to service time and payroll cost.",
             },
           ]),
         );
@@ -2143,11 +2210,8 @@ export const router = {
           "operations_call_logs",
           input.state,
         );
-        const {
-          operationsCallLogs,
-          claimEvents,
-          insuranceClaims,
-        } = await import("../db/schema");
+        const { operationsCallLogs, claimEvents, insuranceClaims } =
+          await import("../db/schema");
         const id = crypto.randomUUID();
 
         await context.db.insert(operationsCallLogs).values({
@@ -2168,7 +2232,9 @@ export const router = {
           disposition: input.disposition,
           summary: input.summary,
           nextAction: input.nextAction ?? null,
-          followUpDate: input.followUpDate ? new Date(input.followUpDate) : null,
+          followUpDate: input.followUpDate
+            ? new Date(input.followUpDate)
+            : null,
           minimumNecessaryFields: input.minimumNecessaryFields,
           recordingConsent: "not_recorded",
           recordingUrl: null,

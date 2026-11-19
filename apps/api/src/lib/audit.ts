@@ -15,16 +15,18 @@ type AuditEvent = {
  */
 export async function writeAuditEvent(context: OrgContext, event: AuditEvent) {
   try {
-    await getDb(context).insert(schema.hipaaAuditLogs).values({
-      organizationId: context.organization.id,
-      actorUserId: context.user.id,
-      actorRole: context.member.role,
-      action: event.action,
-      resourceType: event.resourceType,
-      resourceId: event.resourceId ?? null,
-      patientId: event.patientId ?? null,
-      metadata: event.metadata ?? {},
-    });
+    await getDb(context)
+      .insert(schema.hipaaAuditLogs)
+      .values({
+        organizationId: context.organization.id,
+        actorUserId: context.user.id,
+        actorRole: context.member.role,
+        action: event.action,
+        resourceType: event.resourceType,
+        resourceId: event.resourceId ?? null,
+        patientId: event.patientId ?? null,
+        metadata: event.metadata ?? {},
+      });
   } catch (error) {
     // Audit storage must be observable without leaking clinical content.
     console.error("Unable to write HIPAA audit event", {

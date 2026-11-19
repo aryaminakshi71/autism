@@ -169,11 +169,7 @@ export default function CommunicationScreen() {
         </View>
 
         <View style={styles.boardContainer}>
-          <View
-            style={[
-              styles.boardGrid,
-            ]}
-          >
+          <View style={[styles.boardGrid]}>
             {activeBoard.cards.map((card) => (
               <TouchableOpacity
                 key={card.id}

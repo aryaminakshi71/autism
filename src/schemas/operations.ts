@@ -238,7 +238,8 @@ JSON_SCHEMA_REGISTRY.add(AiOperationsRecommendationSchema, {
       severity: "medium",
       title: "WA-ABA-1007 claim follow-up",
       finding: "Apple Health MCO claim is 18 days old: No ERA yet.",
-      action: "Place payer call, log reference number, and escalate if no adjudication date.",
+      action:
+        "Place payer call, log reference number, and escalate if no adjudication date.",
       owner: "India RCM",
     },
   ],

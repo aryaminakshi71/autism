@@ -110,7 +110,9 @@ export const sessionsRouter = {
         return getOrCache(
           cacheKey,
           async () => {
-            const allSessions = await trackQuery("listSessionsCount", () =>
+            const allSessions = await trackQuery<
+              (typeof sessions.$inferSelect)[]
+            >("listSessionsCount", () =>
               db
                 .select()
                 .from(sessions)
@@ -118,16 +120,16 @@ export const sessionsRouter = {
             );
             const total = allSessions.length;
 
-            const paginatedSessions = await trackQuery(
-              "listSessionsPaginated",
-              () =>
-                db
-                  .select()
-                  .from(sessions)
-                  .where(and(...conditions))
-                  .orderBy(desc((sessions as any).scheduledStart))
-                  .limit(input.limit)
-                  .offset(offset),
+            const paginatedSessions = await trackQuery<
+              (typeof sessions.$inferSelect)[]
+            >("listSessionsPaginated", () =>
+              db
+                .select()
+                .from(sessions)
+                .where(and(...conditions))
+                .orderBy(desc((sessions as any).scheduledStart))
+                .limit(input.limit)
+                .offset(offset),
             );
 
             return {
@@ -251,25 +253,27 @@ export const sessionsRouter = {
           (endDate.getTime() - startDate.getTime()) / 60000,
         );
 
-        const [session] = await trackQuery("createSession", () =>
-          db
-            .insert(sessions)
-            .values({
-              id: crypto.randomUUID(),
-              patientId: input.patientId,
-              therapistId: input.therapistId,
-              type: input.type,
-              status: "scheduled",
-              scheduledStart: startDate,
-              scheduledEnd: endDate,
-              durationMinutes,
-              location: input.location || null,
-              room: input.room || null,
-              telehealth: input.telehealth,
-              organizationId: context.organization.id,
-              createdBy: context.user.id,
-            })
-            .returning(),
+        const [session] = await trackQuery<(typeof sessions.$inferSelect)[]>(
+          "createSession",
+          () =>
+            db
+              .insert(sessions)
+              .values({
+                id: crypto.randomUUID(),
+                patientId: input.patientId,
+                therapistId: input.therapistId,
+                type: input.type,
+                status: "scheduled",
+                scheduledStart: startDate,
+                scheduledEnd: endDate,
+                durationMinutes,
+                location: input.location || null,
+                room: input.room || null,
+                telehealth: input.telehealth,
+                organizationId: context.organization.id,
+                createdBy: context.user.id,
+              })
+              .returning(),
         );
 
         await invalidateCache(`sessions:list:${context.organization.id}`);
@@ -355,19 +359,21 @@ export const sessionsRouter = {
               key === "actualStart" ||
               key === "actualEnd"
             ) {
-              filteredData[key] = new Date(value);
+              filteredData[key] = new Date(value as string);
             } else {
               filteredData[key] = value;
             }
           }
         });
 
-        const [session] = await trackQuery("updateSession", () =>
-          db
-            .update(sessions)
-            .set(filteredData)
-            .where(eq(sessions.id, id))
-            .returning(),
+        const [session] = await trackQuery<(typeof sessions.$inferSelect)[]>(
+          "updateSession",
+          () =>
+            db
+              .update(sessions)
+              .set(filteredData)
+              .where(eq(sessions.id, id))
+              .returning(),
         );
 
         if (!session) {
@@ -414,15 +420,17 @@ export const sessionsRouter = {
         }
         const db = getDb(context);
 
-        const [session] = await trackQuery("startSession", () =>
-          db
-            .update(sessions)
-            .set({
-              status: "in-progress",
-              actualStart: new Date(),
-            })
-            .where(eq(sessions.id, input.id))
-            .returning(),
+        const [session] = await trackQuery<(typeof sessions.$inferSelect)[]>(
+          "startSession",
+          () =>
+            db
+              .update(sessions)
+              .set({
+                status: "in-progress",
+                actualStart: new Date(),
+              })
+              .where(eq(sessions.id, input.id))
+              .returning(),
         );
 
         if (!session) {
@@ -504,19 +512,21 @@ export const sessionsRouter = {
           );
         }
 
-        const [session] = await trackQuery("completeSession", () =>
-          db
-            .update(sessions)
-            .set({
-              status: "completed",
-              actualEnd,
-              durationMinutes,
-              mood: input.mood || null,
-              energyLevel: input.energyLevel || null,
-              notes: input.notes || null,
-            })
-            .where(eq(sessions.id, input.id))
-            .returning(),
+        const [session] = await trackQuery<(typeof sessions.$inferSelect)[]>(
+          "completeSession",
+          () =>
+            db
+              .update(sessions)
+              .set({
+                status: "completed",
+                actualEnd,
+                durationMinutes,
+                mood: input.mood || null,
+                energyLevel: input.energyLevel || null,
+                notes: input.notes || null,
+              })
+              .where(eq(sessions.id, input.id))
+              .returning(),
         );
 
         await invalidateCache(`session:${input.id}`);

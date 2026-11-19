@@ -40,10 +40,9 @@ function TermsPage() {
               </h2>
               <div className="space-y-3 text-gray-700">
                 <p>
-                  By accessing or using SpectrumAI ("the Service"), you
-                  agree to be bound by these Terms of Service ("Terms"). If you
-                  disagree with any part of these terms, you may not access the
-                  Service.
+                  By accessing or using SpectrumAI ("the Service"), you agree to
+                  be bound by these Terms of Service ("Terms"). If you disagree
+                  with any part of these terms, you may not access the Service.
                 </p>
                 <p>
                   These Terms apply to all users of the Service, including
@@ -60,9 +59,9 @@ function TermsPage() {
               <div className="space-y-3 text-gray-700">
                 <p>
                   Permission is granted to temporarily access the materials on
-                  SpectrumAI for personal or commercial transitory viewing
-                  only. This is the grant of a license, not a transfer of title,
-                  and under this license you may not:
+                  SpectrumAI for personal or commercial transitory viewing only.
+                  This is the grant of a license, not a transfer of title, and
+                  under this license you may not:
                 </p>
                 <ul className="list-disc space-y-2 pl-6">
                   <li>Modify or copy the materials</li>

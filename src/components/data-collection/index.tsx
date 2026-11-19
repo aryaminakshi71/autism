@@ -11,8 +11,8 @@
 
 import { Check, Clock, Pause, Play, RotateCcw, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { cn } from "~/lib/utils";
 import { Badge, Button, Card, Progress } from "~/components/ui";
+import { cn } from "~/lib/utils";
 
 // ============================================================================
 // DTT Trial Component
@@ -622,7 +622,10 @@ export function DataSheetSummary({
   templateType,
   onClose,
 }: DataSheetSummaryProps) {
-  const getSummary = () => {
+  const getSummary = (): {
+    title: string;
+    stats: { label: string; value: string | number; color?: string }[];
+  } => {
     switch (templateType) {
       case "trial_based":
         const correct = entries.filter((e) => e.response === "correct").length;
@@ -710,5 +713,4 @@ export function DataSheetSummary({
   );
 }
 
-export { DTTTrial, TaskStep };
 export type { DTTTrial as DTTTrialType, TaskStep as TaskStepType };

@@ -66,7 +66,9 @@ try {
     `;
   });
 
-  console.log(JSON.stringify({ ok: true, seed: "local-clinical-demo" }, null, 2));
+  console.log(
+    JSON.stringify({ ok: true, seed: "local-clinical-demo" }, null, 2),
+  );
 } finally {
   await sql.end();
 }

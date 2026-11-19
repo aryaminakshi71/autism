@@ -1427,8 +1427,12 @@ export const operationsCallLogs = pgTable(
     state: varchar("state", { length: 2 }).notNull(),
     payerName: varchar("payer_name", { length: 180 }),
     callType: varchar("call_type", { length: 80 }).notNull(),
-    direction: varchar("direction", { length: 30 }).default("outbound").notNull(),
-    callerRole: varchar("caller_role", { length: 60 }).default("india_rcm").notNull(),
+    direction: varchar("direction", { length: 30 })
+      .default("outbound")
+      .notNull(),
+    callerRole: varchar("caller_role", { length: 60 })
+      .default("india_rcm")
+      .notNull(),
     callerName: varchar("caller_name", { length: 160 }),
     phoneNumberLabel: varchar("phone_number_label", { length: 120 }),
     payerRepresentative: varchar("payer_representative", { length: 160 }),
@@ -1512,11 +1516,15 @@ export const operationsAiAlertReviewEvents = pgTable(
     reviewerUserId: text("reviewer_user_id").references(() => users.id, {
       onDelete: "set null",
     }),
-    reviewerRole: varchar("reviewer_role", { length: 60 }).default("bcba").notNull(),
+    reviewerRole: varchar("reviewer_role", { length: 60 })
+      .default("bcba")
+      .notNull(),
     decision: varchar("decision", { length: 80 }).notNull(),
     falsePositiveReason: text("false_positive_reason"),
     clinicalAction: text("clinical_action"),
-    claimHoldAfterReview: boolean("claim_hold_after_review").default(true).notNull(),
+    claimHoldAfterReview: boolean("claim_hold_after_review")
+      .default(true)
+      .notNull(),
     reviewedAt: timestamp("reviewed_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -1600,10 +1608,15 @@ export const operationsTrainingCompletions = pgTable(
     completedAt: timestamp("completed_at", { withTimezone: true }),
     competencyScore: integer("competency_score"),
     signatureName: varchar("signature_name", { length: 160 }),
-    supervisorSignoffBy: text("supervisor_signoff_by").references(() => users.id, {
-      onDelete: "set null",
+    supervisorSignoffBy: text("supervisor_signoff_by").references(
+      () => users.id,
+      {
+        onDelete: "set null",
+      },
+    ),
+    supervisorSignoffAt: timestamp("supervisor_signoff_at", {
+      withTimezone: true,
     }),
-    supervisorSignoffAt: timestamp("supervisor_signoff_at", { withTimezone: true }),
     status: varchar("status", { length: 30 }).default("assigned").notNull(),
     evidenceUrl: text("evidence_url"),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -1617,7 +1630,9 @@ export const operationsTrainingCompletions = pgTable(
     organizationIdIdx: index("idx_operations_training_org_id").on(
       table.organizationId,
     ),
-    providerIdx: index("idx_operations_training_provider_id").on(table.providerId),
+    providerIdx: index("idx_operations_training_provider_id").on(
+      table.providerId,
+    ),
     patientIdx: index("idx_operations_training_patient_id").on(table.patientId),
     statusIdx: index("idx_operations_training_status").on(table.status),
   }),

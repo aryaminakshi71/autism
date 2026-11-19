@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/postgres-js";
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as authSchema from "./auth-schema";
 import * as appSchema from "./schema";
@@ -8,7 +9,7 @@ export const schema = {
   ...appSchema,
 };
 
-export type Database = ReturnType<typeof getDb>;
+export type Database = PostgresJsDatabase<typeof schema>;
 
 let _db: Database | null = null;
 let _sql: ReturnType<typeof postgres> | null = null;

@@ -83,7 +83,9 @@ const dateOrNull = (value: unknown) =>
 const dateOrDefault = (value: unknown, fallback = new Date()) =>
   typeof value === "string" && value ? new Date(value) : fallback;
 const stringArrayOrNull = (value: unknown) =>
-  Array.isArray(value) ? value.filter((item) => typeof item === "string") : null;
+  Array.isArray(value)
+    ? value.filter((item) => typeof item === "string")
+    : null;
 
 function buildOperationsRestValues(
   entity: OperationsEntity,
@@ -101,7 +103,9 @@ function buildOperationsRestValues(
       serviceStates: stringArrayOrNull(record.serviceStates),
       status: stringOrDefault(record.status, "active"),
       maxClientLoad:
-        record.maxClientLoad === null ? null : numberOrDefault(record.maxClientLoad, 0),
+        record.maxClientLoad === null
+          ? null
+          : numberOrDefault(record.maxClientLoad, 0),
       notes: stringOrNull(record.notes),
     };
   }
@@ -149,7 +153,10 @@ function buildOperationsRestValues(
       approvedUnits: numberOrDefault(record.approvedUnits, 0),
       usedUnits: numberOrDefault(record.usedUnits, 0),
       startDate: dateOrDefault(record.startDate),
-      endDate: dateOrDefault(record.endDate, new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)),
+      endDate: dateOrDefault(
+        record.endDate,
+        new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      ),
       status: stringOrDefault(record.status, "active"),
       documentUrl: stringOrNull(record.documentUrl),
     };
@@ -188,8 +195,11 @@ function buildOperationsRestValues(
       submittedDate: dateOrNull(record.submittedDate),
       billedCents: numberOrDefault(record.billedCents, 0),
       allowedCents:
-        record.allowedCents === null ? null : numberOrDefault(record.allowedCents, 0),
-      paidCents: record.paidCents === null ? null : numberOrDefault(record.paidCents, 0),
+        record.allowedCents === null
+          ? null
+          : numberOrDefault(record.allowedCents, 0),
+      paidCents:
+        record.paidCents === null ? null : numberOrDefault(record.paidCents, 0),
       denialReason: stringOrNull(record.denialReason),
       nextFollowUpDate: dateOrNull(record.nextFollowUpDate),
       assignedRcmUserId: stringOrNull(record.assignedRcmUserId),
@@ -754,11 +764,15 @@ export function createApp() {
     const [p] = await db
       .select({ n: sql<number>`count(*)::int` })
       .from(patients)
-      .where(and(eq(patients.organizationId, orgId), eq(patients.status, "active")));
+      .where(
+        and(eq(patients.organizationId, orgId), eq(patients.status, "active")),
+      );
     const [g] = await db
       .select({ n: sql<number>`count(*)::int` })
       .from(goals)
-      .where(and(eq(goals.organizationId, orgId), eq(goals.status, "in-progress")));
+      .where(
+        and(eq(goals.organizationId, orgId), eq(goals.status, "in-progress")),
+      );
     const weekStart = new Date();
     weekStart.setDate(weekStart.getDate() - weekStart.getDay());
     weekStart.setHours(0, 0, 0, 0);

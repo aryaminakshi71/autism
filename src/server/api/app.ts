@@ -3,7 +3,7 @@ import { OpenAPIGenerator } from "@orpc/openapi";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
-import { BatchHandlerPlugin, RequestHeadersPlugin } from "@orpc/server/plugins";
+import { BatchHandlerPlugin } from "@orpc/server/plugins";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { Hono } from "hono";
 import { auth } from "../auth";
@@ -36,7 +36,6 @@ const openAPIHandler = new OpenAPIHandler(router, {
     }),
   ],
   plugins: [
-    new RequestHeadersPlugin(),
     new SmartCoercionPlugin({
       schemaConverters: [new ZodToJsonSchemaConverter()],
     }),

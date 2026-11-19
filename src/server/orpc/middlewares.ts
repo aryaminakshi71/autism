@@ -35,7 +35,7 @@ export const requiredAuthMiddleware = base.middleware(
 
 export const requiredOrgMiddleware = base.middleware(
   async ({ context, next }) => {
-    const activeOrganizationId = context.session?.activeOrganizationId;
+    const activeOrganizationId = context.session?.session?.activeOrganizationId;
 
     if (!activeOrganizationId) {
       throw new ORPCError("FORBIDDEN");
@@ -48,7 +48,7 @@ export const requiredOrgMiddleware = base.middleware(
         headers: context.request.headers,
       });
       organization =
-        "data" in orgResult
+        orgResult && "data" in orgResult
           ? (orgResult.data as ORPCContext["organization"])
           : (orgResult as ORPCContext["organization"]);
     } catch (error) {

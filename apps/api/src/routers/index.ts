@@ -5,21 +5,21 @@
  * Split into separate files to avoid TypeScript TS7056 limits.
  */
 
-import { brandingRouter } from "./branding";
-import { billingRouter } from "./billing";
-import { claimsRouter } from "./claims";
 import { activitiesRouter } from "./activities";
 import { assessmentsRouter } from "./assessments";
-import { contactsRouter } from "./contacts";
+import { billingRouter } from "./billing";
+import { brandingRouter } from "./branding";
+import { claimsRouter } from "./claims";
 import { complianceRouter } from "./compliance";
+import { contactsRouter } from "./contacts";
 import { dashboardRouter } from "./dashboard";
 import { dataCollectionSheetsRouter } from "./data-collection-sheets";
 import { dataCollectionTemplatesRouter } from "./data-collection-templates";
 import { dealsRouter } from "./deals";
 import { goalsRouter } from "./goals";
 import { healthRouter } from "./health";
-import { metricsRouter } from "./metrics";
 import { leadsRouter } from "./leads";
+import { metricsRouter } from "./metrics";
 import { parentPortalRouter } from "./parent-portal";
 import { patientsRouter } from "./patients";
 import { reportsRouter } from "./reports";

@@ -24,6 +24,14 @@ export { queryClient } from "./query";
 import { api as client } from "./orpc";
 
 // ============ CONTACTS ============
+type DealStage =
+  | "lead"
+  | "qualified"
+  | "proposal"
+  | "negotiation"
+  | "won"
+  | "lost";
+
 export const contactsApi = {
   list: async (params?: { page?: number; limit?: number; search?: string }) => {
     const result = await client.contacts.list({
@@ -61,14 +69,8 @@ export const dealsApi = {
   create: async (data: any) => {
     return client.deals.create(data);
   },
-  update: async (id: string, data: any) => {
-    return client.deals.update({ id, ...data });
-  },
-  updateStage: async (id: string, stage: string) => {
+  updateStage: async (id: string, stage: DealStage) => {
     return client.deals.updateStage({ id, stage });
-  },
-  delete: async (id: string) => {
-    return client.deals.delete({ id });
   },
 };
 
@@ -84,14 +86,8 @@ export const leadsApi = {
   create: async (data: any) => {
     return client.leads.create(data);
   },
-  update: async (id: string, data: any) => {
-    return client.leads.update({ id, ...data });
-  },
   convert: async (id: string, data: any) => {
     return client.leads.convert({ id, ...data });
-  },
-  delete: async (id: string) => {
-    return client.leads.delete({ id });
   },
 };
 
@@ -113,12 +109,6 @@ export const activitiesApi = {
   },
   create: async (data: any) => {
     return client.activities.create(data);
-  },
-  update: async (id: string, data: any) => {
-    return client.activities.update({ id, ...data });
-  },
-  delete: async (id: string) => {
-    return client.activities.delete({ id });
   },
 };
 

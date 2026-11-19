@@ -12,7 +12,9 @@ export type ClinicalAttachment = {
   createdAt: string;
 };
 
-export function buildAttachmentMetadata(input: Omit<ClinicalAttachment, "id" | "createdAt" | "encrypted">) {
+export function buildAttachmentMetadata(
+  input: Omit<ClinicalAttachment, "id" | "createdAt" | "encrypted">,
+) {
   return {
     ...input,
     id: crypto.randomUUID(),

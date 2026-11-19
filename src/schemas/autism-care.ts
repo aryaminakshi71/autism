@@ -25,7 +25,9 @@ export const CreatePatientSchema = PatientSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-}).partial();
+})
+  .partial()
+  .required({ firstName: true, lastName: true });
 
 export const UpdatePatientSchema = CreatePatientSchema;
 
@@ -56,7 +58,14 @@ export const CreateGoalSchema = GoalSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-}).partial();
+})
+  .partial()
+  .required({
+    patientId: true,
+    name: true,
+    category: true,
+    targetValue: true,
+  });
 
 export const UpdateGoalSchema = CreateGoalSchema;
 
@@ -86,7 +95,17 @@ export const CreateSessionSchema = SessionSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-}).partial();
+})
+  .partial()
+  // These are required to create a session; without them the insert would
+  // write Invalid Date values.
+  .required({
+    patientId: true,
+    therapistId: true,
+    type: true,
+    scheduledStart: true,
+    scheduledEnd: true,
+  });
 
 export const UpdateSessionSchema = CreateSessionSchema;
 
@@ -108,7 +127,9 @@ export const CreateVisualScheduleSchema = VisualScheduleSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-}).partial();
+})
+  .partial()
+  .required({ name: true, type: true });
 
 export const CommunicationCardSchema = z.object({
   id: z.string(),
@@ -129,7 +150,9 @@ export const CreateCommunicationCardSchema = CommunicationCardSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-}).partial();
+})
+  .partial()
+  .required({ name: true, category: true });
 
 export const AssessmentSchema = z.object({
   id: z.string(),
@@ -153,7 +176,9 @@ export const CreateAssessmentSchema = AssessmentSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-}).partial();
+})
+  .partial()
+  .required({ patientId: true, type: true, name: true });
 
 export const PatientStatsSchema = z.object({
   totalPatients: z.number(),

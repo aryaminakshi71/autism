@@ -322,8 +322,7 @@ function LandingPage() {
           </div>
           <div className="mt-8 border-gray-800 border-t pt-8 text-center">
             <p>
-              &copy; {new Date().getFullYear()} SpectrumAI. All rights
-              reserved.
+              &copy; {new Date().getFullYear()} SpectrumAI. All rights reserved.
             </p>
           </div>
         </div>

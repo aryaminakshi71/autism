@@ -15,7 +15,7 @@ import {
   getOrCache,
   invalidateCache,
 } from "@autism-legacy-20260205/storage/redis";
-import { and, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import type { OrgContext } from "../context";
 import { isDemoRequest } from "../lib/demo";
@@ -423,17 +423,17 @@ export const dataCollectionTemplatesRouter = {
               .limit(input.limit)
               .offset(offset);
 
-            const [{ count }] = await db
-              .select({ count: count() })
+            const [{ total: rowCount }] = await db
+              .select({ total: count() })
               .from(dataCollectionTemplates)
               .where(and(...conditions));
 
             return {
               data: templates,
-              total: Number(count),
+              total: Number(rowCount),
               page: input.page,
               limit: input.limit,
-              totalPages: Math.ceil(Number(count) / input.limit),
+              totalPages: Math.ceil(Number(rowCount) / input.limit),
             };
           },
           600,

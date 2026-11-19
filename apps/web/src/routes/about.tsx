@@ -31,15 +31,14 @@ function AboutPage() {
           <h2 className="mb-6 font-bold text-3xl text-gray-900">Our Story</h2>
           <div className="space-y-4 text-gray-600 leading-relaxed">
             <p>
-              Founded in 2024, SpectrumAI was born from a simple
-              observation: autism services are often fragmented across
-              providers, settings, and tools. We set out to build a unified
-              platform that keeps teams aligned while honoring each learner's
-              unique plan of care.
+              Founded in 2024, SpectrumAI was born from a simple observation:
+              autism services are often fragmented across providers, settings,
+              and tools. We set out to build a unified platform that keeps teams
+              aligned while honoring each learner's unique plan of care.
             </p>
             <p>
-              Today, SpectrumAI supports interdisciplinary teams with
-              schedules, AAC communication, therapy data collection, and family
+              Today, SpectrumAI supports interdisciplinary teams with schedules,
+              AAC communication, therapy data collection, and family
               collaboration. Our platform combines modern technology with a deep
               understanding of clinical workflows and educational settings.
             </p>

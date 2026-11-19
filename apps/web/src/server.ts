@@ -1,8 +1,12 @@
 // const handler = { fetch: async () => new Response("Mock Handler Works (Node)") };
 import { api } from "@autism-legacy-20260205/api/app";
-import type { Env } from "@autism-legacy-20260205/env/cloudflare";
 import handler from "@tanstack/react-start/server-entry";
+import "@tanstack/start-client-core";
 import type { getRouter } from "./router";
+
+interface Env {
+  [key: string]: unknown;
+}
 
 export interface CloudflareRequestContext {
   cloudflare: {
@@ -11,7 +15,7 @@ export interface CloudflareRequestContext {
   };
 }
 
-declare module "@tanstack/react-start" {
+declare module "@tanstack/start-client-core" {
   interface Register {
     ssr: true;
     router: ReturnType<typeof getRouter>;

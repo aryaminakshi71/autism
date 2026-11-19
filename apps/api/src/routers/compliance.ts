@@ -84,9 +84,7 @@ export const complianceRouter = {
           conditions.push(eq(hipaaAuditLogs.action, input.action));
         }
         if (input.resourceType) {
-          conditions.push(
-            eq(hipaaAuditLogs.resourceType, input.resourceType),
-          );
+          conditions.push(eq(hipaaAuditLogs.resourceType, input.resourceType));
         }
 
         const matching = await db

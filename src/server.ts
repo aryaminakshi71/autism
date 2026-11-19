@@ -1,5 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 import handler from "@tanstack/react-start/server-entry";
+import "@tanstack/start-client-core";
 import type { getRouter } from "./router";
 import { api } from "./server/api/app";
 
@@ -17,7 +18,7 @@ export interface CloudflareRequestContext {
   };
 }
 
-declare module "@tanstack/react-start" {
+declare module "@tanstack/start-client-core" {
   interface Register {
     ssr: true;
     router: ReturnType<typeof getRouter>;

@@ -2,13 +2,29 @@
   "extends": "../../packages/tsconfig/react.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "baseUrl": ".",
     "types": ["@cloudflare/workers-types"],
     "paths": {
       "@/*": ["./src/*"],
       "@shared/saas-core": ["../../shared-saas-core"],
-      "@shared/saas-core/*": ["../../shared-saas-core/*"]
+      "@shared/saas-core/*": ["../../shared-saas-core/*"],
+      "@autism-legacy-20260205/api/*": ["../../apps/api/src/*"],
+      "@autism-legacy-20260205/ui": ["../../packages/ui/src/index.ts"],
+      "@autism-legacy-20260205/ui/*": ["../../packages/ui/src/*"],
+      "@autism-legacy-20260205/env": ["../../packages/env/src/client.ts"],
+      "@autism-legacy-20260205/env/*": ["../../packages/env/src/*"],
+      "@autism-legacy-20260205/storage": [
+        "../../packages/storage/src/index.ts"
+      ],
+      "@autism-legacy-20260205/storage/*": ["../../packages/storage/src/*"],
+      "@autism-legacy-20260205/auth": ["../../packages/auth/src/index.ts"],
+      "@autism-legacy-20260205/auth/*": ["../../packages/auth/src/*"],
+      "@autism-legacy-20260205/core": ["../../packages/core/src/index.ts"],
+      "@autism-legacy-20260205/core/*": ["../../packages/core/src/*"],
+      "@autism-legacy-20260205/shared": ["../../packages/shared/src/index.ts"],
+      "@autism-legacy-20260205/shared/*": ["../../packages/shared/src/*"],
+      "@autism-legacy-20260205/logger": ["../../packages/logger/src/index.ts"],
+      "@autism-legacy-20260205/logger/*": ["../../packages/logger/src/*"]
     }
   },
   "include": ["src/**/*"],

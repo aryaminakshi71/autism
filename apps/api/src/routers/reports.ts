@@ -418,7 +418,7 @@ export const reportsRouter = {
           .limit(1);
 
         // Get data collection sheets for this session
-        const sheets = await db
+        const sheets: (typeof dataCollectionSheets.$inferSelect)[] = await db
           .select()
           .from(dataCollectionSheets)
           .where(
@@ -557,7 +557,7 @@ export const reportsRouter = {
         }
 
         // Get sessions in date range
-        const patientSessions = await db
+        const patientSessions: (typeof sessions.$inferSelect)[] = await db
           .select()
           .from(sessions)
           .where(
@@ -574,7 +574,7 @@ export const reportsRouter = {
           );
 
         // Get active goals
-        const activeGoals = await db
+        const activeGoals: (typeof goals.$inferSelect)[] = await db
           .select()
           .from(goals)
           .where(
@@ -588,7 +588,7 @@ export const reportsRouter = {
         // Calculate goals progress
         const goalsProgress = await Promise.all(
           activeGoals.map(async (goal) => {
-            const progressData = await db
+            const progressData: (typeof goalProgress.$inferSelect)[] = await db
               .select()
               .from(goalProgress)
               .where(
@@ -796,7 +796,7 @@ export const reportsRouter = {
         }
 
         // Get recent sessions
-        const recentSessions = await db
+        const recentSessions: (typeof sessions.$inferSelect)[] = await db
           .select()
           .from(sessions)
           .where(
@@ -813,7 +813,7 @@ export const reportsRouter = {
           .limit(10);
 
         // Get goal progress
-        const patientGoals = await db
+        const patientGoals: (typeof goals.$inferSelect)[] = await db
           .select()
           .from(goals)
           .where(

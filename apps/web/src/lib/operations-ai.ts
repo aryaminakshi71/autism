@@ -8,7 +8,13 @@ export type OperationsDomain =
   | "hipaa"
   | "video";
 
-export type ProviderRole = "owner_bcba" | "bcba" | "bcaba" | "learner_bcba" | "rbt" | "rcm";
+export type ProviderRole =
+  | "owner_bcba"
+  | "bcba"
+  | "bcaba"
+  | "learner_bcba"
+  | "rbt"
+  | "rcm";
 
 export interface ProviderProfile {
   id: string;
@@ -341,7 +347,8 @@ export function generateOperationsAiRecommendations(): AiTriageRecommendation[] 
           license.status === "blocked"
             ? "Provider is not cleared for this state."
             : `License expires in ${license.expiresInDays} days.`,
-        action: "Block scheduling and payer launch until license evidence is uploaded.",
+        action:
+          "Block scheduling and payer launch until license evidence is uploaded.",
         owner: "Owner BCBA",
       });
     }
@@ -355,14 +362,18 @@ export function generateOperationsAiRecommendations(): AiTriageRecommendation[] 
         severity: credential.status === "blocked" ? "high" : "medium",
         title: `${credential.payer} credentialing`,
         finding: "Payer effective date is not confirmed.",
-        action: "Hold new billable sessions for this payer until effective date is recorded.",
+        action:
+          "Hold new billable sessions for this payer until effective date is recorded.",
         owner: "Credentialing",
       });
     }
   }
 
   for (const authorization of authorizations) {
-    if (authorization.unitsRemaining <= 8 || authorization.expiresInDays <= 14) {
+    if (
+      authorization.unitsRemaining <= 8 ||
+      authorization.expiresInDays <= 14
+    ) {
       recommendations.push({
         id: `auth-${authorization.id}`,
         domain: "authorization",
@@ -383,14 +394,18 @@ export function generateOperationsAiRecommendations(): AiTriageRecommendation[] 
         severity: claim.ageDays >= 30 ? "high" : "medium",
         title: `${claim.id} claim follow-up`,
         finding: `${claim.payer} claim is ${claim.ageDays} days old: ${claim.status}.`,
-        action: "Place payer call, log reference number, and escalate if no adjudication date.",
+        action:
+          "Place payer call, log reference number, and escalate if no adjudication date.",
         owner: "India RCM",
       });
     }
   }
 
   for (const supervision of supervisionRecords) {
-    if (supervision.supervisionPercent < 5 || !supervision.directObservationDone) {
+    if (
+      supervision.supervisionPercent < 5 ||
+      !supervision.directObservationDone
+    ) {
       recommendations.push({
         id: `supervision-${supervision.rbt}`,
         domain: "supervision",
@@ -399,21 +414,28 @@ export function generateOperationsAiRecommendations(): AiTriageRecommendation[] 
         finding: `${supervision.supervisionPercent}% supervision; direct observation ${
           supervision.directObservationDone ? "complete" : "missing"
         }.`,
-        action: "Add BCBA observation before month close and block learner-only oversight.",
+        action:
+          "Add BCBA observation before month close and block learner-only oversight.",
         owner: supervision.supervisingBcba,
       });
     }
   }
 
   for (const access of accessReviews) {
-    if (!access.hasMfa || !access.minimumNecessary || access.lastReviewedDaysAgo > 30) {
+    if (
+      !access.hasMfa ||
+      !access.minimumNecessary ||
+      access.lastReviewedDaysAgo > 30
+    ) {
       recommendations.push({
         id: `access-${access.user}`,
         domain: "hipaa",
-        severity: !access.hasMfa || !access.minimumNecessary ? "high" : "medium",
+        severity:
+          !access.hasMfa || !access.minimumNecessary ? "high" : "medium",
         title: `${access.user} access review`,
         finding: `${access.role} access from ${access.country}; last reviewed ${access.lastReviewedDaysAgo} days ago.`,
-        action: "Review role, remove unnecessary PHI access, and record access-review decision.",
+        action:
+          "Review role, remove unnecessary PHI access, and record access-review decision.",
         owner: "Security owner",
       });
     }

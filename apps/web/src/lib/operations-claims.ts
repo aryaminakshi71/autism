@@ -1,5 +1,9 @@
 export type ClaimState = "WA" | "ND" | "CT" | "MO";
-export type ClaimServiceType = "rbt_direct" | "bcba_supervision" | "bcba_parent_training" | "assessment";
+export type ClaimServiceType =
+  | "rbt_direct"
+  | "bcba_supervision"
+  | "bcba_parent_training"
+  | "assessment";
 export type ClaimReadinessStatus = "ready" | "hold" | "blocked";
 export type CallQueueDomain =
   | "payer_claim"
@@ -284,13 +288,20 @@ export function buildClaimReadinessQueue(): ClaimReadinessResult[] {
     const blockers: string[] = [];
     const warnings: string[] = [];
 
-    if (!session.authorizationNumber) blockers.push("Missing authorization number");
-    if (session.unitsRemaining <= 0) blockers.push("No authorization units remaining");
+    if (!session.authorizationNumber)
+      blockers.push("Missing authorization number");
+    if (session.unitsRemaining <= 0)
+      blockers.push("No authorization units remaining");
     if (!session.treatmentPlanActive) blockers.push("Treatment plan inactive");
     if (!session.diagnosisPresent) blockers.push("Diagnosis missing");
     if (!rateRule) blockers.push("No payer rate rule for state/payer/service");
-    if (!session.rateVerified || rateRule?.verificationStatus !== "payer_verified") {
-      warnings.push("Rate/modifier is placeholder until payer contract is verified");
+    if (
+      !session.rateVerified ||
+      rateRule?.verificationStatus !== "payer_verified"
+    ) {
+      warnings.push(
+        "Rate/modifier is placeholder until payer contract is verified",
+      );
     }
 
     if (session.serviceType === "rbt_direct") {
@@ -299,20 +310,27 @@ export function buildClaimReadinessQueue(): ClaimReadinessResult[] {
       if (!session.parentSignature) warnings.push("Parent signature missing");
     } else {
       if (!session.bcbaNoteSigned) blockers.push("BCBA claim note unsigned");
-      if (!session.supervisionLinkComplete) blockers.push("Supervision link missing");
+      if (!session.supervisionLinkComplete)
+        blockers.push("Supervision link missing");
     }
 
-    const units = rateRule ? Math.ceil(session.minutes / rateRule.unitMinutes) : 0;
+    const units = rateRule
+      ? Math.ceil(session.minutes / rateRule.unitMinutes)
+      : 0;
     const expectedAmount = rateRule
       ? (session.minutes / 60) * rateRule.collectedRatePerHour
       : 0;
     const status: ClaimReadinessStatus =
       blockers.length > 0 ? "blocked" : warnings.length > 0 ? "hold" : "ready";
-    const nextOwner =
-      blockers.some((item) => item.includes("RBT")) ? "RBT" :
-      blockers.some((item) => item.includes("BCBA") || item.includes("Supervision")) ? "BCBA" :
-      blockers.length > 0 || warnings.length > 0 ? "India RCM" :
-      "Owner";
+    const nextOwner = blockers.some((item) => item.includes("RBT"))
+      ? "RBT"
+      : blockers.some(
+            (item) => item.includes("BCBA") || item.includes("Supervision"),
+          )
+        ? "BCBA"
+        : blockers.length > 0 || warnings.length > 0
+          ? "India RCM"
+          : "Owner";
 
     return {
       sessionId: session.id,
@@ -345,7 +363,7 @@ export function buildCallCenterWorkQueue(): CallCenterWorkItem[] {
       client: claim.client,
       payer: claim.payer,
       referralPartner: claim.referralPartner,
-      owner: claim.nextOwner === "RBT" || claim.nextOwner === "BCBA" ? claim.nextOwner : "India RCM",
+      owner: claim.nextOwner === "BCBA" ? "BCBA" : "India RCM",
       issue: [...claim.blockers, ...claim.warnings].join("; "),
       scriptGoal:
         claim.status === "blocked"
@@ -399,7 +417,8 @@ export function buildCallCenterWorkQueue(): CallCenterWorkItem[] {
       payer: "Connecticut Medical Assistance Program / HUSKY",
       referralPartner: "CT Developmental Clinic",
       owner: "India RCM",
-      issue: "Referral packet missing updated diagnostic report for authorization renewal.",
+      issue:
+        "Referral packet missing updated diagnostic report for authorization renewal.",
       scriptGoal:
         "Request missing diagnostic or clinical referral document and log expected receipt date.",
       requiredFields: [

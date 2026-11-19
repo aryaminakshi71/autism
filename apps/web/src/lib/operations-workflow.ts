@@ -1,4 +1,7 @@
-import { buildCallCenterWorkQueue, buildClaimReadinessQueue } from "./operations-claims";
+import {
+  buildCallCenterWorkQueue,
+  buildClaimReadinessQueue,
+} from "./operations-claims";
 import { complianceRequirements } from "./operations-compliance";
 import { buildBiweeklyPayrollSummaries } from "./operations-payroll";
 import { stateSchedulingRules } from "./operations-scheduler";
@@ -102,7 +105,8 @@ export function buildOperationsWorkItems(): OperationsWorkItem[] {
       owner: item.owner,
       title: item.issue,
       detail: item.scriptGoal,
-      dueInDays: item.priority === "high" ? 0 : item.priority === "medium" ? 2 : 5,
+      dueInDays:
+        item.priority === "high" ? 0 : item.priority === "medium" ? 2 : 5,
       blocks: item.domain.replaceAll("_", " "),
       source: `${item.payer} / ${item.referralPartner}`,
     }),
@@ -151,7 +155,9 @@ export function summarizeWorkItems(items: OperationsWorkItem[]) {
     byState: (["WA", "ND", "CT", "MO"] as const).map((state) => ({
       state,
       count: items.filter((item) => item.state === state).length,
-      high: items.filter((item) => item.state === state && item.priority === "high").length,
+      high: items.filter(
+        (item) => item.state === state && item.priority === "high",
+      ).length,
     })),
   };
 }

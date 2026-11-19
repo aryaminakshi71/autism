@@ -123,25 +123,31 @@ export default function AddGoalScreen() {
           <Card style={styles.card}>
             <Text style={styles.sectionTitle}>Patient</Text>
             <View style={styles.categoryGrid}>
-              {patients.data.slice(0, 5).map((patient: { id: string; firstName?: string; lastName?: string }) => (
-                <TouchableOpacity
-                  key={patient.id}
-                  style={[
-                    styles.categoryOption,
-                    patientId === patient.id && styles.categoryOptionActive,
-                  ]}
-                  onPress={() => setPatientId(patient.id)}
-                >
-                  <Text
+              {patients.data.slice(0, 5).map(
+                (patient: {
+                  id: string;
+                  firstName?: string;
+                  lastName?: string;
+                }) => (
+                  <TouchableOpacity
+                    key={patient.id}
                     style={[
-                      styles.categoryText,
-                      patientId === patient.id && styles.categoryTextActive,
+                      styles.categoryOption,
+                      patientId === patient.id && styles.categoryOptionActive,
                     ]}
+                    onPress={() => setPatientId(patient.id)}
                   >
-                    {patient.firstName} {patient.lastName}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Text
+                      style={[
+                        styles.categoryText,
+                        patientId === patient.id && styles.categoryTextActive,
+                      ]}
+                    >
+                      {patient.firstName} {patient.lastName}
+                    </Text>
+                  </TouchableOpacity>
+                ),
+              )}
             </View>
           </Card>
         )}

@@ -221,7 +221,7 @@ function LandingPage() {
       const userStr = localStorage.getItem("user");
       if (userStr) {
         setIsLoggedIn(true);
-        navigate({ to: "/dashboard/", replace: true });
+        navigate({ to: "/dashboard", replace: true });
       }
     } catch (error) {
       console.error("Error checking auth", error);
@@ -251,7 +251,7 @@ function LandingPage() {
         body: JSON.stringify({ plan: planKey }),
       });
       if (res.ok) {
-        const data = await res.json();
+        const data = (await res.json()) as { url?: string };
         if (data.url) window.location.href = data.url;
       }
     } catch (error) {
@@ -330,7 +330,7 @@ function LandingPage() {
               Start Free Trial <span aria-hidden="true">→</span>
             </Link>
             <Link
-              to="/dashboard/"
+              to="/dashboard"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 font-semibold text-foreground transition-colors hover:bg-muted"
             >
               View Dashboard

@@ -558,7 +558,13 @@ export const dataCollectionSheetsRouter = {
     )
     .output(z.any())
     .handler(
-      async ({ context, input }: { context: OrgContext; input: { id: string; name?: string; notes?: string } }) => {
+      async ({
+        context,
+        input,
+      }: {
+        context: OrgContext;
+        input: { id: string; name?: string; notes?: string };
+      }) => {
         if (isDemoRequest(context)) {
           const sheet = getDemoSheet(input.id);
           if (!sheet) throw new Error("Sheet not found");
@@ -585,7 +591,9 @@ export const dataCollectionSheetsRouter = {
           .returning();
         if (!updated) throw new Error("Sheet not found");
         await invalidateCache(`sheets:list:${context.organization.id}`);
-        await invalidateCache(`sheets:get:${context.organization.id}:${input.id}`);
+        await invalidateCache(
+          `sheets:get:${context.organization.id}:${input.id}`,
+        );
         return updated;
       },
     ),
@@ -846,7 +854,7 @@ export const dataCollectionSheetsRouter = {
           );
         }
 
-        const sheets = await db
+        const sheets: (typeof dataCollectionSheets.$inferSelect)[] = await db
           .select()
           .from(dataCollectionSheets)
           .where(and(...conditions));

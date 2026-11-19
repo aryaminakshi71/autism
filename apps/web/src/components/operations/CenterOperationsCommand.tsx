@@ -8,6 +8,22 @@ import {
   supervisionRecords,
 } from "@/lib/operations-ai";
 import {
+  type OperationsEntity,
+  type OperationsSnapshot,
+  completeOperationsTraining,
+  completeOperationsWorkItem,
+  createOperationsCallLog,
+  createOperationsRecord,
+  deleteOperationsRecord,
+  denyOperationsClaim,
+  getOperationsSnapshot,
+  postOperationsClaimPayment,
+  reviewOperationsAiAlert,
+  seedOperationsLaunchData,
+  submitOperationsClaim,
+  updateOperationsRecord,
+} from "@/lib/operations-api";
+import {
   buildCallCenterWorkQueue,
   buildClaimReadinessQueue,
   payerRateRules,
@@ -17,10 +33,10 @@ import {
   complianceRequirements,
 } from "@/lib/operations-compliance";
 import {
-  childProgressSnapshots,
-  calculateCompanyReadiness,
   appImprovementRoadmap,
+  calculateCompanyReadiness,
   callRecordingConsentRules,
+  childProgressSnapshots,
   companyConfigurationTasks,
   companyLaunchPhases,
   companyOperatingProfile,
@@ -56,42 +72,27 @@ import {
   formatPercent,
 } from "@/lib/operations-finance";
 import { medicaidRequirementSnapshots } from "@/lib/operations-medicaid";
+import { getPayerCountsByState, payerTemplates } from "@/lib/operations-payers";
 import {
-  completeOperationsWorkItem,
-  completeOperationsTraining,
-  createOperationsCallLog,
-  createOperationsRecord,
-  deleteOperationsRecord,
-  denyOperationsClaim,
-  getOperationsSnapshot,
-  postOperationsClaimPayment,
-  reviewOperationsAiAlert,
-  seedOperationsLaunchData,
-  submitOperationsClaim,
-  updateOperationsRecord,
-  type OperationsEntity,
-  type OperationsSnapshot,
-} from "@/lib/operations-api";
-import {
+  type PayrollExportFormat,
   buildBiweeklyPayrollSummaries,
   buildInternalPayrollLedger,
   buildPayrollExportFile,
   buildStateCashFlowSummaries,
   payerPaymentCycles,
-  type PayrollExportFormat,
   payrollTimeEntries,
 } from "@/lib/operations-payroll";
-import { getPayerCountsByState, payerTemplates } from "@/lib/operations-payers";
 import {
   buildStaffScheduleSummaries,
   buildWeeklyScheduleBlocks,
   stateSchedulingRules,
 } from "@/lib/operations-scheduler";
 import {
+  type WorkItemDomain,
   buildOperationsWorkItems,
   summarizeWorkItems,
-  type WorkItemDomain,
 } from "@/lib/operations-workflow";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
   Archive,
@@ -114,7 +115,6 @@ import {
   ShieldCheck,
   Users,
 } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
 type StateCode = "WA" | "ND" | "CT" | "MO";
@@ -133,32 +133,38 @@ const operationsCrudEntities: Array<{
   {
     key: "licenses",
     label: "Licenses",
-    description: "State license, RBT credential, renewal, and evidence tracking.",
+    description:
+      "State license, RBT credential, renewal, and evidence tracking.",
   },
   {
     key: "payerCredentialing",
     label: "Payer credentialing",
-    description: "Medicaid, MCO, commercial, portal, and effective-date status.",
+    description:
+      "Medicaid, MCO, commercial, portal, and effective-date status.",
   },
   {
     key: "authorizations",
     label: "Authorizations",
-    description: "Client, payer, CPT, approved units, used units, and auth window.",
+    description:
+      "Client, payer, CPT, approved units, used units, and auth window.",
   },
   {
     key: "payrollEntries",
     label: "Payroll entries",
-    description: "Clock-in/out, paid minutes, billable minutes, and claim readiness.",
+    description:
+      "Clock-in/out, paid minutes, billable minutes, and claim readiness.",
   },
   {
     key: "claims",
     label: "Claims",
-    description: "Claim lifecycle, billed/paid amounts, denial, and follow-up date.",
+    description:
+      "Claim lifecycle, billed/paid amounts, denial, and follow-up date.",
   },
   {
     key: "ledgerEntries",
     label: "Ledger postings",
-    description: "Internal accounting by state, center, client, provider, and source.",
+    description:
+      "Internal accounting by state, center, client, provider, and source.",
   },
 ];
 
@@ -182,7 +188,8 @@ const states: Array<{
     credentialing: "watch",
     medicaid: "blocked",
     payroll: "ready",
-    nextAction: "Confirm Apple Health effective date before scheduling RBT hours.",
+    nextAction:
+      "Confirm Apple Health effective date before scheduling RBT hours.",
   },
   {
     code: "ND",
@@ -290,12 +297,14 @@ const documentPacket = [
   {
     title: "HIPAA Operating Plan",
     path: "docs/operations/HIPAA_COMPLIANCE_OPERATING_PLAN.md",
-    purpose: "Administrative, physical, technical, video, and offshore controls.",
+    purpose:
+      "Administrative, physical, technical, video, and offshore controls.",
   },
   {
     title: "India RCM SOP",
     path: "docs/operations/INDIA_RCM_CLAIMS_OPERATIONS_SOP.md",
-    purpose: "Claims queues, denial categories, follow-up SLAs, and escalation.",
+    purpose:
+      "Claims queues, denial categories, follow-up SLAs, and escalation.",
   },
   {
     title: "AI Video Safety SOP",
@@ -305,7 +314,8 @@ const documentPacket = [
   {
     title: "Finance and P&L",
     path: "docs/operations/FINANCE_ENTITY_AND_PNL_MODEL.md",
-    purpose: "US entity, India contractor/company decision, and 10-15 client P&L.",
+    purpose:
+      "US entity, India contractor/company decision, and 10-15 client P&L.",
   },
   {
     title: "Product Roadmap",
@@ -315,7 +325,8 @@ const documentPacket = [
 ];
 
 function statusClasses(status: Status) {
-  if (status === "ready") return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  if (status === "ready")
+    return "border-emerald-200 bg-emerald-50 text-emerald-700";
   if (status === "watch") return "border-amber-200 bg-amber-50 text-amber-700";
   return "border-rose-200 bg-rose-50 text-rose-700";
 }
@@ -397,7 +408,9 @@ function mapPersistedWorkItems(
 
 function downloadPayrollExport(format: PayrollExportFormat) {
   const file = buildPayrollExportFile(format);
-  const blob = new Blob([file.content], { type: `${file.mimeType};charset=utf-8` });
+  const blob = new Blob([file.content], {
+    type: `${file.mimeType};charset=utf-8`,
+  });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -567,15 +580,21 @@ function MetricCard({
 export function CenterOperationsCommand() {
   const [stateFilter, setStateFilter] = useState<StateCode | "all">("all");
   const [showOnlyRisk, setShowOnlyRisk] = useState(false);
-  const [workQueueStateFilter, setWorkQueueStateFilter] = useState<StateCode | "all">("all");
-  const [workQueueDomainFilter, setWorkQueueDomainFilter] = useState<WorkItemDomain | "all">("all");
+  const [workQueueStateFilter, setWorkQueueStateFilter] = useState<
+    StateCode | "all"
+  >("all");
+  const [workQueueDomainFilter, setWorkQueueDomainFilter] = useState<
+    WorkItemDomain | "all"
+  >("all");
   const [completedWorkItems, setCompletedWorkItems] = useState<string[]>([]);
   const [crudEntity, setCrudEntity] = useState<OperationsEntity>("providers");
   const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
   const [recordEditorText, setRecordEditorText] = useState(
     JSON.stringify(getDefaultCrudRecord("providers"), null, 2),
   );
-  const [recordEditorError, setRecordEditorError] = useState<string | null>(null);
+  const [recordEditorError, setRecordEditorError] = useState<string | null>(
+    null,
+  );
   const queryClient = useQueryClient();
   const operationsSnapshotQuery = useQuery({
     queryKey: ["operations", "snapshot"],
@@ -600,7 +619,9 @@ export function CenterOperationsCommand() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["operations", "snapshot"] });
       setEditingRecordId(null);
-      setRecordEditorText(JSON.stringify(getDefaultCrudRecord(crudEntity), null, 2));
+      setRecordEditorText(
+        JSON.stringify(getDefaultCrudRecord(crudEntity), null, 2),
+      );
       setRecordEditorError(null);
     },
   });
@@ -609,7 +630,9 @@ export function CenterOperationsCommand() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["operations", "snapshot"] });
       setEditingRecordId(null);
-      setRecordEditorText(JSON.stringify(getDefaultCrudRecord(crudEntity), null, 2));
+      setRecordEditorText(
+        JSON.stringify(getDefaultCrudRecord(crudEntity), null, 2),
+      );
       setRecordEditorError(null);
     },
   });
@@ -645,7 +668,8 @@ export function CenterOperationsCommand() {
       }
       return createOperationsCallLog({
         claimId: id,
-        authorizationId: toStringValue(input.claim.authorizationId) || undefined,
+        authorizationId:
+          toStringValue(input.claim.authorizationId) || undefined,
         patientId: toStringValue(input.claim.patientId) || undefined,
         state: toStringValue(input.claim.state, "WA"),
         payerName: toStringValue(input.claim.payerName, "Medicaid"),
@@ -656,8 +680,11 @@ export function CenterOperationsCommand() {
         referenceNumber: `REF-${toStringValue(input.claim.state, "WA")}-${Date.now()}`,
         disposition: "follow_up_needed",
         summary: "Payer follow-up call logged from operations dashboard.",
-        nextAction: "Update claim status after payer response and escalate clinical denials.",
-        followUpDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        nextAction:
+          "Update claim status after payer response and escalate clinical denials.",
+        followUpDate: new Date(
+          Date.now() + 7 * 24 * 60 * 60 * 1000,
+        ).toISOString(),
         minimumNecessaryFields: [
           "billing_provider_npi",
           "member_id",
@@ -666,7 +693,9 @@ export function CenterOperationsCommand() {
         ],
         escalationRequired: toStringValue(input.claim.status) === "blocked",
         escalatedTo:
-          toStringValue(input.claim.status) === "blocked" ? "Owner BCBA" : undefined,
+          toStringValue(input.claim.status) === "blocked"
+            ? "Owner BCBA"
+            : undefined,
       });
     },
     onSuccess: () => {
@@ -714,9 +743,15 @@ export function CenterOperationsCommand() {
     );
   }, [stateFilter, showOnlyRisk]);
 
-  const blockedCount = states.filter((state) =>
-    companyActiveStateSet.has(state.code) &&
-    [state.launch, state.credentialing, state.medicaid, state.payroll].includes("blocked"),
+  const blockedCount = states.filter(
+    (state) =>
+      companyActiveStateSet.has(state.code) &&
+      [
+        state.launch,
+        state.credentialing,
+        state.medicaid,
+        state.payroll,
+      ].includes("blocked"),
   ).length;
 
   const aiRecommendations = useMemo(
@@ -792,8 +827,7 @@ export function CenterOperationsCommand() {
     ? persistedWorkItems
     : generatedWorkItems;
   const activeWorkItems = useMemo(
-    () =>
-      allWorkItems.filter((item) => !completedWorkItems.includes(item.id)),
+    () => allWorkItems.filter((item) => !completedWorkItems.includes(item.id)),
     [allWorkItems, completedWorkItems],
   );
   const workSummary = useMemo(
@@ -955,8 +989,8 @@ export function CenterOperationsCommand() {
             <h2 className="font-bold text-xl">Company Configuration Studio</h2>
             <p className="text-slate-600 text-sm">
               This converts the company profile into an onboarding workflow:
-              complete each task before the company can safely schedule,
-              bill, run payroll, open parent portals, or give India RCM access.
+              complete each task before the company can safely schedule, bill,
+              run payroll, open parent portals, or give India RCM access.
             </p>
           </div>
           <ClipboardCheck className="h-6 w-6 text-teal-700" />
@@ -1009,7 +1043,10 @@ export function CenterOperationsCommand() {
               </thead>
               <tbody>
                 {companyConfigurationTasks.map((task) => (
-                  <tr key={task.id} className="border-slate-100 border-t align-top">
+                  <tr
+                    key={task.id}
+                    className="border-slate-100 border-t align-top"
+                  >
                     <td className="px-4 py-3">
                       <p className="font-semibold">{task.title}</p>
                       <p className="mt-1 text-slate-500 text-xs">
@@ -1043,7 +1080,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {companyLaunchPhases.map((phase) => (
-                <tr key={phase.phase} className="border-slate-100 border-t align-top">
+                <tr
+                  key={phase.phase}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{phase.phase}</td>
                   <td className="px-4 py-3 text-slate-600">{phase.target}</td>
                   <td className="px-4 py-3">
@@ -1065,9 +1105,8 @@ export function CenterOperationsCommand() {
             <h2 className="font-bold text-xl">Company Operating Profile</h2>
             <p className="text-slate-600 text-sm">
               This is the root configuration. All schedules, payroll, claims,
-              parent portals, training, and finance views should filter from
-              the company, its active states, centers, payers, staff, and
-              clients.
+              parent portals, training, and finance views should filter from the
+              company, its active states, centers, payers, staff, and clients.
             </p>
           </div>
           <Building2 className="h-6 w-6 text-teal-700" />
@@ -1102,7 +1141,10 @@ export function CenterOperationsCommand() {
               ["Bank/EFT/ERA", companyOperatingProfile.bankAndEftStatus],
               ["HIPAA/security", companyOperatingProfile.hipaaStatus],
             ].map(([label, status]) => (
-              <div key={label} className="rounded-lg border border-slate-200 p-3">
+              <div
+                key={label}
+                className="rounded-lg border border-slate-200 p-3"
+              >
                 <p className="font-semibold">{label}</p>
                 <div className="mt-3">
                   <StatusPill status={status as Status} />
@@ -1165,10 +1207,17 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {recordRetentionPolicies.map((policy) => (
-                <tr key={policy.id} className="border-slate-100 border-t align-top">
-                  <td className="px-4 py-3 font-semibold">{policy.recordSet}</td>
+                <tr
+                  key={policy.id}
+                  className="border-slate-100 border-t align-top"
+                >
+                  <td className="px-4 py-3 font-semibold">
+                    {policy.recordSet}
+                  </td>
                   <td className="px-4 py-3">{policy.category}</td>
-                  <td className="px-4 py-3">{policy.appliesToStates.join(", ")}</td>
+                  <td className="px-4 py-3">
+                    {policy.appliesToStates.join(", ")}
+                  </td>
                   <td className="px-4 py-3">{policy.retentionYears}</td>
                   <td className="px-4 py-3 text-slate-600">
                     {policy.retentionTrigger}
@@ -1206,7 +1255,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {retentionInventoryItems.map((item) => (
-                <tr key={item.id} className="border-slate-100 border-t align-top">
+                <tr
+                  key={item.id}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{item.recordSet}</td>
                   <td className="px-4 py-3">{item.state}</td>
                   <td className="px-4 py-3">{item.clientOrOwner}</td>
@@ -1261,7 +1313,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {companyStateConfigurations.map((state) => (
-                <tr key={state.state} className="border-slate-100 border-t align-top">
+                <tr
+                  key={state.state}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{state.state}</td>
                   <td className="px-4 py-3">{state.centers.join(", ")}</td>
                   <td className="px-4 py-3">{state.activeClients}</td>
@@ -1354,7 +1409,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {companyRoleAccess.map((access) => (
-                <tr key={access.role} className="border-slate-100 border-t align-top">
+                <tr
+                  key={access.role}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{access.role}</td>
                   <td className="px-4 py-3">{access.users}</td>
                   <td className="px-4 py-3">{access.allowedStates}</td>
@@ -1440,7 +1498,9 @@ export function CenterOperationsCommand() {
               <p className="mt-2 text-slate-700 text-sm">{portal.dashboard}</p>
               <div className="mt-3 grid gap-2 text-sm">
                 <div className="rounded-md bg-slate-50 p-2">
-                  <p className="font-semibold text-slate-950">Weekly schedule</p>
+                  <p className="font-semibold text-slate-950">
+                    Weekly schedule
+                  </p>
                   <p className="mt-1 text-slate-600">
                     {portal.weeklySchedule.join("; ")}
                   </p>
@@ -1512,7 +1572,9 @@ export function CenterOperationsCommand() {
                 <div className="mt-3 grid gap-2 text-sm md:grid-cols-2">
                   <div className="rounded-md bg-amber-50 p-2 text-amber-900">
                     <p className="font-semibold">Barriers</p>
-                    <p className="mt-1">{child.highPriorityBarriers.join("; ")}</p>
+                    <p className="mt-1">
+                      {child.highPriorityBarriers.join("; ")}
+                    </p>
                   </div>
                   <div className="rounded-md bg-slate-50 p-2 text-slate-700">
                     <p className="font-semibold">Home practice</p>
@@ -1554,7 +1616,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {trainingModules.map((module) => (
-                <tr key={module.id} className="border-slate-100 border-t align-top">
+                <tr
+                  key={module.id}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold capitalize">
                     {module.audience}
                   </td>
@@ -1599,7 +1664,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {competitorFeatureGaps.map((gap) => (
-                <tr key={gap.feature} className="border-slate-100 border-t align-top">
+                <tr
+                  key={gap.feature}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{gap.feature}</td>
                   <td className="px-4 py-3 text-slate-600">
                     {gap.marketExpectation}
@@ -1643,18 +1711,34 @@ export function CenterOperationsCommand() {
                 </tr>
               </thead>
               <tbody>
-                {(operationsSnapshotQuery.data?.rolePermissionPolicies ?? []).slice(0, 8).map((policy) => (
-                  <tr key={toStringValue(policy.id)} className="border-slate-100 border-t align-top">
-                    <td className="px-4 py-3 font-semibold">{toStringValue(policy.role)}</td>
-                    <td className="px-4 py-3">{toStringValue(policy.permission)} / {toStringValue(policy.accessLevel)}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(policy.resourceType)}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(policy.phiAccess)}</td>
-                    <td className="px-4 py-3 text-slate-600">
-                      MFA {policy.requiresMfa ? "yes" : "no"} · BAA {policy.requiresBaa ? "yes" : "no"}
-                    </td>
-                  </tr>
-                ))}
-                {(operationsSnapshotQuery.data?.rolePermissionPolicies ?? []).length === 0 ? (
+                {(operationsSnapshotQuery.data?.rolePermissionPolicies ?? [])
+                  .slice(0, 8)
+                  .map((policy) => (
+                    <tr
+                      key={toStringValue(policy.id)}
+                      className="border-slate-100 border-t align-top"
+                    >
+                      <td className="px-4 py-3 font-semibold">
+                        {toStringValue(policy.role)}
+                      </td>
+                      <td className="px-4 py-3">
+                        {toStringValue(policy.permission)} /{" "}
+                        {toStringValue(policy.accessLevel)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(policy.resourceType)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(policy.phiAccess)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        MFA {policy.requiresMfa ? "yes" : "no"} · BAA{" "}
+                        {policy.requiresBaa ? "yes" : "no"}
+                      </td>
+                    </tr>
+                  ))}
+                {(operationsSnapshotQuery.data?.rolePermissionPolicies ?? [])
+                  .length === 0 ? (
                   <tr>
                     <td className="px-4 py-6 text-slate-500" colSpan={5}>
                       No RBAC policies seeded yet.
@@ -1677,24 +1761,43 @@ export function CenterOperationsCommand() {
                 </tr>
               </thead>
               <tbody>
-                {(operationsSnapshotQuery.data?.callLogs ?? []).slice(0, 8).map((call) => (
-                  <tr key={toStringValue(call.id)} className="border-slate-100 border-t align-top">
-                    <td className="px-4 py-3">
-                      <p className="font-semibold">{toStringValue(call.callType)}</p>
-                      <p className="text-slate-500 text-xs">{toStringValue(call.state)} · {toStringValue(call.callerRole)}</p>
-                    </td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(call.payerName)}</td>
-                    <td className="px-4 py-3 font-semibold">{toStringValue(call.referenceNumber)}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(call.disposition)}</td>
-                    <td className="px-4 py-3">
-                      <StatusPill status={call.escalationRequired ? "blocked" : "ready"} />
-                    </td>
-                  </tr>
-                ))}
+                {(operationsSnapshotQuery.data?.callLogs ?? [])
+                  .slice(0, 8)
+                  .map((call) => (
+                    <tr
+                      key={toStringValue(call.id)}
+                      className="border-slate-100 border-t align-top"
+                    >
+                      <td className="px-4 py-3">
+                        <p className="font-semibold">
+                          {toStringValue(call.callType)}
+                        </p>
+                        <p className="text-slate-500 text-xs">
+                          {toStringValue(call.state)} ·{" "}
+                          {toStringValue(call.callerRole)}
+                        </p>
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(call.payerName)}
+                      </td>
+                      <td className="px-4 py-3 font-semibold">
+                        {toStringValue(call.referenceNumber)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(call.disposition)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <StatusPill
+                          status={call.escalationRequired ? "blocked" : "ready"}
+                        />
+                      </td>
+                    </tr>
+                  ))}
                 {(operationsSnapshotQuery.data?.callLogs ?? []).length === 0 ? (
                   <tr>
                     <td className="px-4 py-6 text-slate-500" colSpan={5}>
-                      No call logs yet. Use claim follow-up to create one with a reference number.
+                      No call logs yet. Use claim follow-up to create one with a
+                      reference number.
                     </td>
                   </tr>
                 ) : null}
@@ -1715,14 +1818,34 @@ export function CenterOperationsCommand() {
                 </tr>
               </thead>
               <tbody>
-                {(operationsSnapshotQuery.data?.claimScrubberRules ?? []).slice(0, 8).map((rule) => (
-                  <tr key={toStringValue(rule.id)} className="border-slate-100 border-t align-top">
-                    <td className="px-4 py-3 font-semibold">{toStringValue(rule.state)} {toStringValue(rule.cptCode)}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(rule.payerName)}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(rule.ruleType)}</td>
-                    <td className="px-4 py-3"><StatusPill status={toStringValue(rule.status) === "active" ? "ready" : "watch"} /></td>
-                  </tr>
-                ))}
+                {(operationsSnapshotQuery.data?.claimScrubberRules ?? [])
+                  .slice(0, 8)
+                  .map((rule) => (
+                    <tr
+                      key={toStringValue(rule.id)}
+                      className="border-slate-100 border-t align-top"
+                    >
+                      <td className="px-4 py-3 font-semibold">
+                        {toStringValue(rule.state)}{" "}
+                        {toStringValue(rule.cptCode)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(rule.payerName)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(rule.ruleType)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <StatusPill
+                          status={
+                            toStringValue(rule.status) === "active"
+                              ? "ready"
+                              : "watch"
+                          }
+                        />
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -1738,33 +1861,53 @@ export function CenterOperationsCommand() {
                 </tr>
               </thead>
               <tbody>
-                {(operationsSnapshotQuery.data?.aiVideoAlerts ?? []).slice(0, 8).map((alert) => (
-                  <tr key={toStringValue(alert.id)} className="border-slate-100 border-t align-top">
-                    <td className="px-4 py-3">
-                      <p className="font-semibold">{toStringValue(alert.state)} · {toStringValue(alert.severity)}</p>
-                      <p className="text-slate-500 text-xs">{alert.humanReviewed ? "reviewed" : "pending review"}</p>
-                    </td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(alert.signal)}</td>
-                    <td className="px-4 py-3"><StatusPill status={alert.claimHold ? "blocked" : "ready"} /></td>
-                    <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          aiAlertReviewMutation.mutate({
-                            alertId: toStringValue(alert.id),
-                            decision: "monitor",
-                            clinicalAction: "BCBA reviewed alert and documented follow-up.",
-                            claimHoldAfterReview: false,
-                          })
-                        }
-                        disabled={aiAlertReviewMutation.isPending || Boolean(alert.humanReviewed)}
-                        className="rounded-md border border-teal-700 px-3 py-2 font-semibold text-teal-700 text-xs disabled:opacity-60"
-                      >
-                        Review
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {(operationsSnapshotQuery.data?.aiVideoAlerts ?? [])
+                  .slice(0, 8)
+                  .map((alert) => (
+                    <tr
+                      key={toStringValue(alert.id)}
+                      className="border-slate-100 border-t align-top"
+                    >
+                      <td className="px-4 py-3">
+                        <p className="font-semibold">
+                          {toStringValue(alert.state)} ·{" "}
+                          {toStringValue(alert.severity)}
+                        </p>
+                        <p className="text-slate-500 text-xs">
+                          {alert.humanReviewed ? "reviewed" : "pending review"}
+                        </p>
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(alert.signal)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <StatusPill
+                          status={alert.claimHold ? "blocked" : "ready"}
+                        />
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            aiAlertReviewMutation.mutate({
+                              alertId: toStringValue(alert.id),
+                              decision: "monitor",
+                              clinicalAction:
+                                "BCBA reviewed alert and documented follow-up.",
+                              claimHoldAfterReview: false,
+                            })
+                          }
+                          disabled={
+                            aiAlertReviewMutation.isPending ||
+                            Boolean(alert.humanReviewed)
+                          }
+                          className="rounded-md border border-teal-700 px-3 py-2 font-semibold text-teal-700 text-xs disabled:opacity-60"
+                        >
+                          Review
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -1780,32 +1923,59 @@ export function CenterOperationsCommand() {
                 </tr>
               </thead>
               <tbody>
-                {(operationsSnapshotQuery.data?.trainingCompletions ?? []).slice(0, 8).map((training) => (
-                  <tr key={toStringValue(training.id)} className="border-slate-100 border-t align-top">
-                    <td className="px-4 py-3">
-                      <p className="font-semibold">{toStringValue(training.moduleTitle)}</p>
-                      <p className="text-slate-500 text-xs">Score {toStringValue(training.competencyScore, "pending")}</p>
-                    </td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(training.assignedToName)} · {toStringValue(training.audience)}</td>
-                    <td className="px-4 py-3"><StatusPill status={toStringValue(training.status) === "complete" ? "ready" : "watch"} /></td>
-                    <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          trainingCompletionMutation.mutate({
-                            id: toStringValue(training.id),
-                            competencyScore: 100,
-                            signatureName: toStringValue(training.assignedToName, "Signed in portal"),
-                          })
-                        }
-                        disabled={trainingCompletionMutation.isPending || toStringValue(training.status) === "complete"}
-                        className="rounded-md border border-teal-700 px-3 py-2 font-semibold text-teal-700 text-xs disabled:opacity-60"
-                      >
-                        Sign off
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {(operationsSnapshotQuery.data?.trainingCompletions ?? [])
+                  .slice(0, 8)
+                  .map((training) => (
+                    <tr
+                      key={toStringValue(training.id)}
+                      className="border-slate-100 border-t align-top"
+                    >
+                      <td className="px-4 py-3">
+                        <p className="font-semibold">
+                          {toStringValue(training.moduleTitle)}
+                        </p>
+                        <p className="text-slate-500 text-xs">
+                          Score{" "}
+                          {toStringValue(training.competencyScore, "pending")}
+                        </p>
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(training.assignedToName)} ·{" "}
+                        {toStringValue(training.audience)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <StatusPill
+                          status={
+                            toStringValue(training.status) === "complete"
+                              ? "ready"
+                              : "watch"
+                          }
+                        />
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            trainingCompletionMutation.mutate({
+                              id: toStringValue(training.id),
+                              competencyScore: 100,
+                              signatureName: toStringValue(
+                                training.assignedToName,
+                                "Signed in portal",
+                              ),
+                            })
+                          }
+                          disabled={
+                            trainingCompletionMutation.isPending ||
+                            toStringValue(training.status) === "complete"
+                          }
+                          className="rounded-md border border-teal-700 px-3 py-2 font-semibold text-teal-700 text-xs disabled:opacity-60"
+                        >
+                          Sign off
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -1824,15 +1994,34 @@ export function CenterOperationsCommand() {
                 </tr>
               </thead>
               <tbody>
-                {(operationsSnapshotQuery.data?.ledgerLinks ?? []).slice(0, 8).map((link) => (
-                  <tr key={toStringValue(link.id)} className="border-slate-100 border-t">
-                    <td className="px-4 py-3 font-semibold">{toStringValue(link.ledgerEntryId)}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(link.claimId, "n/a")}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(link.payrollEntryId, "n/a")}</td>
-                    <td className="px-4 py-3">{toStringValue(link.reconciliationStatus)}</td>
-                    <td className="px-4 py-3">{formatCurrency(typeof link.varianceCents === "number" ? link.varianceCents / 100 : 0)}</td>
-                  </tr>
-                ))}
+                {(operationsSnapshotQuery.data?.ledgerLinks ?? [])
+                  .slice(0, 8)
+                  .map((link) => (
+                    <tr
+                      key={toStringValue(link.id)}
+                      className="border-slate-100 border-t"
+                    >
+                      <td className="px-4 py-3 font-semibold">
+                        {toStringValue(link.ledgerEntryId)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(link.claimId, "n/a")}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(link.payrollEntryId, "n/a")}
+                      </td>
+                      <td className="px-4 py-3">
+                        {toStringValue(link.reconciliationStatus)}
+                      </td>
+                      <td className="px-4 py-3">
+                        {formatCurrency(
+                          typeof link.varianceCents === "number"
+                            ? link.varianceCents / 100
+                            : 0,
+                        )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -1849,15 +2038,30 @@ export function CenterOperationsCommand() {
                 </tr>
               </thead>
               <tbody>
-                {(operationsSnapshotQuery.data?.hipaaAuditLogs ?? []).slice(0, 8).map((audit) => (
-                  <tr key={toStringValue(audit.id)} className="border-slate-100 border-t">
-                    <td className="px-4 py-3 font-semibold">{toStringValue(audit.actorUserId, "system")}</td>
-                    <td className="px-4 py-3">{toStringValue(audit.actorRole)}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(audit.action)}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(audit.resourceType)}</td>
-                    <td className="px-4 py-3 text-slate-600">{toStringValue(audit.createdAt)}</td>
-                  </tr>
-                ))}
+                {(operationsSnapshotQuery.data?.hipaaAuditLogs ?? [])
+                  .slice(0, 8)
+                  .map((audit) => (
+                    <tr
+                      key={toStringValue(audit.id)}
+                      className="border-slate-100 border-t"
+                    >
+                      <td className="px-4 py-3 font-semibold">
+                        {toStringValue(audit.actorUserId, "system")}
+                      </td>
+                      <td className="px-4 py-3">
+                        {toStringValue(audit.actorRole)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(audit.action)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(audit.resourceType)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {toStringValue(audit.createdAt)}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -1886,20 +2090,56 @@ export function CenterOperationsCommand() {
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-3 xl:grid-cols-7">
           {[
-            ["Rate rules", operationsSnapshotQuery.data?.payerRateRules.length ?? 0],
-            ["Schedules", operationsSnapshotQuery.data?.scheduleBlocks.length ?? 0],
-            ["Payroll entries", operationsSnapshotQuery.data?.payrollTimeEntries.length ?? 0],
-            ["Payment cycles", operationsSnapshotQuery.data?.payerPaymentCycles.length ?? 0],
-            ["Compliance", operationsSnapshotQuery.data?.complianceRequirements.length ?? 0],
+            [
+              "Rate rules",
+              operationsSnapshotQuery.data?.payerRateRules.length ?? 0,
+            ],
+            [
+              "Schedules",
+              operationsSnapshotQuery.data?.scheduleBlocks.length ?? 0,
+            ],
+            [
+              "Payroll entries",
+              operationsSnapshotQuery.data?.payrollTimeEntries.length ?? 0,
+            ],
+            [
+              "Payment cycles",
+              operationsSnapshotQuery.data?.payerPaymentCycles.length ?? 0,
+            ],
+            [
+              "Compliance",
+              operationsSnapshotQuery.data?.complianceRequirements.length ?? 0,
+            ],
             ["Work items", operationsSnapshotQuery.data?.workItems.length ?? 0],
-            ["Ledger", operationsSnapshotQuery.data?.accountingLedgerEntries.length ?? 0],
-            ["RBAC policies", operationsSnapshotQuery.data?.rolePermissionPolicies.length ?? 0],
+            [
+              "Ledger",
+              operationsSnapshotQuery.data?.accountingLedgerEntries.length ?? 0,
+            ],
+            [
+              "RBAC policies",
+              operationsSnapshotQuery.data?.rolePermissionPolicies.length ?? 0,
+            ],
             ["Call logs", operationsSnapshotQuery.data?.callLogs.length ?? 0],
-            ["Scrub rules", operationsSnapshotQuery.data?.claimScrubberRules.length ?? 0],
-            ["AI reviews", operationsSnapshotQuery.data?.aiAlertReviewEvents.length ?? 0],
-            ["Ledger links", operationsSnapshotQuery.data?.ledgerLinks.length ?? 0],
-            ["Training", operationsSnapshotQuery.data?.trainingCompletions.length ?? 0],
-            ["HIPAA audit", operationsSnapshotQuery.data?.hipaaAuditLogs.length ?? 0],
+            [
+              "Scrub rules",
+              operationsSnapshotQuery.data?.claimScrubberRules.length ?? 0,
+            ],
+            [
+              "AI reviews",
+              operationsSnapshotQuery.data?.aiAlertReviewEvents.length ?? 0,
+            ],
+            [
+              "Ledger links",
+              operationsSnapshotQuery.data?.ledgerLinks.length ?? 0,
+            ],
+            [
+              "Training",
+              operationsSnapshotQuery.data?.trainingCompletions.length ?? 0,
+            ],
+            [
+              "HIPAA audit",
+              operationsSnapshotQuery.data?.hipaaAuditLogs.length ?? 0,
+            ],
           ].map(([label, value]) => (
             <div key={label} className="rounded-lg border border-slate-200 p-3">
               <p className="text-slate-500 text-sm">{label}</p>
@@ -1932,7 +2172,9 @@ export function CenterOperationsCommand() {
             disabled={seedLaunchMutation.isPending}
             className="inline-flex items-center justify-center rounded-md border border-teal-700 bg-teal-700 px-4 py-2 font-semibold text-sm text-white disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {seedLaunchMutation.isPending ? "Seeding" : "Seed 4-state launch data"}
+            {seedLaunchMutation.isPending
+              ? "Seeding"
+              : "Seed 4-state launch data"}
           </button>
         </div>
 
@@ -1955,7 +2197,9 @@ export function CenterOperationsCommand() {
               >
                 <p className="font-semibold">{entity.label}</p>
                 <p className="mt-1 text-2xl font-bold">{count}</p>
-                <p className="mt-1 text-slate-500 text-xs">{entity.description}</p>
+                <p className="mt-1 text-slate-500 text-xs">
+                  {entity.description}
+                </p>
               </button>
             );
           })}
@@ -1965,7 +2209,11 @@ export function CenterOperationsCommand() {
           <div className="rounded-lg border border-slate-200">
             <div className="border-slate-200 border-b bg-slate-50 px-4 py-3">
               <p className="font-semibold">
-                {operationsCrudEntities.find((entity) => entity.key === crudEntity)?.label}
+                {
+                  operationsCrudEntities.find(
+                    (entity) => entity.key === crudEntity,
+                  )?.label
+                }
               </p>
               <p className="text-slate-500 text-xs">
                 {crudRecords.length} database records
@@ -1989,15 +2237,23 @@ export function CenterOperationsCommand() {
                   </thead>
                   <tbody>
                     {crudRecords.map((record) => (
-                      <tr key={toStringValue(record.id)} className="border-slate-100 border-t">
+                      <tr
+                        key={toStringValue(record.id)}
+                        className="border-slate-100 border-t"
+                      >
                         <td className="px-4 py-3">
-                          <p className="font-semibold">{getCrudRowTitle(record)}</p>
+                          <p className="font-semibold">
+                            {getCrudRowTitle(record)}
+                          </p>
                           <p className="text-slate-500 text-xs">
                             {toStringValue(record.id)}
                           </p>
                         </td>
                         <td className="px-4 py-3">
-                          {toStringValue(record.state, toStringValue(record.homeState, "n/a"))}
+                          {toStringValue(
+                            record.state,
+                            toStringValue(record.homeState, "n/a"),
+                          )}
                         </td>
                         <td className="px-4 py-3">
                           {toStringValue(
@@ -2092,7 +2348,8 @@ export function CenterOperationsCommand() {
                 type="button"
                 onClick={submitCrudRecord}
                 disabled={
-                  createRecordMutation.isPending || updateRecordMutation.isPending
+                  createRecordMutation.isPending ||
+                  updateRecordMutation.isPending
                 }
                 className="rounded-md border border-teal-700 bg-teal-700 px-4 py-2 font-semibold text-sm text-white disabled:opacity-60"
               >
@@ -2147,7 +2404,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {(operationsSnapshotQuery.data?.claims ?? []).map((claim) => (
-                <tr key={toStringValue(claim.id)} className="border-slate-100 border-t align-top">
+                <tr
+                  key={toStringValue(claim.id)}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3">
                     <p className="font-semibold">{toStringValue(claim.id)}</p>
                     <p className="text-slate-500 text-xs">
@@ -2155,7 +2415,9 @@ export function CenterOperationsCommand() {
                     </p>
                   </td>
                   <td className="px-4 py-3">{toStringValue(claim.state)}</td>
-                  <td className="px-4 py-3">{toStringValue(claim.payerName)}</td>
+                  <td className="px-4 py-3">
+                    {toStringValue(claim.payerName)}
+                  </td>
                   <td className="px-4 py-3">{toStringValue(claim.status)}</td>
                   <td className="px-4 py-3">
                     {formatCurrency(
@@ -2179,7 +2441,10 @@ export function CenterOperationsCommand() {
                       <button
                         type="button"
                         onClick={() =>
-                          claimActionMutation.mutate({ action: "submit", claim })
+                          claimActionMutation.mutate({
+                            action: "submit",
+                            claim,
+                          })
                         }
                         disabled={claimActionMutation.isPending}
                         className="rounded-md border border-slate-300 px-3 py-2 font-semibold text-slate-700 text-xs disabled:opacity-60"
@@ -2209,7 +2474,10 @@ export function CenterOperationsCommand() {
                       <button
                         type="button"
                         onClick={() =>
-                          claimActionMutation.mutate({ action: "follow_up", claim })
+                          claimActionMutation.mutate({
+                            action: "follow_up",
+                            claim,
+                          })
                         }
                         disabled={claimActionMutation.isPending}
                         className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-700 text-xs disabled:opacity-60"
@@ -2279,10 +2547,15 @@ export function CenterOperationsCommand() {
 
         <div className="mt-4 grid gap-3 md:grid-cols-4">
           {workSummary.byState.map((item) => (
-            <div key={item.state} className="rounded-lg border border-slate-200 p-3">
+            <div
+              key={item.state}
+              className="rounded-lg border border-slate-200 p-3"
+            >
               <p className="font-semibold">{item.state}</p>
               <p className="mt-1 text-2xl font-bold">{item.count}</p>
-              <p className="text-slate-500 text-sm">{item.high} high priority</p>
+              <p className="text-slate-500 text-sm">
+                {item.high} high priority
+              </p>
             </div>
           ))}
         </div>
@@ -2304,7 +2577,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {filteredWorkItems.slice(0, 24).map((item) => (
-                <tr key={item.id} className="border-slate-100 border-t align-top">
+                <tr
+                  key={item.id}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{item.state}</td>
                   <td className="px-4 py-3">{item.domain}</td>
                   <td className="px-4 py-3">
@@ -2349,11 +2625,13 @@ export function CenterOperationsCommand() {
       <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="font-bold text-xl">State Compliance Registration Tracker</h2>
+            <h2 className="font-bold text-xl">
+              State Compliance Registration Tracker
+            </h2>
             <p className="text-slate-600 text-sm">
-              Tracks payroll tax, withholding, unemployment, workers comp,
-              payer EFT/ERA, accounting ledgers, BCBA licenses, RBT credentials,
-              payer credentialing, and telehealth verification by state.
+              Tracks payroll tax, withholding, unemployment, workers comp, payer
+              EFT/ERA, accounting ledgers, BCBA licenses, RBT credentials, payer
+              credentialing, and telehealth verification by state.
             </p>
           </div>
           <FileCheck2 className="h-6 w-6 text-teal-700" />
@@ -2395,7 +2673,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {complianceRequirements.map((item) => (
-                <tr key={item.id} className="border-slate-100 border-t align-top">
+                <tr
+                  key={item.id}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{item.state}</td>
                   <td className="px-4 py-3">{item.domain}</td>
                   <td className="px-4 py-3 text-slate-600">
@@ -2433,7 +2714,9 @@ export function CenterOperationsCommand() {
       <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="font-bold text-xl">Payer Payment Cycle and Treasury</h2>
+            <h2 className="font-bold text-xl">
+              Payer Payment Cycle and Treasury
+            </h2>
             <p className="text-slate-600 text-sm">
               Tracks whether each state/payer is expected to pay weekly,
               biweekly, monthly, or unknown, and compares payroll cost against
@@ -2456,7 +2739,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {payerPaymentCycles.map((payer) => (
-                <tr key={`${payer.state}-${payer.payer}`} className="border-slate-100 border-t">
+                <tr
+                  key={`${payer.state}-${payer.payer}`}
+                  className="border-slate-100 border-t"
+                >
                   <td className="px-4 py-3 font-semibold">{payer.state}</td>
                   <td className="px-4 py-3">{payer.payer}</td>
                   <td className="px-4 py-3">{payer.expectedPaymentCycle}</td>
@@ -2540,7 +2826,9 @@ export function CenterOperationsCommand() {
         <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h3 className="font-semibold text-slate-950">Payroll Export Center</h3>
+              <h3 className="font-semibold text-slate-950">
+                Payroll Export Center
+              </h3>
               <p className="text-slate-600 text-sm">
                 Export the same approved time entries to Gusto, ADP,
                 QuickBooks-compatible time import, or your own internal
@@ -2567,7 +2855,10 @@ export function CenterOperationsCommand() {
           </div>
           <div className="mt-3 grid gap-3 md:grid-cols-4">
             {payrollExportFiles.map((file) => (
-              <div key={file.filename} className="rounded-lg border border-slate-200 bg-white p-3">
+              <div
+                key={file.filename}
+                className="rounded-lg border border-slate-200 bg-white p-3"
+              >
                 <p className="font-semibold text-sm">
                   {file.format === "internal_ledger"
                     ? "Own books"
@@ -2607,7 +2898,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {internalPayrollLedger.map((row) => (
-                <tr key={row.entryId} className="border-slate-100 border-t align-top">
+                <tr
+                  key={row.entryId}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{row.ledgerClass}</td>
                   <td className="px-4 py-3">{row.payrollAccount}</td>
                   <td className="px-4 py-3">{row.revenueAccount}</td>
@@ -2617,7 +2911,9 @@ export function CenterOperationsCommand() {
                   <td className="px-4 py-3">{row.paidHours}</td>
                   <td className="px-4 py-3">{row.billableHours}</td>
                   <td className="px-4 py-3">{formatCurrency(row.grossPay)}</td>
-                  <td className="px-4 py-3">{formatCurrency(row.loadedCost)}</td>
+                  <td className="px-4 py-3">
+                    {formatCurrency(row.loadedCost)}
+                  </td>
                   <td className="px-4 py-3">
                     <StatusPill
                       status={
@@ -2663,7 +2959,9 @@ export function CenterOperationsCommand() {
                   <td className="px-4 py-3">{summary.paidHours}</td>
                   <td className="px-4 py-3">{summary.billableHours}</td>
                   <td className="px-4 py-3">{summary.claimReadyHours}</td>
-                  <td className="px-4 py-3">{summary.documentationHoldHours}</td>
+                  <td className="px-4 py-3">
+                    {summary.documentationHoldHours}
+                  </td>
                   <td className="px-4 py-3">
                     {formatCurrency(summary.grossPay)}
                   </td>
@@ -2838,11 +3136,13 @@ export function CenterOperationsCommand() {
       <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="font-bold text-xl">State Telehealth and Supervision Rules</h2>
+            <h2 className="font-bold text-xl">
+              State Telehealth and Supervision Rules
+            </h2>
             <p className="text-slate-600 text-sm">
               Conservative scheduling rules for online treatment, remote
-              supervision, parent training, and BCBA hour planning. Verify
-              payer authorization before billing remote services.
+              supervision, parent training, and BCBA hour planning. Verify payer
+              authorization before billing remote services.
             </p>
           </div>
           <ShieldCheck className="h-6 w-6 text-teal-700" />
@@ -2856,7 +3156,9 @@ export function CenterOperationsCommand() {
                 <th className="px-4 py-3">Remote supervision</th>
                 <th className="px-4 py-3">Parent training</th>
                 <th className="px-4 py-3">Online supervision hrs/client/wk</th>
-                <th className="px-4 py-3">Online parent training hrs/client/wk</th>
+                <th className="px-4 py-3">
+                  Online parent training hrs/client/wk
+                </th>
                 <th className="px-4 py-3">Supervision formula</th>
                 <th className="px-4 py-3">BCBA planning</th>
                 <th className="px-4 py-3">Remote requirements</th>
@@ -2865,7 +3167,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {stateSchedulingRules.map((rule) => (
-                <tr key={rule.state} className="border-slate-100 border-t align-top">
+                <tr
+                  key={rule.state}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{rule.state}</td>
                   <td className="px-4 py-3">{rule.directTreatmentMode}</td>
                   <td className="px-4 py-3">{rule.remoteSupervisionMode}</td>
@@ -2926,7 +3231,10 @@ export function CenterOperationsCommand() {
             </thead>
             <tbody>
               {claimReadinessQueue.map((claim) => (
-                <tr key={claim.sessionId} className="border-slate-100 border-t align-top">
+                <tr
+                  key={claim.sessionId}
+                  className="border-slate-100 border-t align-top"
+                >
                   <td className="px-4 py-3 font-semibold">{claim.client}</td>
                   <td className="px-4 py-3">{claim.state}</td>
                   <td className="px-4 py-3">{claim.center}</td>
@@ -2965,9 +3273,9 @@ export function CenterOperationsCommand() {
           <div>
             <h2 className="font-bold text-xl">State/Payer Rate Rules</h2>
             <p className="text-slate-600 text-sm">
-              Separate placeholder rate table for RBT and BCBA billing by
-              state, payer, CPT, modifier, place of service, and unit size.
-              Replace with payer contract rates before live submission.
+              Separate placeholder rate table for RBT and BCBA billing by state,
+              payer, CPT, modifier, place of service, and unit size. Replace
+              with payer contract rates before live submission.
             </p>
           </div>
           <Banknote className="h-6 w-6 text-teal-700" />
@@ -3064,18 +3372,14 @@ export function CenterOperationsCommand() {
                   <td className="px-4 py-3">
                     {scenario.expectedDeliveredDirectHoursPerClientWeek}
                   </td>
-                  <td className="px-4 py-3">
-                    {scenario.rbtPaidHoursPerWeek}
-                  </td>
+                  <td className="px-4 py-3">{scenario.rbtPaidHoursPerWeek}</td>
                   <td className="px-4 py-3">
                     {scenario.rbtBillableHoursPerWeek}
                   </td>
                   <td className="px-4 py-3">
                     {formatPercent(scenario.rbtUtilizationRate)}
                   </td>
-                  <td className="px-4 py-3">
-                    {scenario.bcbaPaidHoursPerWeek}
-                  </td>
+                  <td className="px-4 py-3">{scenario.bcbaPaidHoursPerWeek}</td>
                   <td className="px-4 py-3">
                     {scenario.bcbaBillableHoursPerWeek}
                   </td>
@@ -3233,9 +3537,7 @@ export function CenterOperationsCommand() {
             <tbody>
               {timeZoneWindows.map((window) => (
                 <tr key={window.state} className="border-slate-100 border-t">
-                  <td className="px-4 py-3 font-semibold">
-                    {window.location}
-                  </td>
+                  <td className="px-4 py-3 font-semibold">{window.location}</td>
                   <td className="px-4 py-3">{window.currentSummerTimeZone}</td>
                   <td className="px-4 py-3">{window.indiaOffset}</td>
                   <td className="px-4 py-3 text-slate-600">
@@ -3279,13 +3581,9 @@ export function CenterOperationsCommand() {
             <tbody>
               {bcbaCapacityScenarios.map((scenario) => (
                 <tr key={scenario.label} className="border-slate-100 border-t">
-                  <td className="px-4 py-3 font-semibold">
-                    {scenario.label}
-                  </td>
+                  <td className="px-4 py-3 font-semibold">{scenario.label}</td>
                   <td className="px-4 py-3">{scenario.clients}</td>
-                  <td className="px-4 py-3">
-                    {scenario.totalRbtHoursPerWeek}
-                  </td>
+                  <td className="px-4 py-3">{scenario.totalRbtHoursPerWeek}</td>
                   <td className="px-4 py-3">
                     {scenario.minimumRbtSupervisionHoursPerWeek.toFixed(1)}
                   </td>
@@ -3560,9 +3858,7 @@ export function CenterOperationsCommand() {
                   <td className="px-4 py-3">{payer.portal}</td>
                   <td className="px-4 py-3">
                     <StatusPill
-                      status={
-                        payer.status === "starter" ? "ready" : "watch"
-                      }
+                      status={payer.status === "starter" ? "ready" : "watch"}
                     />
                   </td>
                   <td className="px-4 py-3 text-slate-600">
@@ -3581,8 +3877,8 @@ export function CenterOperationsCommand() {
             <h2 className="font-bold text-xl">AI Operations Triage</h2>
             <p className="text-slate-600 text-sm">
               Rule-based AI assistant for launch, claims, supervision, HIPAA,
-              and video risks. It creates recommendations only; humans close
-              the item.
+              and video risks. It creates recommendations only; humans close the
+              item.
             </p>
           </div>
           <ShieldAlert className="h-6 w-6 text-rose-600" />
@@ -3736,9 +4032,7 @@ export function CenterOperationsCommand() {
             <tbody>
               {revenueSensitivity.map((scenario) => (
                 <tr key={scenario.label} className="border-slate-100 border-t">
-                  <td className="px-4 py-3 font-semibold">
-                    {scenario.label}
-                  </td>
+                  <td className="px-4 py-3 font-semibold">{scenario.label}</td>
                   <td className="px-4 py-3">{scenario.clients}</td>
                   <td className="px-4 py-3">
                     {scenario.directHoursPerClientWeek}
@@ -3813,12 +4107,14 @@ export function CenterOperationsCommand() {
         <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm xl:col-span-2">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="font-bold text-xl">India Call Center Operating Center</h2>
+              <h2 className="font-bold text-xl">
+                India Call Center Operating Center
+              </h2>
               <p className="text-slate-600 text-sm">
                 India RCM can reduce cost only if work is scripted,
                 minimum-necessary, audited, and escalated correctly. The team
-                handles payer/admin operations; clinical decisions stay with
-                the BCBA or owner.
+                handles payer/admin operations; clinical decisions stay with the
+                BCBA or owner.
               </p>
             </div>
             <Headphones className="h-6 w-6 text-teal-700" />
@@ -3857,7 +4153,10 @@ export function CenterOperationsCommand() {
               </thead>
               <tbody>
                 {indiaCallCenterOperatingRules.map((rule) => (
-                  <tr key={rule.domain} className="border-slate-100 border-t align-top">
+                  <tr
+                    key={rule.domain}
+                    className="border-slate-100 border-t align-top"
+                  >
                     <td className="px-4 py-3 font-semibold">{rule.domain}</td>
                     <td className="px-4 py-3 text-slate-600">
                       {rule.allowedWork.join("; ")}
@@ -3947,7 +4246,10 @@ export function CenterOperationsCommand() {
               </thead>
               <tbody>
                 {usCallingInfrastructure.map((item) => (
-                  <tr key={item.domain} className="border-slate-100 border-t align-top">
+                  <tr
+                    key={item.domain}
+                    className="border-slate-100 border-t align-top"
+                  >
                     <td className="px-4 py-3 font-semibold">{item.domain}</td>
                     <td className="px-4 py-3 text-slate-700">
                       {item.requirement}
@@ -4007,8 +4309,13 @@ export function CenterOperationsCommand() {
                 </thead>
                 <tbody>
                   {offshoreDeviceControls.map((control) => (
-                    <tr key={control.control} className="border-slate-100 border-t align-top">
-                      <td className="px-4 py-3 font-semibold">{control.control}</td>
+                    <tr
+                      key={control.control}
+                      className="border-slate-100 border-t align-top"
+                    >
+                      <td className="px-4 py-3 font-semibold">
+                        {control.control}
+                      </td>
                       <td className="px-4 py-3 text-slate-600">
                         {control.requirement}
                       </td>
@@ -4038,8 +4345,13 @@ export function CenterOperationsCommand() {
                 </thead>
                 <tbody>
                   {callRecordingConsentRules.map((rule) => (
-                    <tr key={rule.callType} className="border-slate-100 border-t align-top">
-                      <td className="px-4 py-3 font-semibold">{rule.callType}</td>
+                    <tr
+                      key={rule.callType}
+                      className="border-slate-100 border-t align-top"
+                    >
+                      <td className="px-4 py-3 font-semibold">
+                        {rule.callType}
+                      </td>
                       <td className="px-4 py-3 text-slate-600">
                         {rule.defaultPolicy}
                       </td>
@@ -4072,7 +4384,10 @@ export function CenterOperationsCommand() {
               </thead>
               <tbody>
                 {offshoreEscalationRoutes.map((route) => (
-                  <tr key={route.trigger} className="border-slate-100 border-t align-top">
+                  <tr
+                    key={route.trigger}
+                    className="border-slate-100 border-t align-top"
+                  >
                     <td className="px-4 py-3 font-semibold">{route.trigger}</td>
                     <td className="px-4 py-3 text-slate-600">
                       {route.indiaAction}
@@ -4211,9 +4526,7 @@ export function CenterOperationsCommand() {
                 </div>
                 <StatusPill status={item.status} />
               </div>
-              <p className="mt-3 text-slate-700 text-sm">
-                {item.whyItMatters}
-              </p>
+              <p className="mt-3 text-slate-700 text-sm">{item.whyItMatters}</p>
               <p className="mt-2 rounded-md bg-slate-50 p-2 text-slate-700 text-sm">
                 {item.nextImplementation}
               </p>
@@ -4324,10 +4637,26 @@ export function CenterOperationsCommand() {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
-          [ClipboardCheck, "Authorization", "Track CPT, units, dates, payer, and unused hours."],
-          [FileCheck2, "Documentation", "Release claims only after signed notes and supervision checks."],
-          [Banknote, "Payments", "Match EFT deposit, ERA allowed amount, write-off, and denial codes."],
-          [Clock3, "Follow-up SLA", "Call at 14 days, escalate at 30 days, appeal before timely limits."],
+          [
+            ClipboardCheck,
+            "Authorization",
+            "Track CPT, units, dates, payer, and unused hours.",
+          ],
+          [
+            FileCheck2,
+            "Documentation",
+            "Release claims only after signed notes and supervision checks.",
+          ],
+          [
+            Banknote,
+            "Payments",
+            "Match EFT deposit, ERA allowed amount, write-off, and denial codes.",
+          ],
+          [
+            Clock3,
+            "Follow-up SLA",
+            "Call at 14 days, escalate at 30 days, appeal before timely limits.",
+          ],
         ].map(([Icon, title, body]) => {
           const CardIcon = Icon as typeof ShieldCheck;
           return (

@@ -165,12 +165,18 @@ export function setupBackgroundSync(tag: string = "default"): void {
 
   if ("serviceWorker" in navigator && "SyncManager" in window) {
     navigator.serviceWorker.ready.then((registration) => {
-      registration.sync
+      const sync = (
+        registration as ServiceWorkerRegistration & {
+          sync?: { register: (tag: string) => Promise<void> };
+        }
+      ).sync;
+      if (!sync) return;
+      sync
         .register(`sync-${tag}`)
         .then(() => {
           console.log("Background sync registered");
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           console.warn("Background sync registration failed:", err);
         });
     });
@@ -195,7 +201,8 @@ export function useOfflineStatus(): {
     );
 
     const updateStatus = () => {
-      setStatus(getSyncStatus());
+      const { pending, lastSync, isOnline } = getSyncStatus();
+      setStatus({ pendingActions: pending, lastSync, isOnline });
     };
 
     updateStatus();

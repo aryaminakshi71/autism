@@ -107,7 +107,7 @@ export function scheduleNotification(
   title: string,
   delay: number,
   options?: NotificationOptions,
-): number {
+): ReturnType<typeof setTimeout> {
   const timeoutId = setTimeout(() => {
     showLocalNotification(title, options);
   }, delay);
@@ -115,7 +115,9 @@ export function scheduleNotification(
   return timeoutId;
 }
 
-export function cancelScheduledNotification(timeoutId: number): void {
+export function cancelScheduledNotification(
+  timeoutId: ReturnType<typeof setTimeout>,
+): void {
   clearTimeout(timeoutId);
 }
 

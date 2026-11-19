@@ -3,7 +3,7 @@
  * Provides loading skeletons and lazy loading helpers
  */
 
-import { ComponentType, Suspense } from "react";
+import { type ComponentType, Suspense } from "react";
 
 /**
  * Default loading skeleton for routes

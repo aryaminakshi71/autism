@@ -100,9 +100,7 @@ function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         <div>
           <Link to="/" className="flex justify-center">
-            <h1 className="font-bold text-3xl text-blue-600">
-              SpectrumAI
-            </h1>
+            <h1 className="font-bold text-3xl text-blue-600">SpectrumAI</h1>
           </Link>
           <div className="mt-4 text-center">
             <Link

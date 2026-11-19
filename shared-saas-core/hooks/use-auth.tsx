@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const data = (await response.json()) as AuthApiResponse;
 
         if (data.success && data.data?.user) {
-          setUser(data.data.user);
+          setUser(data.data?.user ?? null);
         }
       } catch (err) {
         console.error("Auth initialization error:", err);
@@ -148,7 +148,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error(data.error?.message || "Login failed");
         }
 
-        setUser(data.data.user);
+        setUser(data.data?.user ?? null);
         setIsDemo(false);
       } catch (err) {
         const message = err instanceof Error ? err.message : "Login failed";
@@ -184,7 +184,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error(result.error?.message || "Registration failed");
         }
 
-        setUser(result.data.user);
+        setUser(result.data?.user ?? null);
         setIsDemo(false);
       } catch (err) {
         const message =
@@ -218,7 +218,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = (await response.json()) as AuthApiResponse;
 
       if (data.success && data.data?.user) {
-        setUser(data.data.user);
+        setUser(data.data?.user ?? null);
       } else {
         setUser(null);
         setIsDemo(false);

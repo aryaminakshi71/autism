@@ -36,7 +36,7 @@ function DemoPage() {
     localStorage.setItem("demo_mode", "true");
 
     setTimeout(() => {
-      navigate({ to: "/dashboard/" });
+      navigate({ to: "/dashboard" });
     }, 500);
   };
 

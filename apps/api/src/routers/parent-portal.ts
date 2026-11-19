@@ -9,7 +9,7 @@ import {
   getOrCache,
   invalidateCache,
 } from "@autism-legacy-20260205/storage/redis";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { OrgContext } from "../context";
 import { isDemoRequest } from "../lib/demo";
@@ -752,7 +752,7 @@ export const parentPortalRouter = {
           );
         }
 
-        const resources = await db
+        const resources: (typeof parentResources.$inferSelect)[] = await db
           .select()
           .from(parentResources)
           .where(and(...conditions))

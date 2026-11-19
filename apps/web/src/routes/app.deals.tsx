@@ -85,8 +85,13 @@ function DealsPage() {
   });
 
   const updateStageMutation = useMutation({
-    mutationFn: ({ id, stage }: { id: string; stage: string }) =>
-      dealsApi.updateStage(id, stage),
+    mutationFn: ({
+      id,
+      stage,
+    }: {
+      id: string;
+      stage: "lead" | "qualified" | "proposal" | "negotiation" | "won" | "lost";
+    }) => dealsApi.updateStage(id, stage),
     onSuccess: () => {
       toast.success("Care plan stage updated");
       queryClient.invalidateQueries({ queryKey: ["deals"] });
@@ -239,7 +244,13 @@ function DealsPage() {
                           onChange={(e) =>
                             updateStageMutation.mutate({
                               id: deal.id,
-                              stage: e.target.value,
+                              stage: e.target.value as
+                                | "lead"
+                                | "qualified"
+                                | "proposal"
+                                | "negotiation"
+                                | "won"
+                                | "lost",
                             })
                           }
                         >

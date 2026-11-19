@@ -19,6 +19,8 @@ export const clientSchema = z.object({
     .optional()
     .default("http://localhost:5173"),
   VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().startsWith("pk_").optional(),
+  // Base URL used by Better Auth for callbacks and trusted origins.
+  BETTER_AUTH_URL: z.string().url().optional(),
   // PostHog Analytics
   VITE_PUBLIC_POSTHOG_KEY: z.string().startsWith("phc_").optional(),
   VITE_PUBLIC_POSTHOG_HOST: z

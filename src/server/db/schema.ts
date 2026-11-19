@@ -566,7 +566,9 @@ export const operationsPayerRateRules = pgTable("operations_payer_rate_rules", {
   collectedRateCentsPerHour: integer("collected_rate_cents_per_hour")
     .default(0)
     .notNull(),
-  verificationStatus: text("verification_status").default("placeholder").notNull(),
+  verificationStatus: text("verification_status")
+    .default("placeholder")
+    .notNull(),
   effectiveDate: timestamp("effective_date", { mode: "date" }),
   reviewDate: timestamp("review_date", { mode: "date" }),
   sourceUrl: text("source_url"),
@@ -652,7 +654,9 @@ export const operationsPayerPaymentCycles = pgTable(
       .references(() => organization.id, { onDelete: "cascade" }),
     state: text("state").notNull(),
     payerName: text("payer_name").notNull(),
-    expectedPaymentCycle: text("expected_payment_cycle").default("unknown").notNull(),
+    expectedPaymentCycle: text("expected_payment_cycle")
+      .default("unknown")
+      .notNull(),
     averageDaysToPay: integer("average_days_to_pay").default(21).notNull(),
     eftAccountStrategy: text("eft_account_strategy")
       .default("single_operating_with_state_ledgers")
@@ -859,8 +863,12 @@ export const operationsAiAlertReviewEvents = pgTable(
     decision: text("decision").notNull(),
     falsePositiveReason: text("false_positive_reason"),
     clinicalAction: text("clinical_action"),
-    claimHoldAfterReview: boolean("claim_hold_after_review").default(true).notNull(),
-    reviewedAt: timestamp("reviewed_at", { mode: "date" }).defaultNow().notNull(),
+    claimHoldAfterReview: boolean("claim_hold_after_review")
+      .default(true)
+      .notNull(),
+    reviewedAt: timestamp("reviewed_at", { mode: "date" })
+      .defaultNow()
+      .notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   },
 );
@@ -914,14 +922,19 @@ export const operationsTrainingCompletions = pgTable(
     moduleId: text("module_id").notNull(),
     moduleTitle: text("module_title").notNull(),
     audience: text("audience").notNull(),
-    assignedAt: timestamp("assigned_at", { mode: "date" }).defaultNow().notNull(),
+    assignedAt: timestamp("assigned_at", { mode: "date" })
+      .defaultNow()
+      .notNull(),
     dueDate: timestamp("due_date", { mode: "date" }),
     completedAt: timestamp("completed_at", { mode: "date" }),
     competencyScore: integer("competency_score"),
     signatureName: text("signature_name"),
-    supervisorSignoffBy: text("supervisor_signoff_by").references(() => user.id, {
-      onDelete: "set null",
-    }),
+    supervisorSignoffBy: text("supervisor_signoff_by").references(
+      () => user.id,
+      {
+        onDelete: "set null",
+      },
+    ),
     supervisorSignoffAt: timestamp("supervisor_signoff_at", { mode: "date" }),
     status: text("status").default("assigned").notNull(),
     evidenceUrl: text("evidence_url"),
