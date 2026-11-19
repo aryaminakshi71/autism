@@ -75,6 +75,30 @@ export function createAuth(connectionString: string) {
               organizationId: organization.id,
               userId: user.id,
             });
+            try {
+              await fetch(
+                `${process.env.REGISTRY_URL ?? "http://127.0.0.1:4100"}/api/registry/company`,
+                {
+                  method: "POST",
+                  headers: { "content-type": "application/json" },
+                  body: JSON.stringify({
+                    app: "spectrumai",
+                    orgId: organization.id,
+                    name: organization.name,
+                    slug: organization.slug,
+                    plan: "free",
+                    status: "active",
+                    email: user.email,
+                    isDemo: false,
+                    mrr: 0,
+                    currency: "INR",
+                  }),
+                  signal: AbortSignal.timeout(3000),
+                },
+              );
+            } catch {
+              // registry is optional
+            }
           },
         },
       }),
