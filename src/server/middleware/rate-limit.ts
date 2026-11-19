@@ -1,4 +1,4 @@
-import { createMiddleware } from "@hono/server";
+import { createMiddleware } from "hono/factory";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 

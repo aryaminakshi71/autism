@@ -12,7 +12,7 @@
 import { Check, Clock, Pause, Play, RotateCcw, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
-import { Badge, Button, Card, Progress } from "./index";
+import { Badge, Button, Card, Progress } from "~/components/ui";
 
 // ============================================================================
 // DTT Trial Component

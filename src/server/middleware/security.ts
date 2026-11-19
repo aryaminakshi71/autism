@@ -1,4 +1,4 @@
-import { createMiddleware } from "@hono/server";
+import { createMiddleware } from "hono/factory";
 
 export const securityHeaders = createMiddleware(async (c, next) => {
   c.header("X-DNS-Prefetch-Control", "on");

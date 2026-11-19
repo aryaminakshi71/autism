@@ -18,6 +18,13 @@ import {
 } from "../config/test-users";
 import type { User } from "../types/common";
 
+/** Shape returned by the /api/auth/* endpoints. */
+type AuthApiResponse = {
+  success?: boolean;
+  data?: { user?: User };
+  error?: { message?: string };
+};
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -73,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       try {
         const response = await fetch("/api/auth/session");
-        const data = await response.json();
+        const data = (await response.json()) as AuthApiResponse;
 
         if (data.success && data.data?.user) {
           setUser(data.data.user);
@@ -135,7 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           body: JSON.stringify({ email, password, remember }),
         });
 
-        const data = await response.json();
+        const data = (await response.json()) as AuthApiResponse;
 
         if (!data.success) {
           throw new Error(data.error?.message || "Login failed");
@@ -171,7 +178,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           body: JSON.stringify(data),
         });
 
-        const result = await response.json();
+        const result = (await response.json()) as AuthApiResponse;
 
         if (!result.success) {
           throw new Error(result.error?.message || "Registration failed");
@@ -208,7 +215,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshSession = useCallback(async () => {
     try {
       const response = await fetch("/api/auth/refresh");
-      const data = await response.json();
+      const data = (await response.json()) as AuthApiResponse;
 
       if (data.success && data.data?.user) {
         setUser(data.data.user);

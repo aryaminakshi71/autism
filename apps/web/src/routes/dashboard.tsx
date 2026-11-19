@@ -3,7 +3,7 @@
 import { CenterOperationsCommand } from "@/components/operations/CenterOperationsCommand";
 import { SessionNoteWorkspace } from "@/components/notes/SessionNoteWorkspace";
 import { Link, createFileRoute, useRouterState } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
@@ -31,6 +31,21 @@ function DashboardLayout() {
     "all" | "scheduled" | "completed"
   >("all");
   const [scheduleView, setScheduleView] = useState<"list" | "grid">("list");
+  const [stats, setStats] = useState({
+    activePatients: 0,
+    goalsInProgress: 0,
+    sessionsThisWeek: 0,
+    assessmentsDue: 0,
+  });
+
+  useEffect(() => {
+    fetch("/api/v1/autism/stats", { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: any) => {
+        if (d) setStats(d);
+      })
+      .catch(() => {});
+  }, []);
 
   const pathname = useRouterState({
     select: (state) => state.location.pathname.replace(/\/$/, ""),
@@ -107,10 +122,10 @@ function DashboardLayout() {
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[
-              { label: "Active Patients", value: "24" },
-              { label: "Goals in Progress", value: "63" },
-              { label: "Sessions This Week", value: "41" },
-              { label: "Assessments Due", value: "7" },
+              { label: "Active Patients", value: String(stats.activePatients) },
+              { label: "Goals in Progress", value: String(stats.goalsInProgress) },
+              { label: "Sessions This Week", value: String(stats.sessionsThisWeek) },
+              { label: "Assessments Due", value: String(stats.assessmentsDue) },
             ].map((stat) => (
               <div
                 key={stat.label}

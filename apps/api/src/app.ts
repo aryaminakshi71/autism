@@ -9,7 +9,7 @@ import { OpenAPIGenerator } from "@orpc/openapi";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod";
-import { and, eq } from "drizzle-orm";
+import { and, eq, gte, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
@@ -742,6 +742,50 @@ export function createApp() {
       active: allPatients.filter((p: any) => p.status === "active").length,
       inactive: allPatients.filter((p: any) => p.status === "inactive").length,
       newThisMonth: 0,
+    });
+  });
+
+  // Autism dashboard stats (real counts)
+  app.get("/api/v1/autism/stats", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "org-spectrumai-demo";
+    const db = getDb({ env: c.env });
+    const { patients, goals, sessions, assessments } = schema;
+
+    const [p] = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(patients)
+      .where(and(eq(patients.organizationId, orgId), eq(patients.status, "active")));
+    const [g] = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(goals)
+      .where(and(eq(goals.organizationId, orgId), eq(goals.status, "in-progress")));
+    const weekStart = new Date();
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+    weekStart.setHours(0, 0, 0, 0);
+    const [s] = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(sessions)
+      .where(
+        and(
+          eq(sessions.organizationId, orgId),
+          gte(sessions.scheduledStart, weekStart),
+        ),
+      );
+    const [a] = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(assessments)
+      .where(
+        and(
+          eq(assessments.organizationId, orgId),
+          eq(assessments.status, "scheduled"),
+        ),
+      );
+
+    return c.json({
+      activePatients: p?.n ?? 0,
+      goalsInProgress: g?.n ?? 0,
+      sessionsThisWeek: s?.n ?? 0,
+      assessmentsDue: a?.n ?? 0,
     });
   });
 
