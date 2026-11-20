@@ -803,6 +803,59 @@ export function createApp() {
     });
   });
 
+  // ── Billing ──────────────────────────────────────────────────────────────
+  const PLANS = [
+    { id: "solo", name: "Solo", price: 999, interval: "month", limits: "1 clinician, 25 clients" },
+    { id: "clinic", name: "Clinic", price: 1499, interval: "month", limits: "Up to 15 staff" },
+    { id: "growth", name: "Growth", price: 1999, interval: "month", limits: "Unlimited staff" },
+    { id: "enterprise", name: "Enterprise", price: 0, interval: "custom", limits: "Multi-site" },
+  ];
+
+  app.get("/api/billing/plans", (c: any) => c.json({ plans: PLANS }));
+
+  app.get("/api/billing/subscription", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "org-spectrumai-demo";
+    const db = getDb({ env: c.env });
+    const { organizations } = schema;
+    const [org] = await db
+      .select()
+      .from(organizations)
+      .where(eq(organizations.id, orgId))
+      .limit(1);
+    return c.json({
+      plan: org?.plan ?? "free",
+      status: org?.subscriptionStatus ?? "none",
+      expiresAt: org?.subscriptionExpiresAt ?? null,
+    });
+  });
+
+  app.post("/api/billing/subscribe", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "org-spectrumai-demo";
+    const db = getDb({ env: c.env });
+    const { organizations } = schema;
+    const body = await c.req.json().catch(() => ({}));
+    const plan = body.plan || "solo";
+    const interval = body.interval === "year" ? "year" : "month";
+    const expires = new Date();
+    expires.setMonth(expires.getMonth() + (interval === "year" ? 12 : 1));
+    await db
+      .update(organizations)
+      .set({ plan, subscriptionStatus: "active", subscriptionExpiresAt: expires })
+      .where(eq(organizations.id, orgId));
+    return c.json({ ok: true, plan, status: "active", expiresAt: expires });
+  });
+
+  app.post("/api/billing/cancel", async (c: any) => {
+    const orgId = c.req.header("x-organization-id") || "org-spectrumai-demo";
+    const db = getDb({ env: c.env });
+    const { organizations } = schema;
+    await db
+      .update(organizations)
+      .set({ subscriptionStatus: "cancelled" })
+      .where(eq(organizations.id, orgId));
+    return c.json({ ok: true, status: "cancelled" });
+  });
+
   // Goals
   app.get("/api/v1/goals", async (c: any) => {
     const isDemo = c.req.header("x-demo-mode") === "true";
