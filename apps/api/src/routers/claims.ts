@@ -42,6 +42,13 @@ export const claimsRouter = {
     .output(z.object({ pdfBase64: z.string(), fileName: z.string() }))
     .handler(async ({ context, input }) => {
       const { claim, patient } = await loadClaim(context, input.claimId);
+      const db = getDb(context);
+      const [branding] = await db
+        .select()
+        .from(schema.whiteLabelSettings)
+        .where(eq(schema.whiteLabelSettings.organizationId, context.organization.id))
+        .limit(1);
+      const brandName = branding?.brandName ?? "SpectrumAI";
 
       const pdf = await PDFDocument.create();
       const page = pdf.addPage([612, 792]); // US Letter
@@ -59,6 +66,7 @@ export const claimsRouter = {
         y -= size + 6;
       };
 
+      draw(brandName, 12, true);
       draw("HEALTH INSURANCE CLAIM FORM (CMS-1500 summary)", 13, true);
       y -= 6;
       draw(`Payer: ${claim.payerName}`, 10, true);
