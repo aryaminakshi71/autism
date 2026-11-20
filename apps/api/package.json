@@ -32,7 +32,8 @@
     "dd-trace": "^5.0.0",
     "drizzle-orm": "^0.45.0",
     "hono": "^4.7.10",
-    "zod": "^4.1.13"
+    "zod": "^4.1.13",
+    "stripe": "^18.0.0"
   },
   "devDependencies": {
     "@autism-legacy-20260205/tsconfig": "file:../../packages/tsconfig",

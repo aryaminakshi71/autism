@@ -11,6 +11,7 @@ import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod";
 import { and, eq, gte, sql } from "drizzle-orm";
 import { Hono } from "hono";
+import Stripe from "stripe";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
 // import { captureException as sentryCaptureException } from "./lib/sentry";
@@ -843,6 +844,79 @@ export function createApp() {
       .set({ plan, subscriptionStatus: "active", subscriptionExpiresAt: expires })
       .where(eq(organizations.id, orgId));
     return c.json({ ok: true, plan, status: "active", expiresAt: expires });
+  });
+
+  app.post("/api/billing/checkout", async (c: any) => {
+    const secret = process.env.STRIPE_SECRET_KEY;
+    if (!secret) return c.json({ error: "Stripe not configured" }, 503);
+    const stripe = new Stripe(secret);
+    const orgId = c.req.header("x-organization-id") || "org-spectrumai-demo";
+    const body = await c.req.json().catch(() => ({}));
+    const plan = PLANS.find((p) => p.id === body.plan);
+    if (!plan || plan.price === 0) return c.json({ error: "Invalid plan" }, 400);
+    const interval = body.interval === "year" ? "year" : "month";
+    const base = process.env.VITE_PUBLIC_SITE_URL || "http://localhost:3080";
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      line_items: [
+        {
+          price_data: {
+            currency: "inr",
+            unit_amount: plan.price * 100,
+            recurring: { interval },
+            product_data: { name: `SpectrumAI ${plan.name}` },
+          },
+          quantity: 1,
+        },
+      ],
+      success_url: `${base}/dashboard/billing?success=1`,
+      cancel_url: `${base}/dashboard/billing?cancelled=1`,
+      metadata: { orgId, plan: plan.id, interval },
+    });
+    return c.json({ url: session.url });
+  });
+
+  app.post("/api/billing/webhook", async (c: any) => {
+    const secret = process.env.STRIPE_SECRET_KEY;
+    const whSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!secret || !whSecret) return c.json({ error: "Stripe not configured" }, 503);
+    const stripe = new Stripe(secret);
+    const sig = c.req.header("stripe-signature");
+    const raw = await c.req.text();
+    let event: any;
+    try {
+      event = stripe.webhooks.constructEvent(raw, sig, whSecret);
+    } catch {
+      return c.json({ error: "Invalid signature" }, 400);
+    }
+    const db = getDb({ env: c.env });
+    const { organizations } = schema;
+    if (event.type === "checkout.session.completed") {
+      const s = event.data.object as any;
+      const orgId = s.metadata?.orgId;
+      const plan = s.metadata?.plan;
+      const interval = s.metadata?.interval;
+      if (orgId && plan) {
+        const expires = new Date();
+        expires.setMonth(expires.getMonth() + (interval === "year" ? 12 : 1));
+        await db
+          .update(organizations)
+          .set({
+            plan,
+            subscriptionStatus: "active",
+            subscriptionExpiresAt: expires,
+          })
+          .where(eq(organizations.id, orgId));
+      }
+    }
+    if (event.type === "customer.subscription.deleted") {
+      const sub = event.data.object as any;
+      await db
+        .update(organizations)
+        .set({ subscriptionStatus: "cancelled" })
+        .where(eq(organizations.id, sub.metadata?.orgId ?? ""));
+    }
+    return c.json({ received: true });
   });
 
   app.post("/api/billing/cancel", async (c: any) => {

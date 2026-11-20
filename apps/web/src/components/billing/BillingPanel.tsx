@@ -53,6 +53,18 @@ export function BillingPanel() {
     setBusy(true);
     setMessage("");
     try {
+      const checkout = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...orgHeaders() },
+        body: JSON.stringify({ plan, interval }),
+      });
+      if (checkout.ok) {
+        const data: any = await checkout.json();
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
       const res = await fetch("/api/billing/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...orgHeaders() },
