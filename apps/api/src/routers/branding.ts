@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
  * Branding Router — per-organization white-label settings.
  */
 import { z } from "zod";
-import { getDb, orgAuthed } from "../procedures";
+import { getDb, orgAuthed, pub } from "../procedures";
 
 const updateSchema = z.object({
   brandName: z.string().min(1).max(120),
@@ -37,6 +37,29 @@ export const brandingRouter = {
         .limit(1);
       return { branding: row ?? null };
     }),
+  getPublic: pub
+    .route({
+      method: "GET",
+      path: "/branding/public",
+      summary: "Get branding for the current domain (no auth)",
+      tags: ["Branding"],
+    })
+    .output(z.any())
+    .handler(async ({ context }) => {
+      const db = getDb(context);
+      const host = (context.headers?.get("host") ?? "").split(":")[0];
+      if (host) {
+        const [byDomain] = await db
+          .select()
+          .from(whiteLabelSettings)
+          .where(eq(whiteLabelSettings.customDomain, host))
+          .limit(1);
+        if (byDomain) return { branding: byDomain };
+      }
+      const [any] = await db.select().from(whiteLabelSettings).limit(1);
+      return { branding: any ?? null };
+    }),
+
   update: orgAuthed
     .route({
       method: "PUT",
