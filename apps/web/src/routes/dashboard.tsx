@@ -4,6 +4,7 @@ import { SessionNoteWorkspace } from "@/components/notes/SessionNoteWorkspace";
 import { SchedulingPanel } from "@/components/scheduling/SchedulingPanel";
 import { BillingPanel } from "@/components/billing/BillingPanel";
 import { SubscriptionGate } from "@/components/billing/SubscriptionGate";
+import { BrandingPanel } from "@/components/branding/BrandingPanel";
 import { CenterOperationsCommand } from "@/components/operations/CenterOperationsCommand";
 import { Link, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
@@ -23,6 +24,7 @@ const navItems = [
   { to: "/dashboard/operations", label: "Operations" },
   { to: "/dashboard/analytics", label: "Analytics" },
   { to: "/dashboard/billing", label: "Billing" },
+  { to: "/dashboard/branding", label: "Branding" },
   { to: "/dashboard/settings", label: "Settings" },
 ] as const;
 
@@ -295,6 +297,10 @@ function DashboardLayout() {
 
     if (currentPath === "/dashboard/billing") {
       return <BillingPanel />;
+    }
+
+    if (currentPath === "/dashboard/branding") {
+      return <BrandingPanel />;
     }
 
     if (currentPath === "/dashboard/communication") {
