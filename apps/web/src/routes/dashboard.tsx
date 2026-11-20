@@ -3,6 +3,7 @@
 import { SessionNoteWorkspace } from "@/components/notes/SessionNoteWorkspace";
 import { SchedulingPanel } from "@/components/scheduling/SchedulingPanel";
 import { BillingPanel } from "@/components/billing/BillingPanel";
+import { SubscriptionGate } from "@/components/billing/SubscriptionGate";
 import { CenterOperationsCommand } from "@/components/operations/CenterOperationsCommand";
 import { Link, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
@@ -426,7 +427,9 @@ function DashboardLayout() {
           ))}
         </nav>
       </aside>
-      <main className="flex-1 p-6">{renderCurrentPage()}</main>
+      <main className="flex-1 p-6">
+        <SubscriptionGate>{renderCurrentPage()}</SubscriptionGate>
+      </main>
     </div>
   );
 }
