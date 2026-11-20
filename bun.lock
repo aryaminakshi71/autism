@@ -15,6 +15,7 @@
         "@orpc/server": "^1.13.4",
         "@orpc/tanstack-query": "^1.13.4",
         "@orpc/zod": "^1.13.4",
+        "@platform/email": "file:../platform/packages/email",
         "@radix-ui/react-accordion": "1.2.2",
         "@radix-ui/react-alert-dialog": "1.1.4",
         "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -287,6 +288,9 @@
     },
     "packages/services": {
       "name": "@autism-legacy-20260205/services",
+      "dependencies": {
+        "@platform/email": "file:../../../platform/packages/email",
+      },
       "devDependencies": {
         "@autism-legacy-20260205/tsconfig": "file:../tsconfig",
         "@types/node": "^22.19.2",
@@ -1109,6 +1113,8 @@
     "@pdf-lib/standard-fonts": ["@pdf-lib/standard-fonts@1.0.0", "", { "dependencies": { "pako": "^1.0.6" } }, "sha512-hU30BK9IUN/su0Mn9VdlVKsWBS6GyhVfqjwl1FjZN4TxP6cCw0jP2w7V3Hf5uX7M0AZJ16vey9yE0ny7Sa59ZA=="],
 
     "@pdf-lib/upng": ["@pdf-lib/upng@1.0.1", "", { "dependencies": { "pako": "^1.0.10" } }, "sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ=="],
+
+    "@platform/email": ["@platform/email@file:../platform/packages/email", {}],
 
     "@playwright/test": ["@playwright/test@1.58.2", "", { "dependencies": { "playwright": "1.58.2" }, "bin": { "playwright": "cli.js" } }, "sha512-akea+6bHYBBfA9uQqSYmlJXn61cTa+jbO87xVLCWbTqbWadRVmhxlXATaOjOgcBaWU4ePo0wB41KMFv3o35IXA=="],
 
@@ -3156,6 +3162,10 @@
 
     "@autism-legacy-20260205/api/wrangler": ["wrangler@4.165.0", "", { "dependencies": { "@cloudflare/kv-asset-handler": "0.5.1", "@cloudflare/unenv-preset": "2.16.2", "@cloudflare/workers-utils": "0.55.0", "@cspotcode/source-map-support": "0.8.1", "@types/yargs": "17.0.24", "cloudflare": "5.2.0", "devtools-protocol": "0.0.1182435", "esbuild": "0.28.2", "miniflare": "5.20261118.0-beta", "path-to-regexp": "6.3.0", "undici": "7.30.1", "unenv": "2.0.0-rc.24", "workerd": "1.20261118.1" }, "optionalDependencies": { "fsevents": "2.3.3" }, "peerDependencies": { "@cloudflare/workers-types": "^5.20261118.1" }, "optionalPeers": ["@cloudflare/workers-types"], "bin": { "wrangler": "bin/wrangler.js", "wrangler2": "bin/wrangler.js", "cf-wrangler": "bin/cf-wrangler.js" } }, "sha512-c4CX82CieBfWTQPOnrsbQI/h0pYYj+heF32LKC/+EIyUh1rASVoDGKW6i3aogi/aKPloSLZLOTVAQ+UH36mqyA=="],
 
+    "@autism-legacy-20260205/services/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
+
+    "@autism-legacy-20260205/services/@platform/email": ["@platform/email@file:../platform/packages/email", {}],
+
     "@autism-legacy-20260205/storage/drizzle-kit": ["drizzle-kit@0.31.11", "", { "dependencies": { "@drizzle-team/brocli": "^0.10.2", "@esbuild-kit/esm-loader": "^2.5.5", "esbuild": "^0.25.4", "tsx": "^4.21.0" }, "bin": { "drizzle-kit": "bin.cjs" } }, "sha512-YCYqxTLIB2OCqf6w9/Vef13baBVbwQIPcbT4Y56AfO6B9ajZhDhD8Jkveg/hJvT/iuMloKD/IYYkyMMNhr7Kqg=="],
 
     "@autism-legacy-20260205/ui/@radix-ui/react-dialog": ["@radix-ui/react-dialog@1.3.1", "", { "dependencies": { "@radix-ui/primitive": "1.2.0", "@radix-ui/react-compose-refs": "1.1.5", "@radix-ui/react-context": "1.3.0", "@radix-ui/react-dismissable-layer": "1.2.1", "@radix-ui/react-focus-guards": "1.2.0", "@radix-ui/react-focus-scope": "1.3.1", "@radix-ui/react-id": "1.1.4", "@radix-ui/react-portal": "1.2.0", "@radix-ui/react-presence": "1.1.11", "@radix-ui/react-primitive": "2.2.0", "@radix-ui/react-slot": "1.5.0", "@radix-ui/react-use-controllable-state": "1.3.0", "@radix-ui/react-use-layout-effect": "1.1.4", "aria-hidden": "^1.2.4", "react-remove-scroll": "^2.7.2" }, "peerDependencies": { "@types/react": "*", "@types/react-dom": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc", "react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react", "@types/react-dom"] }, "sha512-+0E4qvVTwjAWra9sEhJ+9BTsvHE00zkUuNw1VGh7S+Gc13dfYk+S1PVQdchWDj+XYHhAai7Z7IpzXVDCGsDplg=="],
@@ -3854,7 +3864,7 @@
 
     "xml2js/xmlbuilder": ["xmlbuilder@11.0.1", "", {}, "sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA=="],
 
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage": ["@autism-legacy-20260205/storage@file:packages/storage", {}],
+    "@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage": ["@autism-legacy-20260205/storage@file:packages/storage", { "dependencies": { "@autism-legacy-20260205/core": "file:../core", "@autism-legacy-20260205/env": "file:../env", "@aws-sdk/client-s3": "^3.821.0", "@aws-sdk/s3-request-presigner": "^3.821.0", "@neondatabase/serverless": "^0.10.0", "@upstash/redis": "^1.36.1", "drizzle-orm": "^0.45.0", "drizzle-zod": "^0.8.3", "nanoid": "^5.0.9", "postgres": "^3.4.8", "zod": "^4.1.13" }, "devDependencies": { "@autism-legacy-20260205/tsconfig": "file:../tsconfig", "@cloudflare/workers-types": "^4.20250109.0", "@types/node": "^22.19.2", "drizzle-kit": "^0.31.8", "typescript": "^5.9.3" } }],
 
     "@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
 
@@ -3862,13 +3872,9 @@
 
     "@autism-legacy-20260205/api/@autism-legacy-20260205/logger/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
 
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/core": ["@autism-legacy-20260205/core@file:packages/core", {}],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/env": ["@autism-legacy-20260205/env@file:packages/env", {}],
+    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/env": ["@autism-legacy-20260205/env@file:packages/env", { "dependencies": { "zod": "^4.1.13" }, "devDependencies": { "@autism-legacy-20260205/tsconfig": "file:../tsconfig", "@cloudflare/workers-types": "^4.20250109.0", "@types/node": "^22.19.2", "typescript": "^5.9.3", "vite": "^7.2.7" } }],
 
     "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit": ["drizzle-kit@0.31.11", "", { "dependencies": { "@drizzle-team/brocli": "^0.10.2", "@esbuild-kit/esm-loader": "^2.5.5", "esbuild": "^0.25.4", "tsx": "^4.21.0" }, "bin": { "drizzle-kit": "bin.cjs" } }, "sha512-YCYqxTLIB2OCqf6w9/Vef13baBVbwQIPcbT4Y56AfO6B9ajZhDhD8Jkveg/hJvT/iuMloKD/IYYkyMMNhr7Kqg=="],
 
     "@autism-legacy-20260205/api/@sentry/node/@opentelemetry/context-async-hooks": ["@opentelemetry/context-async-hooks@1.30.1", "", { "peerDependencies": { "@opentelemetry/api": ">=1.0.0 <1.10.0" } }, "sha512-s5vvxXPVdjqS3kTLKMeBMvop9hbWkwzBpu+mUO2M7sZtlkyDJGwFe33wRKnbaYDo8ExRVBIIdwIGrqpxHuKttA=="],
 
@@ -4932,7 +4938,11 @@
 
     "wrangler/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.0", "", { "os": "win32", "cpu": "x64" }, "sha512-aIitBcjQeyOhMTImhLZmtxfdOcuNRpwlPNmlFKPcHQYPhEssw75Cl1TSXJXpMkzaua9FUetx/4OQKq7eJul5Cg=="],
 
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild": ["esbuild@0.25.12", "", { "optionalDependencies": { "@esbuild/aix-ppc64": "0.25.12", "@esbuild/android-arm": "0.25.12", "@esbuild/android-arm64": "0.25.12", "@esbuild/android-x64": "0.25.12", "@esbuild/darwin-arm64": "0.25.12", "@esbuild/darwin-x64": "0.25.12", "@esbuild/freebsd-arm64": "0.25.12", "@esbuild/freebsd-x64": "0.25.12", "@esbuild/linux-arm": "0.25.12", "@esbuild/linux-arm64": "0.25.12", "@esbuild/linux-ia32": "0.25.12", "@esbuild/linux-loong64": "0.25.12", "@esbuild/linux-mips64el": "0.25.12", "@esbuild/linux-ppc64": "0.25.12", "@esbuild/linux-riscv64": "0.25.12", "@esbuild/linux-s390x": "0.25.12", "@esbuild/linux-x64": "0.25.12", "@esbuild/netbsd-arm64": "0.25.12", "@esbuild/netbsd-x64": "0.25.12", "@esbuild/openbsd-arm64": "0.25.12", "@esbuild/openbsd-x64": "0.25.12", "@esbuild/openharmony-arm64": "0.25.12", "@esbuild/sunos-x64": "0.25.12", "@esbuild/win32-arm64": "0.25.12", "@esbuild/win32-ia32": "0.25.12", "@esbuild/win32-x64": "0.25.12" }, "bin": { "esbuild": "bin/esbuild" } }, "sha512-bbPBYYrtZbkt6Os6FiTLCTFxvq4tt3JKall1vRwshA3fdVztsLAatFaZobhkBC8/BrPetoa0oksYoKXoG4ryJg=="],
+    "@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage/@autism-legacy-20260205/env": ["@autism-legacy-20260205/env@file:packages/env", { "dependencies": { "zod": "^4.1.13" }, "devDependencies": { "@autism-legacy-20260205/tsconfig": "file:../tsconfig", "@cloudflare/workers-types": "^4.20250109.0", "@types/node": "^22.19.2", "typescript": "^5.9.3", "vite": "^7.2.7" } }],
+
+    "@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
+
+    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/env/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
 
     "@autism-legacy-20260205/api/@sentry/node/@opentelemetry/core/@opentelemetry/semantic-conventions": ["@opentelemetry/semantic-conventions@1.28.0", "", {}, "sha512-lp4qAiMTD4sNWW4DbKLBkfiMZ4jbAboJIGOQr5DvciMRI494OapieI9qiODpOt0XBr1LjIDy1xAGAnVs5supTA=="],
 
@@ -5098,7 +5108,7 @@
 
     "@autism-legacy-20260205/ui/cmdk/@radix-ui/react-primitive/@radix-ui/react-slot": ["@radix-ui/react-slot@1.2.4", "", { "dependencies": { "@radix-ui/react-compose-refs": "1.1.2" }, "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-Jl+bCv8HxKnlTLVrcDE8zTMJ09R9/ukw4qBs/oZClOfoQk/cOTbDn+NceXfV7j09YPVQUryJPHurafcSg6EVKA=="],
 
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage": ["@autism-legacy-20260205/storage@file:packages/storage", {}],
+    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage": ["@autism-legacy-20260205/storage@file:packages/storage", { "dependencies": { "@autism-legacy-20260205/core": "file:../core", "@autism-legacy-20260205/env": "file:../env", "@aws-sdk/client-s3": "^3.821.0", "@aws-sdk/s3-request-presigner": "^3.821.0", "@neondatabase/serverless": "^0.10.0", "@upstash/redis": "^1.36.1", "drizzle-orm": "^0.45.0", "drizzle-zod": "^0.8.3", "nanoid": "^5.0.9", "postgres": "^3.4.8", "zod": "^4.1.13" }, "devDependencies": { "@autism-legacy-20260205/tsconfig": "file:../tsconfig", "@cloudflare/workers-types": "^4.20250109.0", "@types/node": "^22.19.2", "drizzle-kit": "^0.31.8", "typescript": "^5.9.3" } }],
 
     "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
 
@@ -5106,13 +5116,9 @@
 
     "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/logger/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
 
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/core": ["@autism-legacy-20260205/core@file:packages/core", {}],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/env": ["@autism-legacy-20260205/env@file:packages/env", {}],
+    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/env": ["@autism-legacy-20260205/env@file:packages/env", { "dependencies": { "zod": "^4.1.13" }, "devDependencies": { "@autism-legacy-20260205/tsconfig": "file:../tsconfig", "@cloudflare/workers-types": "^4.20250109.0", "@types/node": "^22.19.2", "typescript": "^5.9.3", "vite": "^7.2.7" } }],
 
     "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit": ["drizzle-kit@0.31.11", "", { "dependencies": { "@drizzle-team/brocli": "^0.10.2", "@esbuild-kit/esm-loader": "^2.5.5", "esbuild": "^0.25.4", "tsx": "^4.21.0" }, "bin": { "drizzle-kit": "bin.cjs" } }, "sha512-YCYqxTLIB2OCqf6w9/Vef13baBVbwQIPcbT4Y56AfO6B9ajZhDhD8Jkveg/hJvT/iuMloKD/IYYkyMMNhr7Kqg=="],
 
     "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@sentry/node/@opentelemetry/context-async-hooks": ["@opentelemetry/context-async-hooks@1.30.1", "", { "peerDependencies": { "@opentelemetry/api": ">=1.0.0 <1.10.0" } }, "sha512-s5vvxXPVdjqS3kTLKMeBMvop9hbWkwzBpu+mUO2M7sZtlkyDJGwFe33wRKnbaYDo8ExRVBIIdwIGrqpxHuKttA=="],
 
@@ -5560,57 +5566,7 @@
 
     "vitest/vite/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.21.5", "", { "os": "win32", "cpu": "x64" }, "sha512-tQd/1efJuzPC6rCFwEvLtci/xNFcTZknmXs98FYDfGE4wP9ClFV98nyKrzJKVPMhdDnjzLhdUyMX4PsQAPjwIw=="],
 
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.25.12", "", { "os": "aix", "cpu": "ppc64" }, "sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/android-arm": ["@esbuild/android-arm@0.25.12", "", { "os": "android", "cpu": "arm" }, "sha512-VJ+sKvNA/GE7Ccacc9Cha7bpS8nyzVv0jdVgwNDaR4gDMC/2TTRc33Ip8qrNYUcpkOHUT5OZ0bUcNNVZQ9RLlg=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/android-arm64": ["@esbuild/android-arm64@0.25.12", "", { "os": "android", "cpu": "arm64" }, "sha512-6AAmLG7zwD1Z159jCKPvAxZd4y/VTO0VkprYy+3N2FtJ8+BQWFXU+OxARIwA46c5tdD9SsKGZ/1ocqBS/gAKHg=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/android-x64": ["@esbuild/android-x64@0.25.12", "", { "os": "android", "cpu": "x64" }, "sha512-5jbb+2hhDHx5phYR2By8GTWEzn6I9UqR11Kwf22iKbNpYrsmRB18aX/9ivc5cabcUiAT/wM+YIZ6SG9QO6a8kg=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/darwin-arm64": ["@esbuild/darwin-arm64@0.25.12", "", { "os": "darwin", "cpu": "arm64" }, "sha512-N3zl+lxHCifgIlcMUP5016ESkeQjLj/959RxxNYIthIg+CQHInujFuXeWbWMgnTo4cp5XVHqFPmpyu9J65C1Yg=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/darwin-x64": ["@esbuild/darwin-x64@0.25.12", "", { "os": "darwin", "cpu": "x64" }, "sha512-HQ9ka4Kx21qHXwtlTUVbKJOAnmG1ipXhdWTmNXiPzPfWKpXqASVcWdnf2bnL73wgjNrFXAa3yYvBSd9pzfEIpA=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/freebsd-arm64": ["@esbuild/freebsd-arm64@0.25.12", "", { "os": "freebsd", "cpu": "arm64" }, "sha512-gA0Bx759+7Jve03K1S0vkOu5Lg/85dou3EseOGUes8flVOGxbhDDh/iZaoek11Y8mtyKPGF3vP8XhnkDEAmzeg=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/freebsd-x64": ["@esbuild/freebsd-x64@0.25.12", "", { "os": "freebsd", "cpu": "x64" }, "sha512-TGbO26Yw2xsHzxtbVFGEXBFH0FRAP7gtcPE7P5yP7wGy7cXK2oO7RyOhL5NLiqTlBh47XhmIUXuGciXEqYFfBQ=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-arm": ["@esbuild/linux-arm@0.25.12", "", { "os": "linux", "cpu": "arm" }, "sha512-lPDGyC1JPDou8kGcywY0YILzWlhhnRjdof3UlcoqYmS9El818LLfJJc3PXXgZHrHCAKs/Z2SeZtDJr5MrkxtOw=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-arm64": ["@esbuild/linux-arm64@0.25.12", "", { "os": "linux", "cpu": "arm64" }, "sha512-8bwX7a8FghIgrupcxb4aUmYDLp8pX06rGh5HqDT7bB+8Rdells6mHvrFHHW2JAOPZUbnjUpKTLg6ECyzvas2AQ=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-ia32": ["@esbuild/linux-ia32@0.25.12", "", { "os": "linux", "cpu": "ia32" }, "sha512-0y9KrdVnbMM2/vG8KfU0byhUN+EFCny9+8g202gYqSSVMonbsCfLjUO+rCci7pM0WBEtz+oK/PIwHkzxkyharA=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-loong64": ["@esbuild/linux-loong64@0.25.12", "", { "os": "linux", "cpu": "none" }, "sha512-h///Lr5a9rib/v1GGqXVGzjL4TMvVTv+s1DPoxQdz7l/AYv6LDSxdIwzxkrPW438oUXiDtwM10o9PmwS/6Z0Ng=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-mips64el": ["@esbuild/linux-mips64el@0.25.12", "", { "os": "linux", "cpu": "none" }, "sha512-iyRrM1Pzy9GFMDLsXn1iHUm18nhKnNMWscjmp4+hpafcZjrr2WbT//d20xaGljXDBYHqRcl8HnxbX6uaA/eGVw=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-ppc64": ["@esbuild/linux-ppc64@0.25.12", "", { "os": "linux", "cpu": "ppc64" }, "sha512-9meM/lRXxMi5PSUqEXRCtVjEZBGwB7P/D4yT8UG/mwIdze2aV4Vo6U5gD3+RsoHXKkHCfSxZKzmDssVlRj1QQA=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-riscv64": ["@esbuild/linux-riscv64@0.25.12", "", { "os": "linux", "cpu": "none" }, "sha512-Zr7KR4hgKUpWAwb1f3o5ygT04MzqVrGEGXGLnj15YQDJErYu/BGg+wmFlIDOdJp0PmB0lLvxFIOXZgFRrdjR0w=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-s390x": ["@esbuild/linux-s390x@0.25.12", "", { "os": "linux", "cpu": "s390x" }, "sha512-MsKncOcgTNvdtiISc/jZs/Zf8d0cl/t3gYWX8J9ubBnVOwlk65UIEEvgBORTiljloIWnBzLs4qhzPkJcitIzIg=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-x64": ["@esbuild/linux-x64@0.25.12", "", { "os": "linux", "cpu": "x64" }, "sha512-uqZMTLr/zR/ed4jIGnwSLkaHmPjOjJvnm6TVVitAa08SLS9Z0VM8wIRx7gWbJB5/J54YuIMInDquWyYvQLZkgw=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/netbsd-arm64": ["@esbuild/netbsd-arm64@0.25.12", "", { "os": "none", "cpu": "arm64" }, "sha512-xXwcTq4GhRM7J9A8Gv5boanHhRa/Q9KLVmcyXHCTaM4wKfIpWkdXiMog/KsnxzJ0A1+nD+zoecuzqPmCRyBGjg=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/netbsd-x64": ["@esbuild/netbsd-x64@0.25.12", "", { "os": "none", "cpu": "x64" }, "sha512-Ld5pTlzPy3YwGec4OuHh1aCVCRvOXdH8DgRjfDy/oumVovmuSzWfnSJg+VtakB9Cm0gxNO9BzWkj6mtO1FMXkQ=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/openbsd-arm64": ["@esbuild/openbsd-arm64@0.25.12", "", { "os": "openbsd", "cpu": "arm64" }, "sha512-fF96T6KsBo/pkQI950FARU9apGNTSlZGsv1jZBAlcLL1MLjLNIWPBkj5NlSz8aAzYKg+eNqknrUJ24QBybeR5A=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/openbsd-x64": ["@esbuild/openbsd-x64@0.25.12", "", { "os": "openbsd", "cpu": "x64" }, "sha512-MZyXUkZHjQxUvzK7rN8DJ3SRmrVrke8ZyRusHlP+kuwqTcfWLyqMOE3sScPPyeIXN/mDJIfGXvcMqCgYKekoQw=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/openharmony-arm64": ["@esbuild/openharmony-arm64@0.25.12", "", { "os": "none", "cpu": "arm64" }, "sha512-rm0YWsqUSRrjncSXGA7Zv78Nbnw4XL6/dzr20cyrQf7ZmRcsovpcRBdhD43Nuk3y7XIoW2OxMVvwuRvk9XdASg=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/sunos-x64": ["@esbuild/sunos-x64@0.25.12", "", { "os": "sunos", "cpu": "x64" }, "sha512-3wGSCDyuTHQUzt0nV7bocDy72r2lI33QL3gkDNGkod22EsYl04sMf0qLb8luNKTOmgF/eDEDP5BFNwoBKH441w=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/win32-arm64": ["@esbuild/win32-arm64@0.25.12", "", { "os": "win32", "cpu": "arm64" }, "sha512-rMmLrur64A7+DKlnSuwqUdRKyd3UE7oPJZmnljqEptesKM8wx9J8gx5u0+9Pq0fQQW8vqeKebwNXdfOyP+8Bsg=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.25.12", "", { "os": "win32", "cpu": "ia32" }, "sha512-HkqnmmBoCbCwxUKKNPBixiWDGCpQGVsrQfJoVGYLPT41XWF8lHuE5N6WhVia2n4o5QK5M4tYr21827fNhi4byQ=="],
-
-    "@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.12", "", { "os": "win32", "cpu": "x64" }, "sha512-alJC0uCZpTFrSL0CCDjcgleBXPnCrEAhTBILpeAp7M/OFgoqtAetfBzX0xM00MUsVVPpVjlPuMbREqnZCXaTnA=="],
+    "@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage/@autism-legacy-20260205/env/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
 
     "@autism-legacy-20260205/api/@sentry/node/@opentelemetry/instrumentation-http/@opentelemetry/instrumentation/@opentelemetry/api-logs": ["@opentelemetry/api-logs@0.57.1", "", { "dependencies": { "@opentelemetry/api": "^1.3.0" } }, "sha512-I4PHczeujhQAQv6ZBzqHYEUiggZL4IdSMixtVD3EYqbdrjujE7kRfI5QohjlPoJm8BvenoW5YaTMWRrbpot6tg=="],
 
@@ -5674,7 +5630,11 @@
 
     "@autism-legacy-20260205/api/wrangler/miniflare/sharp/semver": ["semver@7.8.6", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-9lpSSU4Mly3mrtruwLs1eLK6+gzbzqeBFwRNjIjE+9LuDpWdYctrQlQ3ej1Ilgi7gknpsTRnPoLP8DpCHqHIJw=="],
 
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild": ["esbuild@0.25.12", "", { "optionalDependencies": { "@esbuild/aix-ppc64": "0.25.12", "@esbuild/android-arm": "0.25.12", "@esbuild/android-arm64": "0.25.12", "@esbuild/android-x64": "0.25.12", "@esbuild/darwin-arm64": "0.25.12", "@esbuild/darwin-x64": "0.25.12", "@esbuild/freebsd-arm64": "0.25.12", "@esbuild/freebsd-x64": "0.25.12", "@esbuild/linux-arm": "0.25.12", "@esbuild/linux-arm64": "0.25.12", "@esbuild/linux-ia32": "0.25.12", "@esbuild/linux-loong64": "0.25.12", "@esbuild/linux-mips64el": "0.25.12", "@esbuild/linux-ppc64": "0.25.12", "@esbuild/linux-riscv64": "0.25.12", "@esbuild/linux-s390x": "0.25.12", "@esbuild/linux-x64": "0.25.12", "@esbuild/netbsd-arm64": "0.25.12", "@esbuild/netbsd-x64": "0.25.12", "@esbuild/openbsd-arm64": "0.25.12", "@esbuild/openbsd-x64": "0.25.12", "@esbuild/openharmony-arm64": "0.25.12", "@esbuild/sunos-x64": "0.25.12", "@esbuild/win32-arm64": "0.25.12", "@esbuild/win32-ia32": "0.25.12", "@esbuild/win32-x64": "0.25.12" }, "bin": { "esbuild": "bin/esbuild" } }, "sha512-bbPBYYrtZbkt6Os6FiTLCTFxvq4tt3JKall1vRwshA3fdVztsLAatFaZobhkBC8/BrPetoa0oksYoKXoG4ryJg=="],
+    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage/@autism-legacy-20260205/env": ["@autism-legacy-20260205/env@file:packages/env", { "dependencies": { "zod": "^4.1.13" }, "devDependencies": { "@autism-legacy-20260205/tsconfig": "file:../tsconfig", "@cloudflare/workers-types": "^4.20250109.0", "@types/node": "^22.19.2", "typescript": "^5.9.3", "vite": "^7.2.7" } }],
+
+    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
+
+    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/@autism-legacy-20260205/env/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
 
     "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@sentry/node/@opentelemetry/core/@opentelemetry/semantic-conventions": ["@opentelemetry/semantic-conventions@1.28.0", "", {}, "sha512-lp4qAiMTD4sNWW4DbKLBkfiMZ4jbAboJIGOQr5DvciMRI494OapieI9qiODpOt0XBr1LjIDy1xAGAnVs5supTA=="],
 
@@ -5914,57 +5874,7 @@
 
     "@autism-legacy-20260205/api/@sentry/node/@opentelemetry/instrumentation-pg/@types/pg-pool/@types/pg/pg-protocol": ["pg-protocol@1.11.0", "", {}, "sha512-pfsxk2M9M3BuGgDOfuy37VNRRX3jmKgMjcvAcWqNDpZSf4cUmv8HSOl5ViRQFsfARFn0KuUQTgLxVMbNq5NW3g=="],
 
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.25.12", "", { "os": "aix", "cpu": "ppc64" }, "sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/android-arm": ["@esbuild/android-arm@0.25.12", "", { "os": "android", "cpu": "arm" }, "sha512-VJ+sKvNA/GE7Ccacc9Cha7bpS8nyzVv0jdVgwNDaR4gDMC/2TTRc33Ip8qrNYUcpkOHUT5OZ0bUcNNVZQ9RLlg=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/android-arm64": ["@esbuild/android-arm64@0.25.12", "", { "os": "android", "cpu": "arm64" }, "sha512-6AAmLG7zwD1Z159jCKPvAxZd4y/VTO0VkprYy+3N2FtJ8+BQWFXU+OxARIwA46c5tdD9SsKGZ/1ocqBS/gAKHg=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/android-x64": ["@esbuild/android-x64@0.25.12", "", { "os": "android", "cpu": "x64" }, "sha512-5jbb+2hhDHx5phYR2By8GTWEzn6I9UqR11Kwf22iKbNpYrsmRB18aX/9ivc5cabcUiAT/wM+YIZ6SG9QO6a8kg=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/darwin-arm64": ["@esbuild/darwin-arm64@0.25.12", "", { "os": "darwin", "cpu": "arm64" }, "sha512-N3zl+lxHCifgIlcMUP5016ESkeQjLj/959RxxNYIthIg+CQHInujFuXeWbWMgnTo4cp5XVHqFPmpyu9J65C1Yg=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/darwin-x64": ["@esbuild/darwin-x64@0.25.12", "", { "os": "darwin", "cpu": "x64" }, "sha512-HQ9ka4Kx21qHXwtlTUVbKJOAnmG1ipXhdWTmNXiPzPfWKpXqASVcWdnf2bnL73wgjNrFXAa3yYvBSd9pzfEIpA=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/freebsd-arm64": ["@esbuild/freebsd-arm64@0.25.12", "", { "os": "freebsd", "cpu": "arm64" }, "sha512-gA0Bx759+7Jve03K1S0vkOu5Lg/85dou3EseOGUes8flVOGxbhDDh/iZaoek11Y8mtyKPGF3vP8XhnkDEAmzeg=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/freebsd-x64": ["@esbuild/freebsd-x64@0.25.12", "", { "os": "freebsd", "cpu": "x64" }, "sha512-TGbO26Yw2xsHzxtbVFGEXBFH0FRAP7gtcPE7P5yP7wGy7cXK2oO7RyOhL5NLiqTlBh47XhmIUXuGciXEqYFfBQ=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-arm": ["@esbuild/linux-arm@0.25.12", "", { "os": "linux", "cpu": "arm" }, "sha512-lPDGyC1JPDou8kGcywY0YILzWlhhnRjdof3UlcoqYmS9El818LLfJJc3PXXgZHrHCAKs/Z2SeZtDJr5MrkxtOw=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-arm64": ["@esbuild/linux-arm64@0.25.12", "", { "os": "linux", "cpu": "arm64" }, "sha512-8bwX7a8FghIgrupcxb4aUmYDLp8pX06rGh5HqDT7bB+8Rdells6mHvrFHHW2JAOPZUbnjUpKTLg6ECyzvas2AQ=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-ia32": ["@esbuild/linux-ia32@0.25.12", "", { "os": "linux", "cpu": "ia32" }, "sha512-0y9KrdVnbMM2/vG8KfU0byhUN+EFCny9+8g202gYqSSVMonbsCfLjUO+rCci7pM0WBEtz+oK/PIwHkzxkyharA=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-loong64": ["@esbuild/linux-loong64@0.25.12", "", { "os": "linux", "cpu": "none" }, "sha512-h///Lr5a9rib/v1GGqXVGzjL4TMvVTv+s1DPoxQdz7l/AYv6LDSxdIwzxkrPW438oUXiDtwM10o9PmwS/6Z0Ng=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-mips64el": ["@esbuild/linux-mips64el@0.25.12", "", { "os": "linux", "cpu": "none" }, "sha512-iyRrM1Pzy9GFMDLsXn1iHUm18nhKnNMWscjmp4+hpafcZjrr2WbT//d20xaGljXDBYHqRcl8HnxbX6uaA/eGVw=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-ppc64": ["@esbuild/linux-ppc64@0.25.12", "", { "os": "linux", "cpu": "ppc64" }, "sha512-9meM/lRXxMi5PSUqEXRCtVjEZBGwB7P/D4yT8UG/mwIdze2aV4Vo6U5gD3+RsoHXKkHCfSxZKzmDssVlRj1QQA=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-riscv64": ["@esbuild/linux-riscv64@0.25.12", "", { "os": "linux", "cpu": "none" }, "sha512-Zr7KR4hgKUpWAwb1f3o5ygT04MzqVrGEGXGLnj15YQDJErYu/BGg+wmFlIDOdJp0PmB0lLvxFIOXZgFRrdjR0w=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-s390x": ["@esbuild/linux-s390x@0.25.12", "", { "os": "linux", "cpu": "s390x" }, "sha512-MsKncOcgTNvdtiISc/jZs/Zf8d0cl/t3gYWX8J9ubBnVOwlk65UIEEvgBORTiljloIWnBzLs4qhzPkJcitIzIg=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/linux-x64": ["@esbuild/linux-x64@0.25.12", "", { "os": "linux", "cpu": "x64" }, "sha512-uqZMTLr/zR/ed4jIGnwSLkaHmPjOjJvnm6TVVitAa08SLS9Z0VM8wIRx7gWbJB5/J54YuIMInDquWyYvQLZkgw=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/netbsd-arm64": ["@esbuild/netbsd-arm64@0.25.12", "", { "os": "none", "cpu": "arm64" }, "sha512-xXwcTq4GhRM7J9A8Gv5boanHhRa/Q9KLVmcyXHCTaM4wKfIpWkdXiMog/KsnxzJ0A1+nD+zoecuzqPmCRyBGjg=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/netbsd-x64": ["@esbuild/netbsd-x64@0.25.12", "", { "os": "none", "cpu": "x64" }, "sha512-Ld5pTlzPy3YwGec4OuHh1aCVCRvOXdH8DgRjfDy/oumVovmuSzWfnSJg+VtakB9Cm0gxNO9BzWkj6mtO1FMXkQ=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/openbsd-arm64": ["@esbuild/openbsd-arm64@0.25.12", "", { "os": "openbsd", "cpu": "arm64" }, "sha512-fF96T6KsBo/pkQI950FARU9apGNTSlZGsv1jZBAlcLL1MLjLNIWPBkj5NlSz8aAzYKg+eNqknrUJ24QBybeR5A=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/openbsd-x64": ["@esbuild/openbsd-x64@0.25.12", "", { "os": "openbsd", "cpu": "x64" }, "sha512-MZyXUkZHjQxUvzK7rN8DJ3SRmrVrke8ZyRusHlP+kuwqTcfWLyqMOE3sScPPyeIXN/mDJIfGXvcMqCgYKekoQw=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/openharmony-arm64": ["@esbuild/openharmony-arm64@0.25.12", "", { "os": "none", "cpu": "arm64" }, "sha512-rm0YWsqUSRrjncSXGA7Zv78Nbnw4XL6/dzr20cyrQf7ZmRcsovpcRBdhD43Nuk3y7XIoW2OxMVvwuRvk9XdASg=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/sunos-x64": ["@esbuild/sunos-x64@0.25.12", "", { "os": "sunos", "cpu": "x64" }, "sha512-3wGSCDyuTHQUzt0nV7bocDy72r2lI33QL3gkDNGkod22EsYl04sMf0qLb8luNKTOmgF/eDEDP5BFNwoBKH441w=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/win32-arm64": ["@esbuild/win32-arm64@0.25.12", "", { "os": "win32", "cpu": "arm64" }, "sha512-rMmLrur64A7+DKlnSuwqUdRKyd3UE7oPJZmnljqEptesKM8wx9J8gx5u0+9Pq0fQQW8vqeKebwNXdfOyP+8Bsg=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.25.12", "", { "os": "win32", "cpu": "ia32" }, "sha512-HkqnmmBoCbCwxUKKNPBixiWDGCpQGVsrQfJoVGYLPT41XWF8lHuE5N6WhVia2n4o5QK5M4tYr21827fNhi4byQ=="],
-
-    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/storage/drizzle-kit/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.12", "", { "os": "win32", "cpu": "x64" }, "sha512-alJC0uCZpTFrSL0CCDjcgleBXPnCrEAhTBILpeAp7M/OFgoqtAetfBzX0xM00MUsVVPpVjlPuMbREqnZCXaTnA=="],
+    "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@autism-legacy-20260205/auth/@autism-legacy-20260205/storage/@autism-legacy-20260205/env/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
 
     "@autism-legacy-20260205/web/@autism-legacy-20260205/api/@sentry/node/@opentelemetry/instrumentation-http/@opentelemetry/instrumentation/@opentelemetry/api-logs": ["@opentelemetry/api-logs@0.57.1", "", { "dependencies": { "@opentelemetry/api": "^1.3.0" } }, "sha512-I4PHczeujhQAQv6ZBzqHYEUiggZL4IdSMixtVD3EYqbdrjujE7kRfI5QohjlPoJm8BvenoW5YaTMWRrbpot6tg=="],
 
