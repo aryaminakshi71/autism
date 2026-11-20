@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { Toaster } from "sonner";
 import { ErrorBoundaryWrapper } from "../components/error-boundary-wrapper";
 import { PostHogProvider } from "../components/providers/posthog-provider";
+import { WhiteLabelProvider } from "../components/branding/WhiteLabelProvider";
 import { addSkipLink } from "../lib/accessibility";
 import { queryClient } from "../lib/query";
 import { registerServiceWorker } from "../lib/service-worker";
@@ -177,7 +178,9 @@ function RootDocument() {
                   Dashboard
                 </a>
               )}
-              <Outlet />
+              <WhiteLabelProvider>
+                <Outlet />
+              </WhiteLabelProvider>
               <Toaster position="top-right" />
               {import.meta.env.PROD ? null : <TanStackRouterDevtools />}
               <Scripts />
