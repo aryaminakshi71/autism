@@ -1007,6 +1007,33 @@ export function createApp() {
     return c.json(session);
   });
 
+  app.patch("/api/v1/sessions/:id", async (c: any) => {
+    const db = getDb({ env: c.env });
+    const { sessions } = schema;
+    const id = c.req.param("id");
+    const body = await c.req.json().catch(() => ({}));
+    const [updated] = await db
+      .update(sessions)
+      .set({
+        ...(body.status ? { status: body.status } : {}),
+        ...(body.notes !== undefined ? { notes: body.notes } : {}),
+        ...(body.actualStart ? { actualStart: new Date(body.actualStart) } : {}),
+        ...(body.actualEnd ? { actualEnd: new Date(body.actualEnd) } : {}),
+        updatedAt: new Date(),
+      })
+      .where(eq(sessions.id, id))
+      .returning();
+    if (!updated) return c.json({ error: "Session not found" }, 404);
+    return c.json(updated);
+  });
+
+  app.delete("/api/v1/sessions/:id", async (c: any) => {
+    const db = getDb({ env: c.env });
+    const { sessions } = schema;
+    await db.delete(sessions).where(eq(sessions.id, c.req.param("id")));
+    return c.json({ success: true });
+  });
+
   // Rate limiting middleware
   app.use("/api/*", rateLimitRedis({ limiterType: "api" }));
   app.use("/api/auth/*", rateLimitRedis({ limiterType: "auth" }));
