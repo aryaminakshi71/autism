@@ -6,8 +6,8 @@
     "typecheck": "tsc --noEmit",
     "dev": "CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_DATABASE=${DATABASE_URL:-postgresql://aryaminakshi:localdev@127.0.0.1:5432/autism} wrangler dev src/index.ts --config wrangler.jsonc",
     "deploy": "wrangler deploy --minify src/index.ts",
-    "test:integration": "vitest run src/integration --passWithNoTests",
-    "test": "vitest run --passWithNoTests",
+    "test:integration": "cd ../.. && vitest run src/integration --passWithNoTests",
+    "test": "cd ../.. && vitest run",
     "test:e2e": "playwright test",
     "db:push": "cd ../../packages/storage && bunx drizzle-kit push --force"
   },
