@@ -15,7 +15,7 @@
         "@orpc/server": "^1.13.4",
         "@orpc/tanstack-query": "^1.13.4",
         "@orpc/zod": "^1.13.4",
-        "@platform/email": "file:../platform/packages/email",
+        "@platform/email": "workspace:*",
         "@radix-ui/react-accordion": "1.2.2",
         "@radix-ui/react-alert-dialog": "1.1.4",
         "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -286,10 +286,14 @@
         "typescript": "^5.9.3",
       },
     },
+    "packages/platform-email": {
+      "name": "@platform/email",
+      "version": "1.0.0",
+    },
     "packages/services": {
       "name": "@autism-legacy-20260205/services",
       "dependencies": {
-        "@platform/email": "file:../../../platform/packages/email",
+        "@platform/email": "workspace:*",
       },
       "devDependencies": {
         "@autism-legacy-20260205/tsconfig": "file:../tsconfig",
@@ -1114,7 +1118,7 @@
 
     "@pdf-lib/upng": ["@pdf-lib/upng@1.0.1", "", { "dependencies": { "pako": "^1.0.10" } }, "sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ=="],
 
-    "@platform/email": ["@platform/email@file:../platform/packages/email", {}],
+    "@platform/email": ["@platform/email@workspace:packages/platform-email"],
 
     "@playwright/test": ["@playwright/test@1.58.2", "", { "dependencies": { "playwright": "1.58.2" }, "bin": { "playwright": "cli.js" } }, "sha512-akea+6bHYBBfA9uQqSYmlJXn61cTa+jbO87xVLCWbTqbWadRVmhxlXATaOjOgcBaWU4ePo0wB41KMFv3o35IXA=="],
 
@@ -3163,8 +3167,6 @@
     "@autism-legacy-20260205/api/wrangler": ["wrangler@4.165.0", "", { "dependencies": { "@cloudflare/kv-asset-handler": "0.5.1", "@cloudflare/unenv-preset": "2.16.2", "@cloudflare/workers-utils": "0.55.0", "@cspotcode/source-map-support": "0.8.1", "@types/yargs": "17.0.24", "cloudflare": "5.2.0", "devtools-protocol": "0.0.1182435", "esbuild": "0.28.2", "miniflare": "5.20261118.0-beta", "path-to-regexp": "6.3.0", "undici": "7.30.1", "unenv": "2.0.0-rc.24", "workerd": "1.20261118.1" }, "optionalDependencies": { "fsevents": "2.3.3" }, "peerDependencies": { "@cloudflare/workers-types": "^5.20261118.1" }, "optionalPeers": ["@cloudflare/workers-types"], "bin": { "wrangler": "bin/wrangler.js", "wrangler2": "bin/wrangler.js", "cf-wrangler": "bin/cf-wrangler.js" } }, "sha512-c4CX82CieBfWTQPOnrsbQI/h0pYYj+heF32LKC/+EIyUh1rASVoDGKW6i3aogi/aKPloSLZLOTVAQ+UH36mqyA=="],
 
     "@autism-legacy-20260205/services/@autism-legacy-20260205/tsconfig": ["@autism-legacy-20260205/tsconfig@file:packages/tsconfig", {}],
-
-    "@autism-legacy-20260205/services/@platform/email": ["@platform/email@file:../platform/packages/email", {}],
 
     "@autism-legacy-20260205/storage/drizzle-kit": ["drizzle-kit@0.31.11", "", { "dependencies": { "@drizzle-team/brocli": "^0.10.2", "@esbuild-kit/esm-loader": "^2.5.5", "esbuild": "^0.25.4", "tsx": "^4.21.0" }, "bin": { "drizzle-kit": "bin.cjs" } }, "sha512-YCYqxTLIB2OCqf6w9/Vef13baBVbwQIPcbT4Y56AfO6B9ajZhDhD8Jkveg/hJvT/iuMloKD/IYYkyMMNhr7Kqg=="],
 

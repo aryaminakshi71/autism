@@ -131,7 +131,7 @@
     "zod": "^4.3.6",
     "dompurify": "^3.2.4",
     "@tanstack/start-client-core": "1.161.3",
-    "@platform/email": "file:../platform/packages/email"
+    "@platform/email": "workspace:*"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
