@@ -120,51 +120,50 @@ export const dashboardRouter = {
             now.getTime() - 60 * 24 * 60 * 60 * 1000,
           );
 
-          // Previous period contacts (30-60 days ago)
-          const prevPeriodContacts = await db
-            .select({ count: sql<number>`count(*)::int` })
-            .from(contacts)
-            .where(
-              and(
-                eq(contacts.organizationId, orgId),
-                gte(contacts.createdAt, sixtyDaysAgo),
-                lt(contacts.createdAt, thirtyDaysAgo),
-              ),
-            )
-            .then((r: { count: number }[]) => r[0]?.count || 0);
-
-          // Previous period deals
-          const prevPeriodDeals = await db
-            .select({ count: sql<number>`count(*)::int` })
-            .from(deals)
-            .where(
-              and(
-                eq(deals.organizationId, orgId),
-                gte(deals.createdAt, sixtyDaysAgo),
-                lt(deals.createdAt, thirtyDaysAgo),
-              ),
-            )
-            .then((r: { count: number }[]) => r[0]?.count || 0);
-
-          // Previous period won deals and revenue
-          const prevPeriodWonDeals = await db
-            .select({
-              count: sql<number>`count(*)::int`,
-              revenue: sql<number>`COALESCE(SUM(${deals.value}::numeric), 0)::numeric`,
-            })
-            .from(deals)
-            .where(
-              and(
-                eq(deals.organizationId, orgId),
-                eq(deals.stage, "won"),
-                gte(deals.createdAt, sixtyDaysAgo),
-                lt(deals.createdAt, thirtyDaysAgo),
-              ),
-            )
-            .then((r: { count: number; revenue: number }[]) => ({
-              count: r[0]?.count || 0,
-              revenue: Number(r[0]?.revenue || 0),
-            }));
+          // Previous-period metrics run in parallel (one round trip).
+          const [prevPeriodContacts, prevPeriodDeals, prevPeriodWonDeals] =
+            await Promise.all([
+              db
+                .select({ count: sql<number>`count(*)::int` })
+                .from(contacts)
+                .where(
+                  and(
+                    eq(contacts.organizationId, orgId),
+                    gte(contacts.createdAt, sixtyDaysAgo),
+                    lt(contacts.createdAt, thirtyDaysAgo),
+                  ),
+                )
+                .then((r: { count: number }[]) => r[0]?.count || 0),
+              db
+                .select({ count: sql<number>`count(*)::int` })
+                .from(deals)
+                .where(
+                  and(
+                    eq(deals.organizationId, orgId),
+                    gte(deals.createdAt, sixtyDaysAgo),
+                    lt(deals.createdAt, thirtyDaysAgo),
+                  ),
+                )
+                .then((r: { count: number }[]) => r[0]?.count || 0),
+              db
+                .select({
+                  count: sql<number>`count(*)::int`,
+                  revenue: sql<number>`COALESCE(SUM(${deals.value}::numeric), 0)::numeric`,
+                })
+                .from(deals)
+                .where(
+                  and(
+                    eq(deals.organizationId, orgId),
+                    eq(deals.stage, "won"),
+                    gte(deals.createdAt, sixtyDaysAgo),
+                    lt(deals.createdAt, thirtyDaysAgo),
+                  ),
+                )
+                .then((r: { count: number; revenue: number }[]) => ({
+                  count: r[0]?.count || 0,
+                  revenue: Number(r[0]?.revenue || 0),
+                })),
+            ]);
 
           // Current period metrics (last 30 days)
           const currentPeriodContacts = allContacts.filter(
