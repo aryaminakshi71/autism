@@ -1,6 +1,23 @@
-# Autism Care Platform
+# SpectrumAI — Autism Care Platform
 
-A unified autism care and ecosystem platform for clinics, therapists, schools, families, and insurers.
+[![CI](https://github.com/aryaminakshi71/autism/actions/workflows/ci.yml/badge.svg)](https://github.com/aryaminakshi71/autism/actions/workflows/ci.yml)
+
+A unified autism care platform for clinics, therapists, schools, families, and insurers — with AI on the intake and clinical sides.
+
+## AI features
+
+- AI lead scoring with reasoning and factors
+- AI email suggestions (follow-up, intro, proposal, meeting request)
+- AI meeting/session summaries
+- AI contact enrichment
+
+## Quick start
+
+```bash
+bun install
+cp .env.example .env   # fill DATABASE_URL, BETTER_AUTH_SECRET, OPENAI_API_KEY
+bun run dev            # web on :3080, API on :8787
+```
 
 ## ✨ Features
 
