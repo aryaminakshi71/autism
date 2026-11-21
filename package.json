@@ -46,7 +46,8 @@
     "start": "bun run dev",
     "dev:web": "SKIP_CLOUDFLARE=true bun run --cwd apps/web dev",
     "dev:api": "bun run --cwd apps/api dev",
-    "test:integration": "vitest run src/integration --passWithNoTests"
+    "test:integration": "vitest run src/integration --passWithNoTests",
+    "db:optimize": "bash scripts/db-indexes.sh --apply && bash scripts/db-trigram.sh --apply && bash scripts/db-triggers.sh --apply"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.999.0",

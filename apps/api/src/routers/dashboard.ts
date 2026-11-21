@@ -10,7 +10,7 @@ import { z } from "zod";
 import type { OrgContext } from "../context";
 import { isDemoRequest } from "../lib/demo";
 import { getDemoDashboardStats } from "../lib/demo-data";
-import { getDb, orgAuthed, schema } from "../procedures";
+import { getDb, getReadDb, orgAuthed, schema } from "../procedures";
 
 const { contacts, deals, activities } = schema;
 
@@ -73,7 +73,7 @@ export const dashboardRouter = {
       if (isDemoRequest(context)) {
         return getDemoDashboardStats();
       }
-      const db = getDb(context);
+      const db = getReadDb(context);
       const orgId = context.organization.id;
 
       // Cache dashboard stats (5 minutes TTL - analytics data)
@@ -81,44 +81,44 @@ export const dashboardRouter = {
         `dashboard:stats:${orgId}`,
         async () => {
           // Get all contacts
-          const allContacts = await db
-            .select()
+          const now = new Date();
+          const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+          // Aggregate in SQL instead of loading every row into memory.
+          const [contactStats] = await db
+            .select({
+              total: sql<number>`count(*)::int`,
+              current: sql<number>`count(*) FILTER (WHERE ${contacts.createdAt} >= ${thirtyDaysAgo})::int`,
+            })
             .from(contacts)
             .where(eq(contacts.organizationId, orgId));
-          const totalContacts = allContacts.length;
 
-          // Get all deals
-          const allDeals = await db
-            .select()
+          const [dealStats] = await db
+            .select({
+              total: sql<number>`count(*)::int`,
+              active: sql<number>`count(*) FILTER (WHERE ${deals.stage} NOT IN ('won','lost'))::int`,
+              won: sql<number>`count(*) FILTER (WHERE ${deals.stage} = 'won')::int`,
+              revenue: sql<number>`COALESCE(SUM(${deals.value}::numeric) FILTER (WHERE ${deals.stage} = 'won'), 0)::float`,
+              current: sql<number>`count(*) FILTER (WHERE ${deals.createdAt} >= ${thirtyDaysAgo})::int`,
+              currentWon: sql<number>`count(*) FILTER (WHERE ${deals.stage} = 'won' AND ${deals.createdAt} >= ${thirtyDaysAgo})::int`,
+              currentRevenue: sql<number>`COALESCE(SUM(${deals.value}::numeric) FILTER (WHERE ${deals.stage} = 'won' AND ${deals.createdAt} >= ${thirtyDaysAgo}), 0)::float`,
+            })
             .from(deals)
             .where(eq(deals.organizationId, orgId));
 
-          const activeDeals = allDeals.filter(
-            (d: any) => d.stage !== "won" && d.stage !== "lost",
-          ).length;
-          const wonDeals = allDeals.filter(
-            (d: any) => d.stage === "won",
-          ).length;
-          const totalDeals = allDeals.length;
+          const totalContacts = Number(contactStats?.total ?? 0);
+          const currentPeriodContacts = Number(contactStats?.current ?? 0);
+          const totalDeals = Number(dealStats?.total ?? 0);
+          const activeDeals = Number(dealStats?.active ?? 0);
+          const wonDeals = Number(dealStats?.won ?? 0);
+          const revenue = Number(dealStats?.revenue ?? 0);
+          const currentPeriodDeals = Number(dealStats?.current ?? 0);
+          const currentPeriodWonDeals = Number(dealStats?.currentWon ?? 0);
+          const currentPeriodRevenue = Number(dealStats?.currentRevenue ?? 0);
 
           const conversionRate =
             totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0;
-
-          const revenue = allDeals
-            .filter((d: any) => d.stage === "won")
-            .reduce(
-              (sum: number, d: any) => sum + (parseFloat(d.value) || 0),
-              0,
-            );
-
-          // Calculate changes by comparing current period vs previous 30 days
-          const now = new Date();
-          const thirtyDaysAgo = new Date(
-            now.getTime() - 30 * 24 * 60 * 60 * 1000,
-          );
-          const sixtyDaysAgo = new Date(
-            now.getTime() - 60 * 24 * 60 * 60 * 1000,
-          );
 
           // Previous-period metrics run in parallel (one round trip).
           const [prevPeriodContacts, prevPeriodDeals, prevPeriodWonDeals] =
@@ -165,32 +165,6 @@ export const dashboardRouter = {
                 })),
             ]);
 
-          // Current period metrics (last 30 days)
-          const currentPeriodContacts = allContacts.filter(
-            (c: typeof contacts.$inferSelect) =>
-              new Date(c.createdAt) >= thirtyDaysAgo,
-          ).length;
-
-          const currentPeriodDeals = allDeals.filter(
-            (d: typeof deals.$inferSelect) =>
-              new Date(d.createdAt) >= thirtyDaysAgo,
-          ).length;
-
-          const currentPeriodWonDeals = allDeals.filter(
-            (d: typeof deals.$inferSelect) =>
-              d.stage === "won" && new Date(d.createdAt) >= thirtyDaysAgo,
-          ).length;
-
-          const currentPeriodRevenue = allDeals
-            .filter(
-              (d: typeof deals.$inferSelect) =>
-                d.stage === "won" && new Date(d.createdAt) >= thirtyDaysAgo,
-            )
-            .reduce(
-              (sum: number, d: any) => sum + (parseFloat(d.value) || 0),
-              0,
-            );
-
           // Calculate percentage changes
           const calculateChange = (
             current: number,
@@ -209,7 +183,6 @@ export const dashboardRouter = {
             prevPeriodDeals,
           );
 
-          // Previous period conversion rate
           const prevConversionRate =
             prevPeriodDeals > 0
               ? Math.round((prevPeriodWonDeals.count / prevPeriodDeals) * 100)
@@ -234,7 +207,17 @@ export const dashboardRouter = {
             prevPeriodWonDeals.revenue,
           );
 
-          // Pipeline stats
+          // Pipeline stats in SQL.
+          const pipelineRows = await db
+            .select({
+              stage: deals.stage,
+              count: sql<number>`count(*)::int`,
+              value: sql<number>`COALESCE(SUM(${deals.value}::numeric), 0)::float`,
+            })
+            .from(deals)
+            .where(eq(deals.organizationId, orgId))
+            .groupBy(deals.stage);
+
           const pipeline = [
             { stage: "lead", value: 0, count: 0 },
             { stage: "qualified", value: 0, count: 0 },
@@ -242,16 +225,13 @@ export const dashboardRouter = {
             { stage: "negotiation", value: 0, count: 0 },
             { stage: "won", value: 0, count: 0 },
           ];
-
-          allDeals.forEach((deal: any) => {
-            const stageIndex = pipeline.findIndex(
-              (p) => p.stage === deal.stage,
-            );
-            if (stageIndex >= 0) {
-              pipeline[stageIndex].count++;
-              pipeline[stageIndex].value += parseFloat(deal.value) || 0;
+          for (const row of pipelineRows) {
+            const idx = pipeline.findIndex((p) => p.stage === row.stage);
+            if (idx >= 0) {
+              pipeline[idx].count = Number(row.count);
+              pipeline[idx].value = Number(row.value);
             }
-          });
+          }
 
           // Recent activities
           const recentActivities = await db
